@@ -395,8 +395,7 @@ section:before {
   margin: 0 auto 2em;
   max-width: 100%;
   max-height: 300px;
-  opacity: 0.9;
-  border-radius: 3px;
+  opacity: 0.95;
 }
 
 .article-video {

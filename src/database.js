@@ -2,7 +2,7 @@
 
 var mongoose = require("mongoose");
 
-mongoose.connect("mongodb://localhost/portfolio", function(err) {
+mongoose.connect(process.env.DATABASE_URL, function(err) {
 	if (err) {
 		throw new Error("Failed to connect to MongoDB");
 	} else {
