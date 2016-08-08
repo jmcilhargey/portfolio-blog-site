@@ -1,0 +1,966 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Building Pacman in Java</title>
+  <meta name="description" content="The original arcade version of Pac-Man was designed such that there was no ending. The game was supposed to go on forever as long as the player had remaining...">
+  <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400" rel="stylesheet">
+  <link rel="stylesheet" href="/styles/main.css">
+  <link rel="canonical" href="http://localhost:3000/articles/articles/building-pacman-in-java.html">
+  <link rel="alternate" type="application/rss+xml" title="Articles" href="http://localhost:3000/articles/articles/feed.xml">
+</head>
+
+  <body>
+    <svg display="none">
+	<defs>
+		<g id="svg-menu">
+		 	<path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.031C17.335,0,18,0.665,18,1.484L18,1.484z"/>
+	      	<path d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484 h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z"/>
+	      	<path d="M18,13.516C18,14.335,17.335,15,16.516,15H1.484C0.665,15,0,14.335,0,13.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.031C17.335,12.031,18,12.696,18,13.516L18,13.516z"/>
+		</g>
+		<g id="svg-github">
+			<path d="M1664 896q0 251-146.5 451.5t-378.5 277.5q-27 5-39.5-7t-12.5-30v-211q0-97-52-142 57-6 102.5-18t94-39 81-66.5 53-105 20.5-150.5q0-121-79-206 37-91-8-204-28-9-81 11t-92 44l-38 24q-93-26-192-26t-192 26q-16-11-42.5-27t-83.5-38.5-86-13.5q-44 113-7 204-79 85-79 206 0 85 20.5 150t52.5 105 80.5 67 94 39 102.5 18q-40 36-49 103-21 10-45 15t-57 5-65.5-21.5-55.5-62.5q-19-32-48.5-52t-49.5-24l-20-3q-21 0-29 4.5t-5 11.5 9 14 13 12l7 5q22 10 43.5 38t31.5 51l10 23q13 38 44 61.5t67 30 69.5 7 55.5-3.5l23-4q0 38 .5 89t.5 54q0 18-13 30t-40 7q-232-77-378.5-277.5t-146.5-451.5q0-209 103-385.5t279.5-279.5 385.5-103 385.5 103 279.5 279.5 103 385.5z"/>
+		</g>
+		<g id="svg-freecodecamp">
+			<path d="M1600 1696v64q0 13-9.5 22.5t-22.5 9.5h-1344q-13 0-22.5-9.5t-9.5-22.5v-64q0-13 9.5-22.5t22.5-9.5h1344q13 0 22.5 9.5t9.5 22.5zm-256-1056q0 78-24.5 144t-64 112.5-87.5 88-96 77.5-87.5 72-64 81.5-24.5 96.5q0 96 67 224l-4-1 1 1q-90-41-160-83t-138.5-100-113.5-122.5-72.5-150.5-27.5-184q0-78 24.5-144t64-112.5 87.5-88 96-77.5 87.5-72 64-81.5 24.5-96.5q0-94-66-224l3 1-1-1q90 41 160 83t138.5 100 113.5 122.5 72.5 150.5 27.5 184z"/>
+		</g>
+		<g id="svg-linkedin">
+			<path d="M477 625v991h-330v-991h330zm21-306q1 73-50.5 122t-135.5 49h-2q-82 0-132-49t-50-122q0-74 51.5-122.5t134.5-48.5 133 48.5 51 122.5zm1166 729v568h-329v-530q0-105-40.5-164.5t-126.5-59.5q-63 0-105.5 34.5t-63.5 85.5q-11 30-11 81v553h-329q2-399 2-647t-1-296l-1-48h329v144h-2q20-32 41-56t56.5-52 87-43.5 114.5-15.5q171 0 275 113.5t104 332.5z"/>
+		</g>
+	</defs>
+</svg>
+    <div class="header-wrapper">
+  <header class="site-header">
+    <div class="header-name">
+      <h2><a href="/">Joe McIlhargey</a></h2>
+      <small>Full Stack Developer</small>
+    </div>
+    <nav class="header-nav">
+      <ul class="nav-pages">
+        <li><a href="/">Projects</a></li>
+        <li><a href="/articles">Articles</a></li>
+        <li><a href="/about">About</a></li>
+      </ul>
+      <ul class="nav-socials">
+        <li>
+          <a class="socials-github" href="https://github.com/jmcilhargey">
+            <svg viewBox="0 0 1792 1792" xmlns="http://www.w3.org/2000/svg">
+              <use xlink:href="#svg-github"/>
+            </svg>
+          </a>
+        </li>
+        <li>
+          <a class="socials-linkedin" href="https://www.linkedin.com/in/joemcilhargey">
+            <svg viewBox="0 0 1792 1792" xmlns="http://www.w3.org/2000/svg">
+              <use xlink:href="#svg-linkedin"/>
+            </svg>
+          </a>
+        </li>
+        <li>
+          <a class="socials-freecodecamp" href="http://www.freecodecamp.com/jmcilhargey">
+            <svg viewBox="0 0 1792 1792" xmlns="http://www.w3.org/2000/svg">
+              <use xlink:href="#svg-freecodecamp"/>
+            </svg>
+          </a>
+        </li>
+      </ul>
+    </nav>
+    <button class="nav-menu" onclick="toggleDrawerMenu(this)">
+      <svg viewBox="0 0 18 15">
+        <use xlink:href="#svg-menu" />
+      </svg>
+    </button>
+  </header>
+</div>
+    <main class="site-content">
+      <div class="article-container">
+        <article class="article-entry" itemscope itemtype="http://schema.org/BlogPosting">
+  <header class="article-header">
+    
+    <img class="article-image" src="http://localhost:3000/articles/imgs/pacman.png">
+    
+    <h1 class="article-title" itemprop="name headline">Building Pacman in Java</h1>
+  </header>
+
+  <div class="article-content" itemprop="articleBody">
+    <p>The original arcade version of Pac-Man was designed such that there was no ending. The game was supposed to go on forever as long as the player had remaining lives. However, it wasn’t long before some skilled players discovered an infinite number of levels was not possible.</p>
+
+<p>There were bugs that occured due to Pac-Man’s 8-bit architecture, which meant the maximum allowed integer value was 2^8 - 1 or 255. The screenshot above shows one such bug on level 256 where an integer overflow causes the right side of the screen to corrupt, erasing dots and making the level unbeatable.</p>
+
+<p>Thankfully we’re not limited to such 8-bit constraints in modern computing though integer overflows can still happen! This is a guide to build a Pac-Man-like game using the Java language. Here’s a video of what we’ll build:</p>
+
+<video class="article-video" width="500" controls="">
+	<source src="videos/pacman.mp4" type="video/mp4" />
+	Your browser doesn't support mp4 video
+</video>
+
+<p>One cool thing about this project is that the core parts could be applied to game design in general. For example, we could take the structure and elements of the completed game and extrapolate them to create an overhead shooter or role-playing game.</p>
+
+<p>Let’s start by mapping out the essential features of the game:</p>
+
+<ol>
+  <li>Pacman can move through maze collecting dots and power-dots.</li>
+  <li>Ghosts chase the pacman through the maze and a collison causes a player to lose a life.</li>
+  <li>Power-dot makes ghosts run for a period of time and pacman can eat them.</li>
+  <li>Player wins if all dots eaten. Player loses if no lives left.</li>
+  <li>Optional:
+    <ul>
+      <li>Music and sounds play</li>
+      <li>Can store high-score</li>
+      <li>Fruit random-generated</li>
+    </ul>
+  </li>
+</ol>
+
+<p>For simplicity, code samples reference the completed game so some elements may be shown out of order. Library imports won’t be shown although many IDEs offer automatic organization. For Eclipse on a Mac for example, the shortcut is cmd+shift+o.</p>
+
+<p>In Java we can easily make UI windows by importing javax.swing components. Here we’ll compose the Game class to contain the game board of class Board that has all the game pieces and actions in it.</p>
+
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Game</span> <span class="kd">extends</span> <span class="n">JFrame</span> <span class="o">{</span>
+
+	<span class="kd">private</span> <span class="kd">static</span> <span class="kd">final</span> <span class="kt">long</span> <span class="n">serialVersionUID</span> <span class="o">=</span> <span class="mi">1L</span><span class="o">;</span>
+	
+	<span class="kd">private</span> <span class="kd">final</span> <span class="kt">int</span> <span class="n">WIDTH</span> <span class="o">=</span> <span class="mi">500</span><span class="o">,</span> <span class="n">HEIGHT</span> <span class="o">=</span> <span class="mi">400</span><span class="o">;</span>
+	
+	<span class="kd">public</span> <span class="nf">Game</span><span class="o">(</span><span class="n">String</span> <span class="n">name</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">IOException</span> <span class="o">{</span>
+		
+		<span class="n">add</span><span class="o">(</span><span class="k">new</span> <span class="n">Board</span><span class="o">());</span>
+		
+		<span class="n">setTitle</span><span class="o">(</span><span class="n">name</span><span class="o">);</span>
+		<span class="n">setSize</span><span class="o">(</span><span class="n">WIDTH</span><span class="o">,</span> <span class="n">HEIGHT</span><span class="o">);</span>
+		<span class="n">setBackground</span><span class="o">(</span><span class="n">Color</span><span class="o">.</span><span class="na">BLACK</span><span class="o">);</span>
+		<span class="n">setLocationRelativeTo</span><span class="o">(</span><span class="kc">null</span><span class="o">);</span>
+		<span class="n">setDefaultCloseOperation</span><span class="o">(</span><span class="n">JFrame</span><span class="o">.</span><span class="na">EXIT_ON_CLOSE</span><span class="o">);</span>
+		<span class="n">setResizable</span><span class="o">(</span><span class="kc">false</span><span class="o">);</span>
+	<span class="o">}</span>
+	
+	<span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">IOException</span> <span class="o">{</span>
+		
+		<span class="n">Game</span> <span class="n">pacman</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Game</span><span class="o">(</span><span class="s">"Pacman"</span><span class="o">);</span>
+		<span class="n">pacman</span><span class="o">.</span><span class="na">setVisible</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+	<span class="o">}</span>	
+<span class="o">}</span></code></pre></figure>
+
+<p>Now we have a blank, black frame onto which we can overlay the game. We append an instance of the Board class to the Game constructor with add(). This allows us to import the functionality of the Board class where all of the game components and actions will live.</p>
+
+<p>The next step is to define the map that will contain the game actions. One method would be to create a 2-dimensional string vector where each character is a game tile corresponding to a barrier or open space. The pacman and the ghosts traverse the open spaces and stop on the barriers. This is straightforward and makes pathfinding easy, but limiting when making a game environment with smooth movements and paths outside of a preset track.</p>
+
+<p>Instead we’ll make our map out of rectangular game objects with dimensions x, y, width, and height. Then we’ll draw those rectangles as shapes and calculate player and ghost movements based on collisions with the rectangles. For small maps this is easy because we can iterate through the rectangle arrays. If you had a big map, you might need to divide the task between different boards and swap between them.</p>
+
+<p>Here is the Board class with variable declarations we’ll be using and the constructor that gets called when we launch the game. The individual pieces haven’t been implemented so we’ll walk through each in turn.</p>
+
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Board</span> <span class="kd">extends</span> <span class="n">JPanel</span> <span class="kd">implements</span> <span class="n">ActionListener</span><span class="o">,</span> <span class="n">LineListener</span> <span class="o">{</span>
+
+	<span class="kd">private</span> <span class="kd">static</span> <span class="kd">final</span> <span class="kt">long</span> <span class="n">serialVersionUID</span> <span class="o">=</span> <span class="mi">1L</span><span class="o">;</span>
+	
+	<span class="kd">private</span> <span class="kt">boolean</span> <span class="n">isRunning</span> <span class="o">=</span> <span class="kc">false</span><span class="o">;</span>
+	
+	<span class="kd">private</span> <span class="n">Timer</span> <span class="n">mainTimer</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Timer</span><span class="o">(</span><span class="mi">50</span><span class="o">,</span> <span class="kc">null</span><span class="o">);</span>
+	<span class="kd">private</span> <span class="n">Timer</span> <span class="n">ghostScareTimer</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Timer</span><span class="o">(</span><span class="mi">8000</span><span class="o">,</span> <span class="kc">null</span><span class="o">);</span>
+	
+	<span class="kd">private</span> <span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">gameMap</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;();</span>
+	
+	<span class="kd">private</span> <span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">RoundRectangle2D</span><span class="o">&gt;</span> <span class="n">gameTiles</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">RoundRectangle2D</span><span class="o">&gt;();</span>
+	<span class="kd">private</span> <span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">Rectangle2D</span><span class="o">&gt;</span> <span class="n">dotTiles</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">Rectangle2D</span><span class="o">&gt;();</span>
+	<span class="kd">private</span> <span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">Ellipse2D</span><span class="o">&gt;</span> <span class="n">powerTiles</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">Ellipse2D</span><span class="o">&gt;();</span>
+	
+	<span class="kd">private</span> <span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">BufferedImage</span><span class="o">&gt;</span> <span class="n">pacImages</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">BufferedImage</span><span class="o">&gt;();</span>
+	<span class="kd">private</span> <span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">BufferedImage</span><span class="o">&gt;</span> <span class="n">ghostImages</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">BufferedImage</span><span class="o">&gt;();</span>
+	<span class="kd">private</span> <span class="n">BufferedImage</span> <span class="n">pacLogo</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+	
+	<span class="n">Pacman</span> <span class="n">player</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Pacman</span><span class="o">(</span><span class="mi">248</span><span class="o">,</span> <span class="mi">218</span><span class="o">,</span> <span class="mi">13</span><span class="o">);</span>
+	<span class="n">Ghost</span> <span class="o">[]</span> <span class="n">ghosts</span> <span class="o">=</span> <span class="o">{</span> <span class="k">new</span> <span class="n">Ghost</span><span class="o">(</span><span class="mi">238</span><span class="o">,</span> <span class="mi">181</span><span class="o">,</span> <span class="mi">14</span><span class="o">),</span> <span class="k">new</span> <span class="n">Ghost</span><span class="o">(</span><span class="mi">248</span><span class="o">,</span> <span class="mi">181</span><span class="o">,</span> <span class="mi">14</span><span class="o">),</span> <span class="k">new</span> <span class="n">Ghost</span><span class="o">(</span><span class="mi">258</span><span class="o">,</span> <span class="mi">181</span><span class="o">,</span> <span class="mi">14</span><span class="o">),</span> <span class="k">new</span> <span class="n">Ghost</span><span class="o">(</span><span class="mi">268</span><span class="o">,</span> <span class="mi">181</span><span class="o">,</span> <span class="mi">14</span><span class="o">)</span> <span class="o">};</span>
+	
+	<span class="n">Clip</span> <span class="n">audioClip</span><span class="o">;</span>
+	<span class="n">FloatControl</span> <span class="n">volume</span><span class="o">;</span>
+	
+	<span class="n">File</span> <span class="n">introMusic</span> <span class="o">=</span> <span class="k">new</span> <span class="n">File</span><span class="o">(</span><span class="s">"src/sounds/pac-intro.wav"</span><span class="o">);</span>
+	<span class="n">File</span> <span class="n">getGhost</span> <span class="o">=</span> <span class="k">new</span> <span class="n">File</span><span class="o">(</span><span class="s">"src/sounds/pac-ghost.wav"</span><span class="o">);</span>
+	<span class="n">File</span> <span class="n">pacDead</span> <span class="o">=</span> <span class="k">new</span> <span class="n">File</span><span class="o">(</span><span class="s">"src/sounds/pac-dead.wav"</span><span class="o">);</span>
+	
+	<span class="kd">private</span> <span class="kt">int</span> <span class="n">score</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
+	<span class="kd">private</span> <span class="kt">int</span> <span class="n">pacLives</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
+	
+	<span class="n">String</span> <span class="n">topScorer</span> <span class="o">=</span> <span class="s">""</span><span class="o">;</span>
+	<span class="n">String</span> <span class="n">highScore</span> <span class="o">=</span> <span class="s">""</span><span class="o">;</span>
+	
+	<span class="kd">public</span> <span class="nf">Board</span><span class="o">()</span> <span class="kd">throws</span> <span class="n">IOException</span> <span class="o">{</span>
+		
+		<span class="n">setBackground</span><span class="o">(</span><span class="n">Color</span><span class="o">.</span><span class="na">BLACK</span><span class="o">);</span>
+		<span class="n">setDoubleBuffered</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+		
+		<span class="n">addKeyListener</span><span class="o">(</span><span class="k">new</span> <span class="n">GameKeys</span><span class="o">());</span>
+		<span class="n">setFocusable</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+		
+		<span class="n">mainTimer</span><span class="o">.</span><span class="na">addActionListener</span><span class="o">(</span><span class="n">execGameFrameRate</span><span class="o">);</span>
+		
+		<span class="n">loadImages</span><span class="o">();</span>
+		<span class="n">initMap</span><span class="o">();</span>
+		<span class="n">loadHighScore</span><span class="o">();</span>
+	<span class="o">}</span>
+<span class="o">}</span></code></pre></figure>
+
+<p>Using a vector of strings is useful here because we can type our map design and then iterate through the strings to create our rectangles. We make arrays for each of the tile types: barriers, dots, and power dots. If you’re designing the game with multiple maps, you could store the 2-D string maps in .txt files and retrieve them in chunks. Another way to approach this would be to create a custom child rectangle class that has properties to differentiate tile types. Then you could load the tiles into a single array.</p>
+
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="kd">private</span> <span class="kt">void</span> <span class="nf">initMap</span><span class="o">()</span> <span class="o">{</span>
+	
+	<span class="k">if</span> <span class="o">(</span><span class="n">gameMap</span><span class="o">.</span><span class="na">isEmpty</span><span class="o">())</span> <span class="o">{</span>
+		<span class="n">gameMap</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="s">"00000000000000000000000"</span><span class="o">);</span>
+		<span class="n">gameMap</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="s">"0+-------0-----------+0"</span><span class="o">);</span>
+		<span class="n">gameMap</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="s">"0-00-0-0-0-0-00-00-00-0"</span><span class="o">);</span>
+		<span class="n">gameMap</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="s">"0-00-0-0-0-0-0-----00-0"</span><span class="o">);</span>
+		<span class="n">gameMap</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="s">"0--------0-0-0-000----0"</span><span class="o">);</span>
+		<span class="n">gameMap</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="s">"0-00-0-0-------0---00-0"</span><span class="o">);</span>
+		<span class="n">gameMap</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="s">"0------0-00 00---0-0--0"</span><span class="o">);</span>
+		<span class="n">gameMap</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="s">"0000-0-0-0   0-000-0-00"</span><span class="o">);</span>
+		<span class="n">gameMap</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="s">"-----0---00000-00------"</span><span class="o">);</span>
+		<span class="n">gameMap</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="s">"000-00-0--- ------0-000"</span><span class="o">);</span>
+		<span class="n">gameMap</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="s">"0----0-0-0-0-00-0-0---0"</span><span class="o">);</span>
+		<span class="n">gameMap</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="s">"0-00-------0----0---0-0"</span><span class="o">);</span>
+		<span class="n">gameMap</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="s">"0-+0-0-0-0-00-0---000-0"</span><span class="o">);</span>
+		<span class="n">gameMap</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="s">"00---0---0------0----+0"</span><span class="o">);</span>
+		<span class="n">gameMap</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="s">"00000000000000000000000"</span><span class="o">);</span>
+	<span class="o">}</span>
+	<span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">gameMap</span><span class="o">.</span><span class="na">size</span><span class="o">();</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
+		<span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">j</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="n">gameMap</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">i</span><span class="o">).</span><span class="na">length</span><span class="o">();</span> <span class="n">j</span><span class="o">++)</span> <span class="o">{</span>
+			
+			<span class="kt">char</span> <span class="n">currChar</span> <span class="o">=</span> <span class="n">gameMap</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">i</span><span class="o">).</span><span class="na">charAt</span><span class="o">(</span><span class="n">j</span><span class="o">);</span>
+			
+			<span class="k">if</span> <span class="o">(</span><span class="n">currChar</span> <span class="o">==</span> <span class="sc">'0'</span><span class="o">)</span> <span class="o">{</span>
+				
+				<span class="n">gameTiles</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="k">new</span> <span class="n">RoundRectangle2D</span><span class="o">.</span><span class="na">Double</span><span class="o">(</span><span class="mi">47</span> <span class="o">+</span> <span class="n">j</span> <span class="o">*</span> <span class="mi">18</span><span class="o">,</span> <span class="mi">52</span> <span class="o">+</span> <span class="n">i</span> <span class="o">*</span> <span class="mi">18</span><span class="o">,</span> <span class="mi">18</span><span class="o">,</span> <span class="mi">18</span><span class="o">,</span> <span class="mi">5</span><span class="o">,</span> <span class="mi">5</span><span class="o">));</span>
+			<span class="o">}</span>
+			<span class="k">if</span> <span class="o">(</span><span class="n">currChar</span> <span class="o">==</span> <span class="sc">'-'</span><span class="o">)</span> <span class="o">{</span>
+				<span class="n">dotTiles</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="k">new</span> <span class="n">Rectangle2D</span><span class="o">.</span><span class="na">Double</span><span class="o">(</span><span class="mi">56</span> <span class="o">+</span> <span class="n">j</span> <span class="o">*</span> <span class="mi">18</span><span class="o">,</span> <span class="mi">62</span> <span class="o">+</span> <span class="n">i</span> <span class="o">*</span> <span class="mi">18</span><span class="o">,</span> <span class="mi">1</span><span class="o">,</span> <span class="mi">1</span><span class="o">));</span>
+			<span class="o">}</span>
+			<span class="k">if</span> <span class="o">(</span><span class="n">currChar</span> <span class="o">==</span> <span class="sc">'+'</span><span class="o">)</span> <span class="o">{</span>
+				<span class="n">powerTiles</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="k">new</span> <span class="n">Ellipse2D</span><span class="o">.</span><span class="na">Double</span><span class="o">(</span><span class="mi">53</span> <span class="o">+</span> <span class="n">j</span> <span class="o">*</span> <span class="mi">18</span><span class="o">,</span> <span class="mi">59</span> <span class="o">+</span> <span class="n">i</span> <span class="o">*</span> <span class="mi">18</span><span class="o">,</span> <span class="mi">6</span><span class="o">,</span> <span class="mi">6</span><span class="o">));</span>
+			<span class="o">}</span>
+		<span class="o">}</span>
+	<span class="o">}</span>
+<span class="o">}</span></code></pre></figure>
+
+<p>Our map is loaded into memory and next we need to get the rectangles to show up on our canvas. Earlier we extended the JPanel class on Board to set some initial properties and now we can utilize it’s built in custom painting to depict our map. Overriding the default paintComponent and then invoking the parent paint method with the super keyword gives us custom paint options.</p>
+
+<p>Below we pass our Graphics object into the runGame method that will contain all the painting instructions and the core game loop.</p>
+
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="nd">@Override</span>
+<span class="kd">public</span> <span class="kt">void</span> <span class="nf">paintComponent</span><span class="o">(</span><span class="n">Graphics</span> <span class="n">g</span><span class="o">)</span> <span class="o">{</span>
+	
+	<span class="kd">super</span><span class="o">.</span><span class="na">paintComponent</span><span class="o">(</span><span class="n">g</span><span class="o">);</span>
+	<span class="k">try</span> <span class="o">{</span>
+		<span class="n">runGame</span><span class="o">(</span><span class="n">g</span><span class="o">);</span>
+	<span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">InterruptedException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+		<span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+	<span class="o">}</span>
+<span class="o">}</span></code></pre></figure>
+
+<p>For the paint component to update continuously, we have to have some sort of timer or game loop. Back in the Board class and constructor, we have 2 lines <mark>private Timer mainTimer = new Timer(50, null);</mark> and <mark>mainTimer. addActionListener(execGameFrameRate);</mark>. We make a Timer instance and add a listener. With the execGameFrameRate listener, every time the timer expires (50 ms) we call the repaint() method that in turn calls paintComponent. Now all we have to do is start the timer which we’ll get to in a bit.</p>
+
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="n">ActionListener</span> <span class="n">execGameFrameRate</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ActionListener</span><span class="o">()</span> <span class="o">{</span>
+	<span class="kd">public</span> <span class="kt">void</span> <span class="nf">actionPerformed</span><span class="o">(</span><span class="n">ActionEvent</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+		<span class="n">repaint</span><span class="o">();</span>
+	<span class="o">}</span>
+<span class="o">};</span></code></pre></figure>
+
+<p>In our paint methods, we’re using a Graphics2D object g2d. Casting the Graphics object to a Graphics2D is okay because we are downcasting from Graphics. In the drawGameTiles method, the player location is also referenced and compared to the dot locations so we can add to the score if the player intersects with a dot or scare the ghosts if the player hits the power tile. We’ll implement the ghosts and player(pacman) further down so we can see how these work.</p>
+
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="kd">private</span> <span class="kt">void</span> <span class="nf">drawGameTiles</span><span class="o">(</span><span class="n">Graphics2D</span> <span class="n">g2d</span><span class="o">)</span> <span class="o">{</span>
+		
+	<span class="n">Rectangle</span> <span class="n">location</span> <span class="o">=</span> <span class="n">player</span><span class="o">.</span><span class="na">getBounds</span><span class="o">();</span>
+	
+	<span class="k">for</span> <span class="o">(</span><span class="n">RoundRectangle2D</span> <span class="n">rect</span> <span class="o">:</span> <span class="n">gameTiles</span><span class="o">)</span> <span class="o">{</span>
+		
+		<span class="n">g2d</span><span class="o">.</span><span class="na">setColor</span><span class="o">(</span><span class="k">new</span> <span class="n">Color</span><span class="o">(</span><span class="mi">0</span><span class="o">,</span> <span class="mi">35</span><span class="o">,</span> <span class="mi">255</span><span class="o">));</span>
+		<span class="n">g2d</span><span class="o">.</span><span class="na">setStroke</span><span class="o">(</span><span class="k">new</span> <span class="n">BasicStroke</span><span class="o">(</span><span class="mf">1.0f</span><span class="o">));</span>
+		<span class="n">g2d</span><span class="o">.</span><span class="na">draw</span><span class="o">(</span><span class="n">rect</span><span class="o">);</span>
+	<span class="o">}</span>
+	
+	<span class="k">for</span> <span class="o">(</span><span class="n">Iterator</span><span class="o">&lt;</span><span class="n">Rectangle2D</span><span class="o">&gt;</span> <span class="n">iterator</span> <span class="o">=</span> <span class="n">dotTiles</span><span class="o">.</span><span class="na">iterator</span><span class="o">();</span> <span class="n">iterator</span><span class="o">.</span><span class="na">hasNext</span><span class="o">();)</span> <span class="o">{</span>
+		
+		<span class="n">Rectangle2D</span> <span class="n">dot</span> <span class="o">=</span> <span class="n">iterator</span><span class="o">.</span><span class="na">next</span><span class="o">();</span>
+		
+		<span class="k">if</span> <span class="o">(</span><span class="n">dot</span><span class="o">.</span><span class="na">intersects</span><span class="o">(</span><span class="n">location</span><span class="o">))</span> <span class="o">{</span>
+			<span class="n">iterator</span><span class="o">.</span><span class="na">remove</span><span class="o">();</span>
+			<span class="n">score</span> <span class="o">+=</span> <span class="mi">50</span><span class="o">;</span>
+		<span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+			<span class="n">g2d</span><span class="o">.</span><span class="na">setColor</span><span class="o">(</span><span class="k">new</span> <span class="n">Color</span><span class="o">(</span><span class="mi">255</span><span class="o">,</span> <span class="mi">184</span><span class="o">,</span> <span class="mi">174</span><span class="o">));</span>
+			<span class="n">g2d</span><span class="o">.</span><span class="na">setStroke</span><span class="o">(</span><span class="k">new</span> <span class="n">BasicStroke</span><span class="o">(</span><span class="mf">2.0f</span><span class="o">));</span>
+			<span class="n">g2d</span><span class="o">.</span><span class="na">draw</span><span class="o">(</span><span class="n">dot</span><span class="o">);</span>
+		<span class="o">}</span>	
+	<span class="o">}</span>
+	
+	<span class="k">for</span> <span class="o">(</span><span class="n">Iterator</span><span class="o">&lt;</span><span class="n">Ellipse2D</span><span class="o">&gt;</span> <span class="n">iterator</span> <span class="o">=</span> <span class="n">powerTiles</span><span class="o">.</span><span class="na">iterator</span><span class="o">();</span> <span class="n">iterator</span><span class="o">.</span><span class="na">hasNext</span><span class="o">();)</span> <span class="o">{</span>
+		
+		<span class="n">Ellipse2D</span> <span class="n">power</span> <span class="o">=</span> <span class="n">iterator</span><span class="o">.</span><span class="na">next</span><span class="o">();</span>
+		
+		<span class="k">if</span> <span class="o">(</span><span class="n">power</span><span class="o">.</span><span class="na">intersects</span><span class="o">(</span><span class="n">location</span><span class="o">))</span> <span class="o">{</span>
+			
+			<span class="n">iterator</span><span class="o">.</span><span class="na">remove</span><span class="o">();</span>
+			
+			<span class="k">if</span> <span class="o">(</span><span class="n">ghostScareTimer</span><span class="o">.</span><span class="na">isRunning</span><span class="o">())</span> <span class="o">{</span>
+				<span class="n">ghostScareTimer</span><span class="o">.</span><span class="na">restart</span><span class="o">();</span>
+			<span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+				<span class="n">ghostScareTimer</span><span class="o">.</span><span class="na">addActionListener</span><span class="o">(</span><span class="n">unscareGhosts</span><span class="o">);</span>
+				<span class="n">ghostScareTimer</span><span class="o">.</span><span class="na">start</span><span class="o">();</span>
+			<span class="o">}</span>
+
+			<span class="k">for</span> <span class="o">(</span><span class="n">Ghost</span> <span class="n">ghost</span> <span class="o">:</span> <span class="n">ghosts</span><span class="o">)</span> <span class="o">{</span>
+				<span class="n">ghost</span><span class="o">.</span><span class="na">edible</span> <span class="o">=</span> <span class="kc">true</span><span class="o">;</span>
+				<span class="n">ghost</span><span class="o">.</span><span class="na">speed</span> <span class="o">=</span> <span class="mi">2</span><span class="o">;</span>
+			<span class="o">}</span>
+			
+		<span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+			<span class="n">g2d</span><span class="o">.</span><span class="na">setPaint</span><span class="o">(</span><span class="k">new</span> <span class="n">Color</span><span class="o">(</span><span class="mi">255</span><span class="o">,</span> <span class="mi">184</span><span class="o">,</span> <span class="mi">174</span><span class="o">));</span>
+			<span class="n">g2d</span><span class="o">.</span><span class="na">fill</span><span class="o">(</span><span class="n">power</span><span class="o">);</span>
+			<span class="n">g2d</span><span class="o">.</span><span class="na">setStroke</span><span class="o">(</span><span class="k">new</span> <span class="n">BasicStroke</span><span class="o">(</span><span class="mf">1.0f</span><span class="o">));</span>
+			<span class="n">g2d</span><span class="o">.</span><span class="na">draw</span><span class="o">(</span><span class="n">power</span><span class="o">);</span>
+		<span class="o">}</span>	
+	<span class="o">}</span>
+<span class="o">}</span></code></pre></figure>
+
+<p>Other parts we’ll need to draw include keeping track of the score, lives, and an intro screen we’ll show before the game is started.</p>
+
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="kd">private</span> <span class="kt">void</span> <span class="nf">drawScore</span><span class="o">(</span><span class="n">Graphics2D</span> <span class="n">g2d</span><span class="o">)</span> <span class="o">{</span>
+	
+	<span class="n">g2d</span><span class="o">.</span><span class="na">setFont</span><span class="o">(</span><span class="k">new</span> <span class="n">Font</span><span class="o">(</span><span class="s">"Serif"</span><span class="o">,</span> <span class="n">Font</span><span class="o">.</span><span class="na">BOLD</span><span class="o">,</span> <span class="mi">16</span><span class="o">));</span>
+	<span class="n">g2d</span><span class="o">.</span><span class="na">setColor</span><span class="o">(</span><span class="k">new</span> <span class="n">Color</span><span class="o">(</span><span class="mi">255</span><span class="o">,</span> <span class="mi">255</span><span class="o">,</span> <span class="mi">255</span><span class="o">));</span>
+	<span class="n">g2d</span><span class="o">.</span><span class="na">drawString</span><span class="o">(</span><span class="s">"Score: "</span> <span class="o">+</span> <span class="n">score</span><span class="o">,</span> <span class="mi">45</span><span class="o">,</span> <span class="mi">30</span><span class="o">);</span>
+	<span class="n">g2d</span><span class="o">.</span><span class="na">drawString</span><span class="o">(</span><span class="s">"Lives: "</span> <span class="o">+</span> <span class="n">pacLives</span><span class="o">,</span> <span class="mi">410</span><span class="o">,</span> <span class="mi">30</span><span class="o">);</span>
+	<span class="n">g2d</span><span class="o">.</span><span class="na">drawString</span><span class="o">(</span><span class="s">"High-Score: "</span> <span class="o">+</span> <span class="n">topScorer</span> <span class="o">+</span> <span class="s">" "</span> <span class="o">+</span> <span class="n">highScore</span><span class="o">,</span> <span class="mi">45</span><span class="o">,</span> <span class="mi">355</span><span class="o">);</span>
+<span class="o">}</span>
+
+<span class="kd">private</span> <span class="kt">void</span> <span class="nf">drawIntroScreen</span><span class="o">(</span><span class="n">Graphics2D</span> <span class="n">g2d</span><span class="o">)</span> <span class="o">{</span>
+    
+    <span class="n">String</span> <span class="n">title</span> <span class="o">=</span> <span class="s">"PA  MAN"</span><span class="o">;</span>
+    <span class="n">g2d</span><span class="o">.</span><span class="na">setColor</span><span class="o">(</span><span class="k">new</span> <span class="n">Color</span><span class="o">(</span><span class="mi">255</span><span class="o">,</span> <span class="mi">255</span><span class="o">,</span> <span class="mi">11</span><span class="o">));</span>
+    <span class="n">g2d</span><span class="o">.</span><span class="na">setFont</span><span class="o">(</span><span class="k">new</span> <span class="n">Font</span><span class="o">(</span><span class="s">"Monospaced"</span><span class="o">,</span> <span class="n">Font</span><span class="o">.</span><span class="na">BOLD</span><span class="o">,</span> <span class="mi">42</span><span class="o">));</span>
+    <span class="n">g2d</span><span class="o">.</span><span class="na">drawString</span><span class="o">(</span><span class="n">title</span><span class="o">,</span> <span class="mi">165</span><span class="o">,</span> <span class="mi">200</span><span class="o">);</span>
+    
+    <span class="n">String</span> <span class="n">action</span> <span class="o">=</span> <span class="s">"Press enter to start"</span><span class="o">;</span>
+    <span class="n">g2d</span><span class="o">.</span><span class="na">setFont</span><span class="o">(</span><span class="k">new</span> <span class="n">Font</span><span class="o">(</span><span class="s">"SansSerif"</span><span class="o">,</span> <span class="n">Font</span><span class="o">.</span><span class="na">PLAIN</span><span class="o">,</span> <span class="mi">24</span><span class="o">));</span>
+    <span class="n">g2d</span><span class="o">.</span><span class="na">drawString</span><span class="o">(</span><span class="n">action</span><span class="o">,</span> <span class="mi">145</span><span class="o">,</span> <span class="mi">350</span><span class="o">);</span>
+    
+    <span class="n">g2d</span><span class="o">.</span><span class="na">drawImage</span><span class="o">(</span><span class="n">pacLogo</span><span class="o">,</span> <span class="mi">220</span><span class="o">,</span> <span class="mi">168</span><span class="o">,</span> <span class="kc">null</span><span class="o">);</span>
+<span class="o">}</span></code></pre></figure>
+
+<p>Let’s come back to the runGame method that we execute in the paintComponent. In order to tell if the game is running, we keep a boolean condition called isRunning. Toggling the condition will be part of the startGame and endGame methods. Within the isRunning conditional, we’ll draw the map, draw the game pieces, run our logic for moving the pacman/ghosts, and check for win/lose conditions. This method is the real hub of the game where all the actions branch out from.</p>
+
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="kd">private</span> <span class="kt">void</span> <span class="nf">runGame</span><span class="o">(</span><span class="n">Graphics</span> <span class="n">g</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">InterruptedException</span> <span class="o">{</span>
+	
+	<span class="n">Graphics2D</span> <span class="n">g2d</span> <span class="o">=</span> <span class="o">(</span><span class="n">Graphics2D</span><span class="o">)</span> <span class="n">g</span><span class="o">;</span>
+	
+	<span class="k">if</span> <span class="o">(</span><span class="n">isRunning</span><span class="o">)</span> <span class="o">{</span>
+		
+		<span class="n">g2d</span><span class="o">.</span><span class="na">setColor</span><span class="o">(</span><span class="n">Color</span><span class="o">.</span><span class="na">BLACK</span><span class="o">);</span>
+		<span class="n">g2d</span><span class="o">.</span><span class="na">fillRect</span><span class="o">(</span><span class="mi">0</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="n">WIDTH</span><span class="o">,</span> <span class="n">HEIGHT</span><span class="o">);</span>
+		
+		<span class="n">drawGameTiles</span><span class="o">(</span><span class="n">g2d</span><span class="o">);</span>
+		
+		<span class="n">player</span><span class="o">.</span><span class="na">movePacman</span><span class="o">();</span>
+		
+		<span class="k">for</span> <span class="o">(</span><span class="n">Ghost</span> <span class="n">ghost</span> <span class="o">:</span> <span class="n">ghosts</span><span class="o">)</span> <span class="o">{</span>
+			<span class="n">ghost</span><span class="o">.</span><span class="na">getDirections</span><span class="o">();</span>
+			<span class="n">ghost</span><span class="o">.</span><span class="na">calcMoves</span><span class="o">();</span>
+			<span class="n">ghost</span><span class="o">.</span><span class="na">moveGhost</span><span class="o">();</span>
+		<span class="o">}</span>
+		
+		<span class="n">drawPacman</span><span class="o">(</span><span class="n">g2d</span><span class="o">);</span>
+		<span class="n">drawGhosts</span><span class="o">(</span><span class="n">g2d</span><span class="o">);</span>
+		
+		<span class="k">if</span> <span class="o">(</span><span class="n">checkGhostPacCollision</span><span class="o">())</span> <span class="o">{</span>
+			
+			<span class="n">pacLives</span> <span class="o">-=</span> <span class="mi">3</span><span class="o">;</span>
+			<span class="n">playAudioFile</span><span class="o">(</span><span class="n">pacDead</span><span class="o">);</span>
+		
+			<span class="n">resetGamePieces</span><span class="o">();</span>
+		<span class="o">}</span>
+		
+		<span class="k">if</span> <span class="o">(</span><span class="n">pacLives</span> <span class="o">==</span> <span class="mi">0</span> <span class="o">||</span> <span class="n">checkWinCond</span><span class="o">())</span> <span class="o">{</span>
+			<span class="n">endGame</span><span class="o">();</span>
+			<span class="n">resetTiles</span><span class="o">();</span>
+			<span class="n">initMap</span><span class="o">();</span>
+		<span class="o">}</span>
+		
+		<span class="n">drawScore</span><span class="o">(</span><span class="n">g2d</span><span class="o">);</span>
+		
+	<span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+		<span class="n">drawGameTiles</span><span class="o">(</span><span class="n">g2d</span><span class="o">);</span>
+		<span class="n">drawIntroScreen</span><span class="o">(</span><span class="n">g2d</span><span class="o">);</span>
+		<span class="n">stopTimer</span><span class="o">();</span>
+	<span class="o">}</span>
+<span class="o">}</span></code></pre></figure>
+
+<p>In the board constructor there was the line <mark>addKeyListener(new GameKeys());</mark>. This sets up our key listener when we instantiate a new Board. Inside the class, we can map the keys to definitions. consume() is included as a precaution since we don’t want any unexpected actions from hitting keys.</p>
+
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">GameKeys</span> <span class="kd">implements</span> <span class="n">KeyListener</span> <span class="o">{</span>
+	
+	<span class="nd">@Override</span>
+	<span class="kd">public</span> <span class="kt">void</span> <span class="nf">keyPressed</span><span class="o">(</span><span class="n">KeyEvent</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+		
+		<span class="n">e</span><span class="o">.</span><span class="na">consume</span><span class="o">();</span>
+		
+		<span class="kt">int</span> <span class="n">key</span> <span class="o">=</span> <span class="n">e</span><span class="o">.</span><span class="na">getKeyCode</span><span class="o">();</span>
+		
+		<span class="k">switch</span><span class="o">(</span><span class="n">key</span><span class="o">)</span> <span class="o">{</span>
+		<span class="k">case</span> <span class="n">KeyEvent</span><span class="o">.</span><span class="na">VK_LEFT</span> <span class="o">:</span> <span class="n">player</span><span class="o">.</span><span class="na">setDirection</span><span class="o">(-</span><span class="mi">1</span><span class="o">,</span> <span class="mi">0</span><span class="o">);</span>
+			<span class="k">break</span><span class="o">;</span>
+		<span class="k">case</span> <span class="n">KeyEvent</span><span class="o">.</span><span class="na">VK_RIGHT</span> <span class="o">:</span> <span class="n">player</span><span class="o">.</span><span class="na">setDirection</span><span class="o">(</span><span class="mi">1</span><span class="o">,</span> <span class="mi">0</span><span class="o">);</span>
+			<span class="k">break</span><span class="o">;</span>
+		<span class="k">case</span> <span class="n">KeyEvent</span><span class="o">.</span><span class="na">VK_DOWN</span> <span class="o">:</span> <span class="n">player</span><span class="o">.</span><span class="na">setDirection</span><span class="o">(</span><span class="mi">0</span><span class="o">,</span> <span class="mi">1</span><span class="o">);</span>
+			<span class="k">break</span><span class="o">;</span>
+		<span class="k">case</span> <span class="n">KeyEvent</span><span class="o">.</span><span class="na">VK_UP</span> <span class="o">:</span> <span class="n">player</span><span class="o">.</span><span class="na">setDirection</span><span class="o">(</span><span class="mi">0</span><span class="o">,</span> <span class="o">-</span><span class="mi">1</span><span class="o">);</span>
+			<span class="k">break</span><span class="o">;</span>
+		<span class="k">case</span> <span class="n">KeyEvent</span><span class="o">.</span><span class="na">VK_ENTER</span> <span class="o">:</span> <span class="n">startGame</span><span class="o">();</span>
+			<span class="k">break</span><span class="o">;</span>
+		<span class="k">case</span> <span class="n">KeyEvent</span><span class="o">.</span><span class="na">VK_ESCAPE</span> <span class="o">:</span> <span class="n">isRunning</span> <span class="o">=</span> <span class="kc">false</span><span class="o">;</span>
+			<span class="k">break</span><span class="o">;</span>
+		<span class="o">}</span>
+	<span class="o">}</span>
+<span class="o">}</span></code></pre></figure>
+
+<p>Note above that the esc key toggles isRunning and enter starts a new game. startGame() triggers our timer to start which sets into motion the chain ActionListener execGameFrameRate <span>→</span> repaint() <span>→</span>paintComponent() <span>→</span> runGame() every 50 ms. That gives the game a frame rate of 1000 / 50 = 20 fps. To start the game, we’ll code up a method that starts our timer and sets game variables.</p>
+
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="kd">private</span> <span class="kt">void</span> <span class="nf">startGame</span><span class="o">()</span> <span class="o">{</span>
+	<span class="n">score</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
+	<span class="n">pacLives</span> <span class="o">=</span> <span class="mi">3</span><span class="o">;</span>
+	<span class="n">isRunning</span> <span class="o">=</span> <span class="kc">true</span><span class="o">;</span>
+	<span class="n">playAudioFile</span><span class="o">(</span><span class="n">introMusic</span><span class="o">);</span>
+	<span class="n">startTimer</span><span class="o">();</span>
+<span class="o">}</span>
+
+<span class="kd">private</span> <span class="kt">void</span> <span class="nf">startTimer</span><span class="o">()</span> <span class="o">{</span>
+	<span class="n">mainTimer</span><span class="o">.</span><span class="na">start</span><span class="o">();</span>
+<span class="o">}</span>
+
+<span class="kd">private</span> <span class="kt">void</span> <span class="nf">stopTimer</span><span class="o">()</span> <span class="o">{</span>
+	<span class="n">mainTimer</span><span class="o">.</span><span class="na">stop</span><span class="o">();</span>
+<span class="o">}</span></code></pre></figure>
+
+<p>If we queue up our game, we’ll see the intro screen and we can hit enter to start the timer and show the map. Nothing will move however because the paint component is just redrawing the same game tiles. It’s time to make our pacman and ghosts.</p>
+
+<p>Because the pacman and the ghosts share common characteristics, we can put together a parent class called GamePiece to contain things like x and y location, movement direction, and size. We also include a method to check if a move is valid – there is no intersection with map tiles.</p>
+
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">GamePiece</span> <span class="o">{</span>
+	
+	<span class="kd">protected</span> <span class="kt">int</span> <span class="n">xPos</span><span class="o">,</span> <span class="n">yPos</span><span class="o">;</span>
+	<span class="kd">protected</span> <span class="kt">int</span> <span class="n">dirX</span><span class="o">,</span> <span class="n">dirY</span><span class="o">;</span>
+	<span class="kd">private</span> <span class="kt">int</span> <span class="n">size</span><span class="o">;</span>
+	<span class="kt">int</span> <span class="n">frame</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
+	
+	<span class="kd">public</span> <span class="nf">GamePiece</span><span class="o">(</span><span class="kt">int</span> <span class="n">xPos</span><span class="o">,</span> <span class="kt">int</span> <span class="n">yPos</span><span class="o">,</span> <span class="kt">int</span> <span class="n">size</span><span class="o">)</span> <span class="o">{</span>
+		<span class="k">this</span><span class="o">.</span><span class="na">xPos</span> <span class="o">=</span> <span class="n">xPos</span><span class="o">;</span>
+		<span class="k">this</span><span class="o">.</span><span class="na">yPos</span> <span class="o">=</span> <span class="n">yPos</span><span class="o">;</span>
+		<span class="k">this</span><span class="o">.</span><span class="na">size</span> <span class="o">=</span> <span class="n">size</span><span class="o">;</span>
+	<span class="o">}</span>
+	
+	<span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">isValidMove</span><span class="o">(</span><span class="n">Rectangle</span> <span class="n">location</span><span class="o">,</span> <span class="kt">int</span> <span class="n">dirX</span><span class="o">,</span> <span class="kt">int</span> <span class="n">dirY</span><span class="o">)</span> <span class="o">{</span>
+		
+		<span class="n">location</span><span class="o">.</span><span class="na">x</span> <span class="o">+=</span> <span class="n">dirX</span><span class="o">;</span>
+		<span class="n">location</span><span class="o">.</span><span class="na">y</span> <span class="o">+=</span> <span class="n">dirY</span><span class="o">;</span>
+		
+		<span class="k">for</span> <span class="o">(</span><span class="n">RoundRectangle2D</span> <span class="n">rect</span> <span class="o">:</span> <span class="n">gameTiles</span><span class="o">)</span> <span class="o">{</span>
+			
+			<span class="k">if</span> <span class="o">(</span><span class="n">rect</span><span class="o">.</span><span class="na">intersects</span><span class="o">(</span><span class="n">location</span><span class="o">))</span> <span class="o">{</span>
+				<span class="k">return</span> <span class="kc">false</span><span class="o">;</span>
+			<span class="o">}</span>
+		<span class="o">}</span>
+		<span class="k">return</span> <span class="kc">true</span><span class="o">;</span>
+	<span class="o">}</span>
+	
+	<span class="kd">public</span> <span class="n">Rectangle</span> <span class="nf">getBounds</span><span class="o">()</span> <span class="o">{</span>
+		<span class="k">return</span> <span class="k">new</span> <span class="nf">Rectangle</span><span class="o">(</span><span class="n">xPos</span><span class="o">,</span> <span class="n">yPos</span><span class="o">,</span> <span class="n">size</span><span class="o">,</span> <span class="n">size</span><span class="o">);</span>
+	<span class="o">}</span>
+
+<span class="o">}</span></code></pre></figure>
+
+<p>Let’s break down the Pacman class.</p>
+
+<ul>
+  <li>The constructor invokes its parent GamePiece with x, y, and size.</li>
+  <li>The setDirection method changes dirX, dirY variables and is called in the key listener we wrote above.</li>
+  <li>The movePacman() method executes isValidMove and then changes the xPos or yPos accordingly. This method also contains the frame variable that cycles from 0 - 2. Each frame number will correspond to a different pacman image so we can get the “chomp” animation. (More on that later)</li>
+  <li>The if statement is for when the xPos is greater than or less than the map’s boundries we transport the pacman to the other side of the map.</li>
+</ul>
+
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Pacman</span> <span class="kd">extends</span> <span class="n">GamePiece</span> <span class="o">{</span>
+
+	<span class="kd">public</span> <span class="nf">Pacman</span><span class="o">(</span><span class="kt">int</span> <span class="n">xPos</span><span class="o">,</span> <span class="kt">int</span> <span class="n">yPos</span><span class="o">,</span> <span class="kt">int</span> <span class="n">size</span><span class="o">)</span> <span class="o">{</span>
+		
+		<span class="kd">super</span><span class="o">(</span><span class="n">xPos</span><span class="o">,</span> <span class="n">yPos</span><span class="o">,</span> <span class="n">size</span><span class="o">);</span>
+	<span class="o">}</span>
+	
+	<span class="kd">public</span> <span class="kt">void</span> <span class="nf">setDirection</span><span class="o">(</span><span class="kt">int</span> <span class="n">dirX</span><span class="o">,</span> <span class="kt">int</span> <span class="n">dirY</span><span class="o">)</span> <span class="o">{</span>
+		
+		<span class="k">this</span><span class="o">.</span><span class="na">dirX</span> <span class="o">=</span> <span class="n">dirX</span><span class="o">;</span>
+		<span class="k">this</span><span class="o">.</span><span class="na">dirY</span> <span class="o">=</span> <span class="n">dirY</span><span class="o">;</span>
+	<span class="o">}</span>	
+	
+	<span class="kd">public</span> <span class="kt">void</span> <span class="nf">movePacman</span><span class="o">()</span> <span class="o">{</span>
+		
+		<span class="n">frame</span> <span class="o">=</span> <span class="o">(</span><span class="n">frame</span> <span class="o">+</span> <span class="mi">1</span><span class="o">)</span> <span class="o">%</span> <span class="mi">3</span><span class="o">;</span>
+		
+		<span class="n">Rectangle</span> <span class="n">location</span> <span class="o">=</span> <span class="n">getBounds</span><span class="o">();</span>
+		
+		<span class="k">if</span> <span class="o">(</span><span class="n">location</span><span class="o">.</span><span class="na">x</span> <span class="o">&lt;</span> <span class="mi">47</span><span class="o">)</span> <span class="o">{</span>
+			<span class="n">xPos</span> <span class="o">=</span> <span class="mi">447</span><span class="o">;</span>
+		<span class="o">}</span>
+		
+		<span class="k">if</span> <span class="o">(</span><span class="n">location</span><span class="o">.</span><span class="na">x</span> <span class="o">&gt;</span> <span class="mi">447</span><span class="o">)</span> <span class="o">{</span>
+			<span class="n">xPos</span> <span class="o">=</span> <span class="mi">47</span><span class="o">;</span>
+		<span class="o">}</span>
+		
+		<span class="k">if</span> <span class="o">(</span><span class="n">dirX</span> <span class="o">==</span> <span class="mi">1</span> <span class="o">&amp;&amp;</span> <span class="n">dirY</span> <span class="o">==</span> <span class="mi">0</span><span class="o">)</span> <span class="o">{</span>
+			<span class="k">if</span> <span class="o">(</span><span class="n">isValidMove</span><span class="o">(</span><span class="n">location</span><span class="o">,</span> <span class="mi">3</span><span class="o">,</span> <span class="mi">0</span><span class="o">))</span> <span class="o">{</span>
+				<span class="n">xPos</span> <span class="o">+=</span> <span class="mi">3</span><span class="o">;</span>
+			<span class="o">}</span>
+		<span class="o">}</span> <span class="k">else</span> <span class="k">if</span> <span class="o">(</span><span class="n">dirX</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span> <span class="o">&amp;&amp;</span> <span class="n">dirY</span> <span class="o">==</span> <span class="mi">0</span><span class="o">)</span> <span class="o">{</span>
+			<span class="k">if</span> <span class="o">(</span><span class="n">isValidMove</span><span class="o">(</span><span class="n">location</span><span class="o">,</span> <span class="o">-</span><span class="mi">3</span><span class="o">,</span> <span class="mi">0</span><span class="o">))</span> <span class="o">{</span>
+				<span class="n">xPos</span> <span class="o">-=</span> <span class="mi">3</span><span class="o">;</span>
+			<span class="o">}</span>
+		<span class="o">}</span> <span class="k">else</span> <span class="k">if</span> <span class="o">(</span><span class="n">dirX</span> <span class="o">==</span> <span class="mi">0</span> <span class="o">&amp;&amp;</span> <span class="n">dirY</span> <span class="o">==</span> <span class="mi">1</span><span class="o">)</span> <span class="o">{</span>
+			<span class="k">if</span> <span class="o">(</span><span class="n">isValidMove</span><span class="o">(</span><span class="n">location</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="mi">3</span><span class="o">))</span> <span class="o">{</span>
+				<span class="n">yPos</span> <span class="o">+=</span> <span class="mi">3</span><span class="o">;</span>
+			<span class="o">}</span>
+		<span class="o">}</span> <span class="k">else</span> <span class="k">if</span> <span class="o">(</span><span class="n">dirX</span> <span class="o">==</span> <span class="mi">0</span> <span class="o">&amp;&amp;</span> <span class="n">dirY</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="o">)</span> <span class="o">{</span>
+			<span class="k">if</span> <span class="o">(</span><span class="n">isValidMove</span><span class="o">(</span><span class="n">location</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="o">-</span><span class="mi">3</span><span class="o">))</span> <span class="o">{</span>
+				<span class="n">yPos</span> <span class="o">-=</span> <span class="mi">3</span><span class="o">;</span>
+			<span class="o">}</span>
+		<span class="o">}</span>
+	<span class="o">}</span>
+	
+	<span class="kd">public</span> <span class="kt">int</span> <span class="nf">getImageNum</span><span class="o">()</span> <span class="o">{</span>
+		
+		<span class="kt">int</span> <span class="n">imageNum</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
+		
+		<span class="k">if</span> <span class="o">(</span><span class="n">frame</span> <span class="o">==</span> <span class="mi">2</span> <span class="o">||</span> <span class="n">dirX</span> <span class="o">==</span> <span class="mi">0</span> <span class="o">&amp;&amp;</span> <span class="n">dirY</span> <span class="o">==</span> <span class="mi">0</span><span class="o">)</span> <span class="o">{</span>
+			
+			<span class="n">imageNum</span> <span class="o">=</span> <span class="mi">8</span><span class="o">;</span>
+		<span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+			
+			<span class="k">if</span> <span class="o">(</span><span class="n">dirX</span> <span class="o">==</span> <span class="mi">1</span> <span class="o">&amp;&amp;</span> <span class="n">dirY</span> <span class="o">==</span> <span class="mi">0</span><span class="o">)</span> <span class="o">{</span>
+				<span class="n">imageNum</span> <span class="o">=</span> <span class="n">frame</span><span class="o">;</span>
+			<span class="o">}</span> <span class="k">else</span> <span class="k">if</span> <span class="o">(</span><span class="n">dirX</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span> <span class="o">&amp;&amp;</span> <span class="n">dirY</span> <span class="o">==</span> <span class="mi">0</span><span class="o">)</span> <span class="o">{</span>
+				<span class="n">imageNum</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">+</span> <span class="n">frame</span><span class="o">;</span>
+			<span class="o">}</span> <span class="k">else</span> <span class="k">if</span> <span class="o">(</span><span class="n">dirX</span> <span class="o">==</span> <span class="mi">0</span> <span class="o">&amp;&amp;</span> <span class="n">dirY</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="o">)</span> <span class="o">{</span>
+				<span class="n">imageNum</span> <span class="o">=</span> <span class="mi">4</span> <span class="o">+</span> <span class="n">frame</span><span class="o">;</span>
+			<span class="o">}</span> <span class="k">else</span> <span class="k">if</span> <span class="o">(</span><span class="n">dirX</span> <span class="o">==</span> <span class="mi">0</span> <span class="o">&amp;&amp;</span> <span class="n">dirY</span> <span class="o">==</span> <span class="mi">1</span><span class="o">)</span> <span class="o">{</span>
+				<span class="n">imageNum</span> <span class="o">=</span> <span class="mi">6</span> <span class="o">+</span> <span class="n">frame</span><span class="o">;</span>
+			<span class="o">}</span>
+		<span class="o">}</span>
+		<span class="k">return</span> <span class="n">imageNum</span><span class="o">;</span>
+	<span class="o">}</span>
+<span class="o">}</span></code></pre></figure>
+
+<p>Building the Ghost class is similar to the Pacman class with 1 addition: We have to come up with a way for the ghosts to chase the pacman.</p>
+
+<ul>
+  <li>We employ the method getDirections() that evaluates a location to the left, right, up and down of the ghost to see if there is a tile there. If not, then we know it’s a valid direction.</li>
+  <li>To make things interesting for the player, we can opt the ghost to move unpredictably with getRandDirection().</li>
+  <li>Based on the player’s position, we can instruct the ghost to a pick direction towards the player using getXDifference() and getYDifference() within calcMoves(). There’s a slight twist though since the conditional also checks for a random number. This fuzzy-like evaluation makes the game behave more like the original Pac-Man.</li>
+  <li>Note that calcMoves() logic is flipped if the ghost is edible, making him run from the player.</li>
+  <li>The moveGhost() method is a similar implementation to the Pacman version.</li>
+</ul>
+
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Ghost</span> <span class="kd">extends</span> <span class="n">GamePiece</span> <span class="o">{</span>
+	
+	<span class="kd">private</span> <span class="kt">int</span> <span class="n">speed</span> <span class="o">=</span> <span class="mi">3</span><span class="o">;</span>
+	
+	<span class="kd">private</span> <span class="kt">boolean</span> <span class="n">edible</span> <span class="o">=</span> <span class="kc">false</span><span class="o">;</span>
+	<span class="kd">private</span> <span class="kt">boolean</span> <span class="n">pathLeft</span> <span class="o">=</span> <span class="kc">false</span><span class="o">,</span> <span class="n">pathRight</span> <span class="o">=</span> <span class="kc">false</span><span class="o">,</span> <span class="n">pathDown</span> <span class="o">=</span> <span class="kc">false</span><span class="o">,</span> <span class="n">pathUp</span> <span class="o">=</span> <span class="kc">false</span><span class="o">;</span>
+	
+	<span class="kd">public</span> <span class="nf">Ghost</span><span class="o">(</span><span class="kt">int</span> <span class="n">xPos</span><span class="o">,</span> <span class="kt">int</span> <span class="n">yPos</span><span class="o">,</span> <span class="kt">int</span> <span class="n">size</span><span class="o">)</span> <span class="o">{</span>
+		<span class="kd">super</span><span class="o">(</span><span class="n">xPos</span><span class="o">,</span> <span class="n">yPos</span><span class="o">,</span> <span class="n">size</span><span class="o">);</span>
+	<span class="o">}</span>
+	
+	<span class="kd">public</span> <span class="kt">void</span> <span class="nf">getDirections</span><span class="o">()</span> <span class="o">{</span>
+		
+		<span class="n">pathLeft</span> <span class="o">=</span> <span class="kc">true</span><span class="o">;</span>
+		<span class="n">pathRight</span> <span class="o">=</span> <span class="kc">true</span><span class="o">;</span>
+		<span class="n">pathDown</span> <span class="o">=</span> <span class="kc">true</span><span class="o">;</span>
+		<span class="n">pathUp</span> <span class="o">=</span> <span class="kc">true</span><span class="o">;</span>
+
+		<span class="n">Rectangle</span> <span class="n">location</span> <span class="o">=</span> <span class="n">getBounds</span><span class="o">();</span>
+		
+		<span class="n">Rectangle</span> <span class="n">lookLeft</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Rectangle</span><span class="o">(</span><span class="n">location</span><span class="o">.</span><span class="na">x</span> <span class="o">-</span> <span class="mi">10</span><span class="o">,</span> <span class="n">location</span><span class="o">.</span><span class="na">y</span><span class="o">,</span> <span class="n">location</span><span class="o">.</span><span class="na">width</span><span class="o">,</span> <span class="n">location</span><span class="o">.</span><span class="na">height</span><span class="o">);</span>
+		<span class="n">Rectangle</span> <span class="n">lookRight</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Rectangle</span><span class="o">(</span><span class="n">location</span><span class="o">.</span><span class="na">x</span> <span class="o">+</span> <span class="mi">10</span><span class="o">,</span> <span class="n">location</span><span class="o">.</span><span class="na">y</span><span class="o">,</span> <span class="n">location</span><span class="o">.</span><span class="na">width</span><span class="o">,</span> <span class="n">location</span><span class="o">.</span><span class="na">height</span><span class="o">);</span>
+		<span class="n">Rectangle</span> <span class="n">lookDown</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Rectangle</span><span class="o">(</span><span class="n">location</span><span class="o">.</span><span class="na">x</span><span class="o">,</span> <span class="n">location</span><span class="o">.</span><span class="na">y</span> <span class="o">+</span> <span class="mi">10</span><span class="o">,</span> <span class="n">location</span><span class="o">.</span><span class="na">width</span><span class="o">,</span> <span class="n">location</span><span class="o">.</span><span class="na">height</span><span class="o">);</span>
+		<span class="n">Rectangle</span> <span class="n">lookUp</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Rectangle</span><span class="o">(</span><span class="n">location</span><span class="o">.</span><span class="na">x</span><span class="o">,</span> <span class="n">location</span><span class="o">.</span><span class="na">y</span> <span class="o">-</span> <span class="mi">10</span><span class="o">,</span> <span class="n">location</span><span class="o">.</span><span class="na">width</span><span class="o">,</span> <span class="n">location</span><span class="o">.</span><span class="na">height</span><span class="o">);</span>
+		
+		<span class="k">for</span> <span class="o">(</span><span class="n">RoundRectangle2D</span> <span class="n">rect</span> <span class="o">:</span> <span class="n">gameTiles</span><span class="o">)</span> <span class="o">{</span>
+			
+			<span class="k">if</span> <span class="o">(</span><span class="n">rect</span><span class="o">.</span><span class="na">intersects</span><span class="o">(</span><span class="n">lookLeft</span><span class="o">))</span> <span class="o">{</span>
+				<span class="n">pathLeft</span> <span class="o">=</span> <span class="kc">false</span><span class="o">;</span>
+			<span class="o">}</span>
+			
+			<span class="k">if</span> <span class="o">(</span><span class="n">rect</span><span class="o">.</span><span class="na">intersects</span><span class="o">(</span><span class="n">lookRight</span><span class="o">))</span> <span class="o">{</span>
+				<span class="n">pathRight</span> <span class="o">=</span> <span class="kc">false</span><span class="o">;</span>
+			<span class="o">}</span>
+			
+			<span class="k">if</span> <span class="o">(</span><span class="n">rect</span><span class="o">.</span><span class="na">intersects</span><span class="o">(</span><span class="n">lookDown</span><span class="o">))</span> <span class="o">{</span>
+				<span class="n">pathDown</span> <span class="o">=</span> <span class="kc">false</span><span class="o">;</span>
+			<span class="o">}</span>
+			
+			<span class="k">if</span> <span class="o">(</span><span class="n">rect</span><span class="o">.</span><span class="na">intersects</span><span class="o">(</span><span class="n">lookUp</span><span class="o">))</span> <span class="o">{</span>
+				<span class="n">pathUp</span> <span class="o">=</span> <span class="kc">false</span><span class="o">;</span>
+			<span class="o">}</span>
+		<span class="o">}</span>
+	<span class="o">}</span>
+	
+	<span class="kd">public</span> <span class="kt">void</span> <span class="nf">getRandDirection</span><span class="o">()</span> <span class="o">{</span>
+		
+		<span class="kt">int</span> <span class="n">direction</span> <span class="o">=</span> <span class="o">(</span><span class="kt">int</span><span class="o">)(</span><span class="n">Math</span><span class="o">.</span><span class="na">random</span><span class="o">()</span> <span class="o">*</span> <span class="mi">4</span> <span class="o">+</span> <span class="mi">1</span><span class="o">);</span>
+		
+		<span class="k">switch</span> <span class="o">(</span><span class="n">direction</span><span class="o">)</span> <span class="o">{</span>
+			<span class="k">case</span> <span class="mi">1</span> <span class="o">:</span> 
+				<span class="n">dirX</span> <span class="o">=</span> <span class="mi">1</span><span class="o">;</span>
+				<span class="n">dirY</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
+			<span class="k">break</span><span class="o">;</span>
+			<span class="k">case</span> <span class="mi">2</span> <span class="o">:</span> 
+				<span class="n">dirX</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="o">;</span> 
+				<span class="n">dirY</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
+			<span class="k">break</span><span class="o">;</span>
+			<span class="k">case</span> <span class="mi">3</span> <span class="o">:</span> 
+				<span class="n">dirX</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
+				<span class="n">dirY</span> <span class="o">=</span> <span class="mi">1</span><span class="o">;</span>
+			<span class="k">break</span><span class="o">;</span>
+			<span class="k">case</span> <span class="mi">4</span> <span class="o">:</span> 
+				<span class="n">dirX</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> 
+				<span class="n">dirY</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="o">;</span>
+			<span class="k">break</span><span class="o">;</span>
+		<span class="o">}</span>
+	<span class="o">}</span>
+	
+	<span class="kd">public</span> <span class="kt">void</span> <span class="nf">calcMoves</span><span class="o">()</span> <span class="o">{</span>
+		
+		<span class="kt">int</span> <span class="n">xDiff</span> <span class="o">=</span> <span class="n">getXDifference</span><span class="o">();</span>
+		<span class="kt">int</span> <span class="n">yDiff</span> <span class="o">=</span> <span class="n">getYDifference</span><span class="o">();</span>
+	
+		<span class="kt">int</span> <span class="n">rand</span> <span class="o">=</span> <span class="o">(</span><span class="kt">int</span><span class="o">)(</span><span class="n">Math</span><span class="o">.</span><span class="na">random</span><span class="o">()</span> <span class="o">*</span> <span class="mi">4</span><span class="o">)</span> <span class="o">+</span> <span class="mi">1</span><span class="o">;</span>
+		
+		<span class="k">if</span> <span class="o">(!</span><span class="n">edible</span><span class="o">)</span> <span class="o">{</span>
+			<span class="k">if</span> <span class="o">(</span><span class="n">pathLeft</span> <span class="o">&amp;&amp;</span> <span class="n">dirX</span> <span class="o">!=</span> <span class="mi">1</span> <span class="o">&amp;&amp;</span> <span class="o">(</span><span class="n">rand</span> <span class="o">==</span> <span class="mi">1</span> <span class="o">||</span> <span class="n">xDiff</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="o">))</span> <span class="o">{</span>
+				<span class="n">dirX</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="o">;</span>
+				<span class="n">dirY</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
+			<span class="o">}</span> <span class="k">else</span> <span class="k">if</span> <span class="o">(</span><span class="n">pathRight</span> <span class="o">&amp;&amp;</span> <span class="n">dirX</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span> <span class="o">&amp;&amp;</span> <span class="o">(</span><span class="n">rand</span> <span class="o">==</span> <span class="mi">2</span> <span class="o">||</span> <span class="n">xDiff</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="o">))</span> <span class="o">{</span>
+				<span class="n">dirX</span> <span class="o">=</span> <span class="mi">1</span><span class="o">;</span>
+				<span class="n">dirY</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
+			<span class="o">}</span> <span class="k">else</span> <span class="k">if</span> <span class="o">(</span><span class="n">pathDown</span> <span class="o">&amp;&amp;</span> <span class="n">dirY</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span> <span class="o">&amp;&amp;</span> <span class="o">(</span><span class="n">rand</span> <span class="o">==</span> <span class="mi">3</span> <span class="o">||</span> <span class="n">yDiff</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="o">))</span> <span class="o">{</span>
+				<span class="n">dirX</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
+				<span class="n">dirY</span> <span class="o">=</span> <span class="mi">1</span><span class="o">;</span>
+			<span class="o">}</span> <span class="k">else</span> <span class="k">if</span> <span class="o">(</span><span class="n">pathUp</span> <span class="o">&amp;&amp;</span> <span class="n">dirY</span> <span class="o">!=</span> <span class="mi">1</span> <span class="o">&amp;&amp;</span> <span class="o">(</span><span class="n">rand</span> <span class="o">==</span> <span class="mi">4</span> <span class="o">||</span> <span class="n">yDiff</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="o">))</span> <span class="o">{</span>
+				<span class="n">dirX</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
+				<span class="n">dirY</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="o">;</span>
+			<span class="o">}</span>
+		<span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+			
+			<span class="k">if</span> <span class="o">(</span><span class="n">pathLeft</span> <span class="o">&amp;&amp;</span> <span class="n">dirX</span> <span class="o">!=</span> <span class="mi">1</span> <span class="o">&amp;&amp;</span> <span class="o">(</span><span class="n">rand</span> <span class="o">==</span> <span class="mi">1</span> <span class="o">||</span> <span class="n">xDiff</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="o">))</span> <span class="o">{</span>
+				<span class="n">dirX</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="o">;</span>
+				<span class="n">dirY</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
+			<span class="o">}</span> <span class="k">else</span> <span class="k">if</span> <span class="o">(</span><span class="n">pathRight</span> <span class="o">&amp;&amp;</span> <span class="n">dirX</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span> <span class="o">&amp;&amp;</span> <span class="o">(</span><span class="n">rand</span> <span class="o">==</span> <span class="mi">2</span> <span class="o">||</span> <span class="n">xDiff</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="o">))</span> <span class="o">{</span>
+				<span class="n">dirX</span> <span class="o">=</span> <span class="mi">1</span><span class="o">;</span>
+				<span class="n">dirY</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
+			<span class="o">}</span> <span class="k">else</span> <span class="k">if</span> <span class="o">(</span><span class="n">pathDown</span> <span class="o">&amp;&amp;</span> <span class="n">dirY</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span> <span class="o">&amp;&amp;</span> <span class="o">(</span><span class="n">rand</span> <span class="o">==</span> <span class="mi">3</span> <span class="o">||</span> <span class="n">yDiff</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="o">))</span> <span class="o">{</span>
+				<span class="n">dirX</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
+				<span class="n">dirY</span> <span class="o">=</span> <span class="mi">1</span><span class="o">;</span>
+			<span class="o">}</span> <span class="k">else</span> <span class="k">if</span> <span class="o">(</span><span class="n">pathUp</span> <span class="o">&amp;&amp;</span> <span class="n">dirY</span> <span class="o">!=</span> <span class="mi">1</span> <span class="o">&amp;&amp;</span> <span class="o">(</span><span class="n">rand</span> <span class="o">==</span> <span class="mi">4</span> <span class="o">||</span> <span class="n">yDiff</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="o">))</span> <span class="o">{</span>
+				<span class="n">dirX</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
+				<span class="n">dirY</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="o">;</span>
+			<span class="o">}</span>
+		<span class="o">}</span>
+	<span class="o">}</span>
+	
+	<span class="kd">public</span> <span class="kt">void</span> <span class="nf">moveGhost</span><span class="o">()</span> <span class="o">{</span>
+		
+		<span class="n">frame</span> <span class="o">^=</span> <span class="mi">1</span><span class="o">;</span>
+		
+		<span class="n">Rectangle</span> <span class="n">location</span> <span class="o">=</span> <span class="n">getBounds</span><span class="o">();</span>
+		
+		<span class="k">if</span> <span class="o">(</span><span class="n">location</span><span class="o">.</span><span class="na">x</span> <span class="o">&lt;</span> <span class="mi">47</span><span class="o">)</span> <span class="o">{</span>
+			<span class="n">xPos</span> <span class="o">=</span> <span class="mi">447</span><span class="o">;</span>
+		<span class="o">}</span>
+		
+		<span class="k">if</span> <span class="o">(</span><span class="n">location</span><span class="o">.</span><span class="na">x</span> <span class="o">&gt;</span> <span class="mi">447</span><span class="o">)</span> <span class="o">{</span>
+			<span class="n">xPos</span> <span class="o">=</span> <span class="mi">47</span><span class="o">;</span>
+		<span class="o">}</span>
+		
+		<span class="k">if</span> <span class="o">(</span><span class="n">dirX</span> <span class="o">==</span> <span class="mi">1</span> <span class="o">&amp;&amp;</span> <span class="n">dirY</span> <span class="o">==</span> <span class="mi">0</span><span class="o">)</span> <span class="o">{</span>
+			<span class="k">if</span> <span class="o">(</span><span class="n">isValidMove</span><span class="o">(</span><span class="n">location</span><span class="o">,</span> <span class="mi">3</span><span class="o">,</span> <span class="mi">0</span><span class="o">))</span> <span class="o">{</span>
+				<span class="n">xPos</span> <span class="o">+=</span> <span class="n">speed</span><span class="o">;</span>
+			<span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+				<span class="n">getRandDirection</span><span class="o">();</span>
+			<span class="o">}</span>
+		<span class="o">}</span> <span class="k">else</span> <span class="k">if</span> <span class="o">(</span><span class="n">dirX</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span> <span class="o">&amp;&amp;</span> <span class="n">dirY</span> <span class="o">==</span> <span class="mi">0</span><span class="o">)</span> <span class="o">{</span>
+			<span class="k">if</span> <span class="o">(</span><span class="n">isValidMove</span><span class="o">(</span><span class="n">location</span><span class="o">,</span> <span class="o">-</span><span class="mi">3</span><span class="o">,</span> <span class="mi">0</span><span class="o">))</span> <span class="o">{</span>
+				<span class="n">xPos</span> <span class="o">-=</span> <span class="n">speed</span><span class="o">;</span>
+			<span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+				<span class="n">getRandDirection</span><span class="o">();</span>
+			<span class="o">}</span>
+		<span class="o">}</span> <span class="k">else</span> <span class="k">if</span> <span class="o">(</span><span class="n">dirX</span> <span class="o">==</span> <span class="mi">0</span> <span class="o">&amp;&amp;</span> <span class="n">dirY</span> <span class="o">==</span> <span class="mi">1</span><span class="o">)</span> <span class="o">{</span>
+			<span class="k">if</span> <span class="o">(</span><span class="n">isValidMove</span><span class="o">(</span><span class="n">location</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="mi">3</span><span class="o">))</span> <span class="o">{</span>
+				<span class="n">yPos</span> <span class="o">+=</span> <span class="n">speed</span><span class="o">;</span>
+			<span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+				<span class="n">getRandDirection</span><span class="o">();</span>
+			<span class="o">}</span>
+		<span class="o">}</span> <span class="k">else</span> <span class="k">if</span> <span class="o">(</span><span class="n">dirX</span> <span class="o">==</span> <span class="mi">0</span> <span class="o">&amp;&amp;</span> <span class="n">dirY</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="o">)</span> <span class="o">{</span>
+			<span class="k">if</span> <span class="o">(</span><span class="n">isValidMove</span><span class="o">(</span><span class="n">location</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="o">-</span><span class="mi">3</span><span class="o">))</span> <span class="o">{</span>
+				<span class="n">yPos</span> <span class="o">-=</span> <span class="n">speed</span><span class="o">;</span>
+			<span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+				<span class="n">getRandDirection</span><span class="o">();</span>
+			<span class="o">}</span>
+		<span class="o">}</span>
+	<span class="o">}</span>
+	
+	<span class="kd">public</span> <span class="kt">int</span> <span class="nf">getImageNum</span><span class="o">()</span> <span class="o">{</span>
+		<span class="k">return</span> <span class="n">frame</span><span class="o">;</span>
+	<span class="o">}</span>
+	
+	<span class="kd">public</span> <span class="kt">int</span> <span class="nf">getXDifference</span><span class="o">()</span> <span class="o">{</span>
+		<span class="k">return</span> <span class="k">this</span><span class="o">.</span><span class="na">xPos</span> <span class="o">-</span> <span class="n">player</span><span class="o">.</span><span class="na">xPos</span><span class="o">;</span>
+	<span class="o">}</span>
+	
+	<span class="kd">public</span> <span class="kt">int</span> <span class="nf">getYDifference</span><span class="o">()</span> <span class="o">{</span>
+		<span class="k">return</span> <span class="k">this</span><span class="o">.</span><span class="na">yPos</span> <span class="o">-</span> <span class="n">player</span><span class="o">.</span><span class="na">yPos</span><span class="o">;</span>
+	<span class="o">}</span>
+<span class="o">}</span></code></pre></figure>
+
+<p>Our gamepieces are there but not visible. To represent the pacman and ghosts, we’ll load up an image file that has 13 by 13 pixel images for each. The pacman has 2 for each direction plus 1 for when it’s mouth is closed (9 total) and the ghosts have 2 for each color (8 total). We utilize the frame variable that cycles with each tick of the game timer to select the image.</p>
+
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="kd">private</span> <span class="kt">void</span> <span class="nf">loadImages</span><span class="o">()</span> <span class="kd">throws</span> <span class="n">IOException</span>  <span class="o">{</span>
+	
+	<span class="n">BufferedImage</span> <span class="n">spriteSheet</span> <span class="o">=</span> <span class="n">ImageIO</span><span class="o">.</span><span class="na">read</span><span class="o">(</span><span class="k">new</span> <span class="n">File</span><span class="o">(</span><span class="s">"src/images/pacman.png"</span><span class="o">));</span>
+	<span class="kt">int</span> <span class="n">width</span> <span class="o">=</span> <span class="mi">13</span><span class="o">;</span>
+	<span class="kt">int</span> <span class="n">height</span> <span class="o">=</span> <span class="mi">13</span><span class="o">;</span>
+	
+	<span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">5</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
+		<span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">j</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="o">;</span> <span class="n">j</span><span class="o">++)</span> <span class="o">{</span>
+			<span class="n">pacImages</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">spriteSheet</span><span class="o">.</span><span class="na">getSubimage</span><span class="o">(</span><span class="n">j</span> <span class="o">*</span> <span class="n">width</span><span class="o">,</span> <span class="n">i</span> <span class="o">*</span> <span class="n">height</span><span class="o">,</span> <span class="n">width</span><span class="o">,</span> <span class="n">height</span><span class="o">));</span>
+		<span class="o">}</span>
+	<span class="o">}</span>
+	
+	<span class="n">spriteSheet</span> <span class="o">=</span> <span class="n">ImageIO</span><span class="o">.</span><span class="na">read</span><span class="o">(</span><span class="k">new</span> <span class="n">File</span><span class="o">(</span><span class="s">"src/images/ghosts.png"</span><span class="o">));</span>
+	<span class="n">width</span> <span class="o">=</span> <span class="mi">14</span><span class="o">;</span>
+	<span class="n">height</span> <span class="o">=</span> <span class="mi">14</span><span class="o">;</span>
+	
+	<span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">5</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
+		<span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">j</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="o">;</span> <span class="n">j</span><span class="o">++)</span> <span class="o">{</span>
+			<span class="n">ghostImages</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">spriteSheet</span><span class="o">.</span><span class="na">getSubimage</span><span class="o">(</span><span class="n">j</span> <span class="o">*</span> <span class="n">width</span><span class="o">,</span> <span class="n">i</span> <span class="o">*</span> <span class="n">height</span><span class="o">,</span> <span class="n">width</span><span class="o">,</span> <span class="n">height</span><span class="o">));</span>
+		<span class="o">}</span>
+	<span class="o">}</span>
+	<span class="n">pacLogo</span> <span class="o">=</span> <span class="n">ImageIO</span><span class="o">.</span><span class="na">read</span><span class="o">(</span><span class="k">new</span> <span class="n">File</span><span class="o">(</span><span class="s">"src/images/pac-logo.png"</span><span class="o">));</span>
+<span class="o">}</span>
+
+<span class="kd">private</span> <span class="kt">void</span> <span class="nf">drawPacman</span><span class="o">(</span><span class="n">Graphics2D</span> <span class="n">g2d</span><span class="o">)</span> <span class="o">{</span>
+	
+	<span class="n">g2d</span><span class="o">.</span><span class="na">drawImage</span><span class="o">(</span><span class="n">pacImages</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">player</span><span class="o">.</span><span class="na">getImageNum</span><span class="o">()),</span> <span class="n">player</span><span class="o">.</span><span class="na">xPos</span><span class="o">,</span> <span class="n">player</span><span class="o">.</span><span class="na">yPos</span><span class="o">,</span> <span class="kc">null</span><span class="o">);</span>
+<span class="o">}</span>
+	
+<span class="kd">private</span> <span class="kt">void</span> <span class="nf">drawGhosts</span><span class="o">(</span><span class="n">Graphics2D</span> <span class="n">g2d</span><span class="o">)</span> <span class="o">{</span>
+	
+	<span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">ghosts</span><span class="o">.</span><span class="na">length</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
+		
+		<span class="k">if</span> <span class="o">(</span><span class="n">ghosts</span><span class="o">[</span><span class="n">i</span><span class="o">].</span><span class="na">edible</span><span class="o">)</span> <span class="o">{</span>
+			<span class="n">g2d</span><span class="o">.</span><span class="na">drawImage</span><span class="o">(</span><span class="n">ghostImages</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="mi">8</span> <span class="o">+</span> <span class="n">ghosts</span><span class="o">[</span><span class="n">i</span><span class="o">].</span><span class="na">getImageNum</span><span class="o">()),</span> <span class="n">ghosts</span><span class="o">[</span><span class="n">i</span><span class="o">].</span><span class="na">xPos</span><span class="o">,</span> <span class="n">ghosts</span><span class="o">[</span><span class="n">i</span><span class="o">].</span><span class="na">yPos</span><span class="o">,</span> <span class="kc">null</span><span class="o">);</span>
+		<span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+			<span class="n">g2d</span><span class="o">.</span><span class="na">drawImage</span><span class="o">(</span><span class="n">ghostImages</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">i</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">+</span> <span class="n">ghosts</span><span class="o">[</span><span class="n">i</span><span class="o">].</span><span class="na">getImageNum</span><span class="o">()),</span> <span class="n">ghosts</span><span class="o">[</span><span class="n">i</span><span class="o">].</span><span class="na">xPos</span><span class="o">,</span> <span class="n">ghosts</span><span class="o">[</span><span class="n">i</span><span class="o">].</span><span class="na">yPos</span><span class="o">,</span> <span class="kc">null</span><span class="o">);</span>
+		<span class="o">}</span>
+	<span class="o">}</span>
+<span class="o">}</span></code></pre></figure>
+
+<p>When we fire up the game, we can move around the map and the ghosts chase our pacman. Sweet! But if the ghost catches the pacman, it passes right through. Our next task is to add a check for ghost-pacman collisions. We’ll iterate through each ghost in our list and check to see if it intersects with the pacman. If the ghost is edible, then we can eat it for some points and send it to the center of the map.</p>
+
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="kd">private</span> <span class="kt">boolean</span> <span class="nf">checkGhostPacCollision</span><span class="o">()</span> <span class="o">{</span>
+	
+	<span class="n">Rectangle</span> <span class="n">pacLoc</span> <span class="o">=</span> <span class="n">player</span><span class="o">.</span><span class="na">getBounds</span><span class="o">();</span>
+	
+	<span class="k">for</span> <span class="o">(</span><span class="n">Ghost</span> <span class="n">ghost</span> <span class="o">:</span> <span class="n">ghosts</span><span class="o">)</span> <span class="o">{</span>
+		
+		<span class="n">Rectangle</span> <span class="n">ghostLoc</span> <span class="o">=</span> <span class="n">ghost</span><span class="o">.</span><span class="na">getBounds</span><span class="o">();</span>
+		
+		<span class="k">if</span> <span class="o">(</span><span class="n">pacLoc</span><span class="o">.</span><span class="na">intersects</span><span class="o">(</span><span class="n">ghostLoc</span><span class="o">))</span> <span class="o">{</span>
+			
+			<span class="k">if</span> <span class="o">(</span><span class="n">ghost</span><span class="o">.</span><span class="na">edible</span><span class="o">)</span> <span class="o">{</span>
+				
+				<span class="n">score</span> <span class="o">+=</span> <span class="mi">200</span><span class="o">;</span>
+				<span class="n">playAudioFile</span><span class="o">(</span><span class="n">getGhost</span><span class="o">);</span>
+				<span class="n">ghost</span><span class="o">.</span><span class="na">xPos</span> <span class="o">=</span> <span class="mi">248</span><span class="o">;</span>
+				<span class="n">ghost</span><span class="o">.</span><span class="na">yPos</span> <span class="o">=</span> <span class="mi">181</span><span class="o">;</span>
+				<span class="n">ghost</span><span class="o">.</span><span class="na">speed</span> <span class="o">=</span> <span class="mi">3</span><span class="o">;</span>
+				<span class="n">ghost</span><span class="o">.</span><span class="na">edible</span> <span class="o">=</span> <span class="kc">false</span><span class="o">;</span>
+				
+			<span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+				<span class="k">return</span> <span class="kc">true</span><span class="o">;</span>
+			<span class="o">}</span>
+		<span class="o">}</span>
+	<span class="o">}</span>
+	<span class="k">return</span> <span class="kc">false</span><span class="o">;</span>
+<span class="o">}</span></code></pre></figure>
+
+<p>In the event that we get hit by a ghost, we’ve got to reset the game pieces back to their starting positions.</p>
+
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="kd">private</span> <span class="kt">void</span> <span class="nf">resetGamePieces</span><span class="o">()</span> <span class="o">{</span>
+	
+	<span class="n">player</span><span class="o">.</span><span class="na">dirX</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
+	<span class="n">player</span><span class="o">.</span><span class="na">dirY</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
+	<span class="n">player</span><span class="o">.</span><span class="na">xPos</span> <span class="o">=</span> <span class="mi">248</span><span class="o">;</span>
+	<span class="n">player</span><span class="o">.</span><span class="na">yPos</span> <span class="o">=</span> <span class="mi">218</span><span class="o">;</span>
+	
+	<span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">ghosts</span><span class="o">.</span><span class="na">length</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
+		<span class="n">ghosts</span><span class="o">[</span><span class="n">i</span><span class="o">].</span><span class="na">dirX</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
+		<span class="n">ghosts</span><span class="o">[</span><span class="n">i</span><span class="o">].</span><span class="na">dirY</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
+		<span class="n">ghosts</span><span class="o">[</span><span class="n">i</span><span class="o">].</span><span class="na">xPos</span> <span class="o">=</span> <span class="mi">238</span> <span class="o">+</span> <span class="n">i</span> <span class="o">*</span> <span class="mi">10</span><span class="o">;</span> 
+		<span class="n">ghosts</span><span class="o">[</span><span class="n">i</span><span class="o">].</span><span class="na">yPos</span> <span class="o">=</span> <span class="mi">181</span><span class="o">;</span>
+	<span class="o">}</span>
+<span class="o">}</span></code></pre></figure>
+
+<p>In the case that the player collects a power dot, we have to put the ghosts into scare mode. First we revisit a piece of code in the drawGameTiles() method:</p>
+
+<figure class="highlight"><pre><code class="language-java" data-lang="java">	<span class="o">...</span> 
+
+	<span class="k">if</span> <span class="o">(</span><span class="n">power</span><span class="o">.</span><span class="na">intersects</span><span class="o">(</span><span class="n">location</span><span class="o">))</span> <span class="o">{</span>
+		
+		<span class="n">iterator</span><span class="o">.</span><span class="na">remove</span><span class="o">();</span>
+		
+		<span class="k">if</span> <span class="o">(</span><span class="n">ghostScareTimer</span><span class="o">.</span><span class="na">isRunning</span><span class="o">())</span> <span class="o">{</span>
+			<span class="n">ghostScareTimer</span><span class="o">.</span><span class="na">restart</span><span class="o">();</span>
+		<span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+			<span class="n">ghostScareTimer</span><span class="o">.</span><span class="na">addActionListener</span><span class="o">(</span><span class="n">unscareGhosts</span><span class="o">);</span>
+			<span class="n">ghostScareTimer</span><span class="o">.</span><span class="na">start</span><span class="o">();</span>
+		<span class="o">}</span>
+
+		<span class="k">for</span> <span class="o">(</span><span class="n">Ghost</span> <span class="n">ghost</span> <span class="o">:</span> <span class="n">ghosts</span><span class="o">)</span> <span class="o">{</span>
+			<span class="n">ghost</span><span class="o">.</span><span class="na">edible</span> <span class="o">=</span> <span class="kc">true</span><span class="o">;</span>
+			<span class="n">ghost</span><span class="o">.</span><span class="na">speed</span> <span class="o">=</span> <span class="mi">2</span><span class="o">;</span>
+		<span class="o">}</span>
+	<span class="o">}</span>
+	<span class="o">...</span></code></pre></figure>
+
+<p>So if we hit the power tile, we add a listener and start a timer. For each ghost, we slow them down and set them to edible. When the timer expires, unscareGhosts triggers to set the ghosts back to their normal mode.</p>
+
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="n">ActionListener</span> <span class="n">unscareGhosts</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ActionListener</span><span class="o">()</span> <span class="o">{</span>
+	<span class="kd">public</span> <span class="kt">void</span> <span class="nf">actionPerformed</span><span class="o">(</span><span class="n">ActionEvent</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+		
+		<span class="k">for</span> <span class="o">(</span><span class="n">Ghost</span> <span class="n">ghost</span> <span class="o">:</span> <span class="n">ghosts</span><span class="o">)</span> <span class="o">{</span>
+			<span class="n">ghost</span><span class="o">.</span><span class="na">edible</span> <span class="o">=</span> <span class="kc">false</span><span class="o">;</span>
+			<span class="n">ghost</span><span class="o">.</span><span class="na">speed</span> <span class="o">=</span> <span class="mi">3</span><span class="o">;</span>
+		<span class="o">}</span>
+		<span class="n">ghostScareTimer</span><span class="o">.</span><span class="na">stop</span><span class="o">();</span>
+	<span class="o">}</span>
+<span class="o">};</span></code></pre></figure>
+
+<p>We can add score tracking by storing a high-score in a text file, retrieving it at game start and then checking to see if the player beats it. In the .txt file, the 1st line stores the player initials, the 2nd stores the score.</p>
+
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="kd">private</span> <span class="kt">void</span> <span class="nf">loadHighScore</span><span class="o">()</span> <span class="kd">throws</span> <span class="n">IOException</span> <span class="o">{</span>
+	
+	<span class="n">BufferedReader</span> <span class="n">reader</span> <span class="o">=</span> <span class="k">new</span> <span class="n">BufferedReader</span><span class="o">(</span><span class="k">new</span> <span class="n">FileReader</span><span class="o">(</span><span class="s">"src/high-score.txt"</span><span class="o">));</span>
+	
+	<span class="n">topScorer</span> <span class="o">=</span> <span class="n">reader</span><span class="o">.</span><span class="na">readLine</span><span class="o">();</span>
+	<span class="n">highScore</span> <span class="o">=</span> <span class="n">reader</span><span class="o">.</span><span class="na">readLine</span><span class="o">();</span>
+	
+	<span class="n">reader</span><span class="o">.</span><span class="na">close</span><span class="o">();</span>
+<span class="o">}</span>
+
+<span class="kd">private</span> <span class="kt">void</span> <span class="nf">setHighScore</span><span class="o">()</span> <span class="o">{</span>
+	
+	<span class="n">String</span> <span class="n">input</span> <span class="o">=</span> <span class="s">""</span><span class="o">;</span>
+	
+	<span class="k">while</span> <span class="o">(</span><span class="n">input</span><span class="o">.</span><span class="na">length</span><span class="o">()</span> <span class="o">==</span> <span class="mi">0</span><span class="o">)</span> <span class="o">{</span>
+		<span class="n">input</span> <span class="o">=</span> <span class="n">JOptionPane</span><span class="o">.</span><span class="na">showInputDialog</span><span class="o">(</span><span class="s">"New high-score! Enter your initials: "</span><span class="o">);</span>
+	<span class="o">}</span>
+	
+	<span class="n">String</span> <span class="n">initials</span> <span class="o">=</span> <span class="n">input</span><span class="o">.</span><span class="na">length</span><span class="o">()</span> <span class="o">&gt;</span> <span class="mi">3</span> <span class="o">?</span> <span class="n">input</span><span class="o">.</span><span class="na">substring</span><span class="o">(</span><span class="mi">0</span><span class="o">,</span> <span class="mi">3</span><span class="o">).</span><span class="na">toUpperCase</span><span class="o">()</span> <span class="o">:</span> <span class="n">input</span><span class="o">.</span><span class="na">toUpperCase</span><span class="o">();</span>
+	
+	<span class="n">PrintWriter</span> <span class="n">writer</span><span class="o">;</span>
+	
+	<span class="k">try</span> <span class="o">{</span>
+		<span class="n">writer</span> <span class="o">=</span> <span class="k">new</span> <span class="n">PrintWriter</span><span class="o">(</span><span class="s">"src/high-score.txt"</span><span class="o">,</span> <span class="s">"UTF-8"</span><span class="o">);</span>
+		<span class="n">writer</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">initials</span><span class="o">);</span>
+		<span class="n">writer</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">score</span><span class="o">);</span>
+		<span class="n">writer</span><span class="o">.</span><span class="na">close</span><span class="o">();</span>
+		
+	<span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">FileNotFoundException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+		<span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+	<span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">UnsupportedEncodingException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+		<span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+	<span class="o">}</span>
+<span class="o">}</span></code></pre></figure>
+
+<p>It wouldn’t be Pac-Man without some classic sounds so we’ll add the ability to play .wav audio clips. Some of our previous code included the playAudioFile() method so here’s its implementation. The sounds can be ear deafening so we dropped the volume down by 15 dBs. The line listener listens for the clip to end to close the stream.</p>
+
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="kd">private</span> <span class="kt">void</span> <span class="nf">playAudioFile</span><span class="o">(</span><span class="n">File</span> <span class="n">sourceFile</span><span class="o">)</span> <span class="o">{</span>
+	
+	<span class="k">try</span> <span class="o">{</span>
+		
+		<span class="k">if</span> <span class="o">(</span><span class="n">audioClip</span> <span class="o">==</span> <span class="kc">null</span> <span class="o">||</span> <span class="o">!</span><span class="n">audioClip</span><span class="o">.</span><span class="na">isRunning</span><span class="o">())</span> <span class="o">{</span>
+			<span class="n">audioClip</span> <span class="o">=</span> <span class="n">AudioSystem</span><span class="o">.</span><span class="na">getClip</span><span class="o">();</span>
+			<span class="n">audioClip</span><span class="o">.</span><span class="na">open</span><span class="o">(</span><span class="n">AudioSystem</span><span class="o">.</span><span class="na">getAudioInputStream</span><span class="o">(</span><span class="n">sourceFile</span><span class="o">));</span>
+			
+			<span class="n">volume</span> <span class="o">=</span> <span class="o">(</span><span class="n">FloatControl</span><span class="o">)</span> <span class="n">audioClip</span><span class="o">.</span><span class="na">getControl</span><span class="o">(</span><span class="n">FloatControl</span><span class="o">.</span><span class="na">Type</span><span class="o">.</span><span class="na">MASTER_GAIN</span><span class="o">);</span>
+		    <span class="n">volume</span><span class="o">.</span><span class="na">setValue</span><span class="o">(-</span><span class="mf">15.0f</span><span class="o">);</span>
+		    <span class="n">audioClip</span><span class="o">.</span><span class="na">addLineListener</span><span class="o">(</span><span class="k">this</span><span class="o">);</span>
+			
+			<span class="n">audioClip</span><span class="o">.</span><span class="na">start</span><span class="o">();</span>
+		<span class="o">}</span>
+		
+	<span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">LineUnavailableException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+		<span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+	<span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">IOException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+		<span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+	<span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">UnsupportedAudioFileException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+		<span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+	<span class="o">}</span>
+<span class="o">}</span>
+
+<span class="kd">public</span> <span class="kt">void</span> <span class="nf">update</span><span class="o">(</span><span class="n">LineEvent</span> <span class="n">event</span><span class="o">)</span> <span class="o">{</span>
+	
+	<span class="k">if</span> <span class="o">(</span><span class="n">event</span><span class="o">.</span><span class="na">getType</span><span class="o">()</span> <span class="o">==</span> <span class="n">LineEvent</span><span class="o">.</span><span class="na">Type</span><span class="o">.</span><span class="na">STOP</span><span class="o">)</span> <span class="o">{</span>
+		<span class="n">audioClip</span><span class="o">.</span><span class="na">close</span><span class="o">();</span>
+	<span class="o">}</span>			
+<span class="o">}</span></code></pre></figure>
+
+<p>There are a few loose ends to tie up if we win the game or if we lose and in either case, we need to reset the game tiles.</p>
+
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="kd">private</span> <span class="kt">boolean</span> <span class="nf">checkWinCond</span><span class="o">()</span> <span class="o">{</span>
+	<span class="k">return</span> <span class="n">dotTiles</span><span class="o">.</span><span class="na">isEmpty</span><span class="o">();</span>
+<span class="o">}</span>
+
+<span class="kd">private</span> <span class="kt">void</span> <span class="nf">endGame</span><span class="o">()</span> <span class="o">{</span>
+	
+	<span class="n">isRunning</span> <span class="o">=</span> <span class="kc">false</span><span class="o">;</span>
+	
+	<span class="k">if</span> <span class="o">(</span><span class="n">score</span> <span class="o">&gt;</span> <span class="n">Integer</span><span class="o">.</span><span class="na">parseInt</span><span class="o">(</span><span class="n">highScore</span><span class="o">))</span> <span class="o">{</span>
+		<span class="n">setHighScore</span><span class="o">();</span>
+	<span class="o">}</span>
+<span class="o">}</span>
+
+<span class="kd">private</span> <span class="kt">void</span> <span class="nf">resetTiles</span><span class="o">()</span> <span class="o">{</span>
+	
+	<span class="n">gameTiles</span><span class="o">.</span><span class="na">clear</span><span class="o">();</span>
+	<span class="n">dotTiles</span><span class="o">.</span><span class="na">clear</span><span class="o">();</span>
+	<span class="n">powerTiles</span><span class="o">.</span><span class="na">clear</span><span class="o">();</span>
+<span class="o">}</span></code></pre></figure>
+
+<p>Congrats! If you’re reading this you probably have a working version of the game. Hopefully it was fun and you learned something in the process. You could even enhance the game by adding randomly generated fruit to collect or make multiple levels.</p>
+
+<p>Check out the completed source code on GitHub and feel free to use the code however you’d like. Thanks for reading!</p>
+
+  </div>
+  <p class="article-date">
+    <time datetime="2016-08-03T00:00:00-07:00" itemprop="datePublished">Aug 3, 2016</time>
+    
+  </p>
+</article>
+
+      </div>
+    </main>
+    <footer class="footer">
+  <ul>
+    <li>Created by Joe McIlhargey - 2016.</li>
+    <li>Some projects inspired by Freecodecamp, Udacity, and Codecademy</li>
+  </ul>
+</footer>
+  </body>
+</html>

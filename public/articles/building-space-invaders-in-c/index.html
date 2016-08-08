@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Building Space Invaders in C++</title>
+  <meta name="description" content="As a kid, I spent many afternoons and pocketfuls of quarters at the local arcade, competing with friends and chasing high scores. Today, world records are st...">
+  <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400" rel="stylesheet">
+  <link rel="stylesheet" href="/styles/main.css">
+  <link rel="canonical" href="http://localhost:3000/articles/articles/building-space-invaders-in-c.html">
+  <link rel="alternate" type="application/rss+xml" title="Articles" href="http://localhost:3000/articles/articles/feed.xml">
+</head>
+
+  <body>
+    <svg display="none">
+	<defs>
+		<g id="svg-menu">
+		 	<path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.031C17.335,0,18,0.665,18,1.484L18,1.484z"/>
+	      	<path d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484 h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z"/>
+	      	<path d="M18,13.516C18,14.335,17.335,15,16.516,15H1.484C0.665,15,0,14.335,0,13.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.031C17.335,12.031,18,12.696,18,13.516L18,13.516z"/>
+		</g>
+		<g id="svg-github">
+			<path d="M1664 896q0 251-146.5 451.5t-378.5 277.5q-27 5-39.5-7t-12.5-30v-211q0-97-52-142 57-6 102.5-18t94-39 81-66.5 53-105 20.5-150.5q0-121-79-206 37-91-8-204-28-9-81 11t-92 44l-38 24q-93-26-192-26t-192 26q-16-11-42.5-27t-83.5-38.5-86-13.5q-44 113-7 204-79 85-79 206 0 85 20.5 150t52.5 105 80.5 67 94 39 102.5 18q-40 36-49 103-21 10-45 15t-57 5-65.5-21.5-55.5-62.5q-19-32-48.5-52t-49.5-24l-20-3q-21 0-29 4.5t-5 11.5 9 14 13 12l7 5q22 10 43.5 38t31.5 51l10 23q13 38 44 61.5t67 30 69.5 7 55.5-3.5l23-4q0 38 .5 89t.5 54q0 18-13 30t-40 7q-232-77-378.5-277.5t-146.5-451.5q0-209 103-385.5t279.5-279.5 385.5-103 385.5 103 279.5 279.5 103 385.5z"/>
+		</g>
+		<g id="svg-freecodecamp">
+			<path d="M1600 1696v64q0 13-9.5 22.5t-22.5 9.5h-1344q-13 0-22.5-9.5t-9.5-22.5v-64q0-13 9.5-22.5t22.5-9.5h1344q13 0 22.5 9.5t9.5 22.5zm-256-1056q0 78-24.5 144t-64 112.5-87.5 88-96 77.5-87.5 72-64 81.5-24.5 96.5q0 96 67 224l-4-1 1 1q-90-41-160-83t-138.5-100-113.5-122.5-72.5-150.5-27.5-184q0-78 24.5-144t64-112.5 87.5-88 96-77.5 87.5-72 64-81.5 24.5-96.5q0-94-66-224l3 1-1-1q90 41 160 83t138.5 100 113.5 122.5 72.5 150.5 27.5 184z"/>
+		</g>
+		<g id="svg-linkedin">
+			<path d="M477 625v991h-330v-991h330zm21-306q1 73-50.5 122t-135.5 49h-2q-82 0-132-49t-50-122q0-74 51.5-122.5t134.5-48.5 133 48.5 51 122.5zm1166 729v568h-329v-530q0-105-40.5-164.5t-126.5-59.5q-63 0-105.5 34.5t-63.5 85.5q-11 30-11 81v553h-329q2-399 2-647t-1-296l-1-48h329v144h-2q20-32 41-56t56.5-52 87-43.5 114.5-15.5q171 0 275 113.5t104 332.5z"/>
+		</g>
+	</defs>
+</svg>
+    <div class="header-wrapper">
+  <header class="site-header">
+    <div class="header-name">
+      <h2><a href="/">Joe McIlhargey</a></h2>
+      <small>Full Stack Developer</small>
+    </div>
+    <nav class="header-nav">
+      <ul class="nav-pages">
+        <li><a href="/">Projects</a></li>
+        <li><a href="/articles">Articles</a></li>
+        <li><a href="/about">About</a></li>
+      </ul>
+      <ul class="nav-socials">
+        <li>
+          <a class="socials-github" href="https://github.com/jmcilhargey">
+            <svg viewBox="0 0 1792 1792" xmlns="http://www.w3.org/2000/svg">
+              <use xlink:href="#svg-github"/>
+            </svg>
+          </a>
+        </li>
+        <li>
+          <a class="socials-linkedin" href="https://www.linkedin.com/in/joemcilhargey">
+            <svg viewBox="0 0 1792 1792" xmlns="http://www.w3.org/2000/svg">
+              <use xlink:href="#svg-linkedin"/>
+            </svg>
+          </a>
+        </li>
+        <li>
+          <a class="socials-freecodecamp" href="http://www.freecodecamp.com/jmcilhargey">
+            <svg viewBox="0 0 1792 1792" xmlns="http://www.w3.org/2000/svg">
+              <use xlink:href="#svg-freecodecamp"/>
+            </svg>
+          </a>
+        </li>
+      </ul>
+    </nav>
+    <button class="nav-menu" onclick="toggleDrawerMenu(this)">
+      <svg viewBox="0 0 18 15">
+        <use xlink:href="#svg-menu" />
+      </svg>
+    </button>
+  </header>
+</div>
+    <main class="site-content">
+      <div class="article-container">
+        <article class="article-entry" itemscope itemtype="http://schema.org/BlogPosting">
+  <header class="article-header">
+    
+    <img class="article-image" src="http://localhost:3000/articles/imgs/invaders.png">
+    
+    <h1 class="article-title" itemprop="name headline">Building Space Invaders in C++</h1>
+  </header>
+
+  <div class="article-content" itemprop="articleBody">
+    <p>As a kid, I spent many afternoons and pocketfuls of quarters at the local arcade, competing with friends and chasing high scores. Today, world records are still set and broken for classic games like Donkey Kong, Pac-Man, and Space Invaders. Recently, a new challenger entered the competition.</p>
+
+<p>Last year, Google exposed their neural network DeepMind to a number of classic games including Space Invaders. Without instructions, the software soon mastered (some of) the games and outmatched the best human opponents.</p>
+
+<p>In this tutorial, we’ll build a basic, functional version of Space Invaders using C++. Since we’re using C++, we won’t have a native graphical user interface (GUI) so we’ll use standard ASCII characters to depict the game and update the screen.</p>
+
+<p>If you’re not familiar with the Space Invaders gameplay, you can check out videos on YouTube to see it in action. With a good understanding of the game mechanics, we can reverse-engineer the game from scratch.</p>
+
+<p>Let’s start by mapping out the essential features of the game and then walk through the process of coding the objects (game pieces) and methods (game actions) step-by-step. It’s important to scope out the elements of the game so we understand what we’re building.</p>
+
+<ul>
+  <li><em>Map</em> - A predefined area with x and y coordinates where all game action takes place.</li>
+  <li><em>Defense bunkers</em> - Protect the player from alien hit. Destroyed if struck by a bullet.</li>
+  <li><em>Player</em> - A ship at the bottom of the screen that can move horizontally.</li>
+  <li><em>Aliens</em> - A set number of aliens that move horizontally and move down one row each time they hit a border. With each defeated alien, the group speeds up.</li>
+  <li><em>Shot</em> - Fired by the player. Can hit destroy the alien with a hit. One shot at a time allowed.</li>
+  <li><em>Win/lose/exit condition</em> - If we defeat the aliens, we win. If the aliens reach the bottom, we lose. We can also leave the game.</li>
+</ul>
+
+<p>Let’s make a basic map where the game takes place. Since we’re working in the console, that means we’ll display the 2-dimensional game area on the screen. One way to accomplish this is with an array or vector of strings. The string length represents the x dimension, while the number of strings represents the y dimension. Vectors are a good choice since we don’t need to define their size up front and vectors carry additional methods that make them easier to modify.</p>
+
+<p>To create the map, we can either generate the strings in the program or store them in an outside file. Here we create a text file although you could just as easily compute the game map in a function. A cool modification might be to create a base map and then implement a random generator to place aliens and obstacles on the map.</p>
+
+<p><img src="http://localhost:3000/articles/img/map.png" alt="Space Invaders Map" /></p>
+
+<p>With a plain text map.txt above, we can now create a file stream object to read the file line-by-line into a vector of strings.</p>
+
+<figure class="highlight"><pre><code class="language-c--" data-lang="c++"><span class="cp">#include &lt;fstream&gt;
+#include &lt;string&gt;
+#include &lt;vector&gt;
+</span>
+<span class="n">vector</span><span class="o">&lt;</span><span class="n">string</span><span class="o">&gt;</span> <span class="n">loadMap</span><span class="p">(</span><span class="n">string</span> <span class="n">myMap</span><span class="p">){</span>
+    
+    <span class="n">fstream</span> <span class="n">file</span><span class="p">;</span>
+    <span class="n">string</span> <span class="n">line</span><span class="p">;</span>
+    <span class="n">vector</span><span class="o">&lt;</span><span class="n">string</span><span class="o">&gt;</span> <span class="n">mapFile</span><span class="p">;</span>
+    
+    <span class="n">file</span><span class="p">.</span><span class="n">open</span><span class="p">(</span><span class="n">myMap</span><span class="p">,</span> <span class="n">ios</span><span class="o">::</span><span class="n">in</span><span class="p">);</span>
+    
+    <span class="k">if</span> <span class="p">(</span><span class="n">file</span><span class="p">)</span> <span class="p">{</span>
+        
+        <span class="k">while</span> <span class="p">(</span><span class="n">getline</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="n">line</span><span class="p">))</span> <span class="p">{</span>
+        
+            <span class="n">mapFile</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">line</span><span class="p">);</span>
+        <span class="p">}</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+        <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"Map not found."</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="n">file</span><span class="p">.</span><span class="n">close</span><span class="p">();</span>
+    
+    <span class="k">return</span> <span class="n">mapFile</span><span class="p">;</span>
+<span class="p">}</span></code></pre></figure>
+
+<p>Our static map tempate is now loaded into memory when our program runs, but we’ve yet to display the results on the screen. Let’s create a simple function to output our vector of strings to the screen.</p>
+
+<figure class="highlight"><pre><code class="language-c--" data-lang="c++"><span class="cp">#include &lt;iostream&gt;
+</span>
+<span class="kt">void</span> <span class="nf">updateScreen</span><span class="p">(</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">string</span><span class="o">&gt;</span> <span class="o">&amp;</span><span class="n">myMap</span><span class="p">)</span> <span class="p">{</span>
+    
+    <span class="k">for</span> <span class="p">(</span><span class="n">string</span> <span class="n">line</span> <span class="o">:</span> <span class="n">myMap</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">line</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span></code></pre></figure>
+
+<p><strong>Player</strong></p>
+
+<p>Boom! Our basic map is complete and we can run our program to see the map displays in the shell output. But how can we update our map? Right now we’re looking at a static screen without aliens and a player ship flying around.</p>
+
+<p>Since the map represents the game’s state, we know we’ll need to update the vector of strings with our game objects. What if we could insert a player ship on the map at some position x and y?</p>
+
+<p>We know the ship has a couple of properties: It’s got a coordinate in x and y that can change; it’s represented by a character; and it can move from left to right along x. A class or structure data type is helpful here to contain these properties. We’ll use a structure here since this is a lightweight implementation without the need for private members.</p>
+
+<figure class="highlight"><pre><code class="language-c--" data-lang="c++"><span class="k">struct</span> <span class="n">shipObj</span> <span class="p">{</span>
+    
+    <span class="k">const</span> <span class="kt">char</span> <span class="n">shipCh</span> <span class="o">=</span> <span class="sc">'^'</span><span class="p">;</span>
+    <span class="kt">int</span> <span class="n">x</span><span class="p">;</span>
+    <span class="kt">int</span> <span class="n">y</span><span class="p">;</span>
+    <span class="kt">void</span> <span class="n">takeStep</span><span class="p">(</span><span class="n">vector</span> <span class="o">&lt;</span><span class="n">string</span><span class="o">&gt;</span> <span class="o">&amp;</span><span class="n">myMap</span><span class="p">,</span> <span class="kt">bool</span> <span class="n">rightDir</span><span class="p">);</span>
+    
+    <span class="n">shipObj</span><span class="p">()</span> <span class="p">{</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="mi">16</span><span class="p">;</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="mi">3</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">};</span></code></pre></figure>
+
+<p>Our ship has coordinates and we even added a constructor function to initialize coordinates. With the constructor, we place our ship’s location near the map’s bottom corner to start. There’s also a definition for a takeStep method we’ll build next. This method will have to update our map, so we pass in the vector of strings by reference and also a boolean indicating whether our ship is moving to the right. This will be important when we listen for key events later on.</p>
+
+<p>If we want the ship to move right, then the rightDir is true. For the ship to move right, the space at x + 1 must be empty, so it can’t be a ‘#’ character that defines our map border. If it’s a valid move, then we can update the character at that position with our ship ‘^’ and then erase the location where the ship was before by setting that character to a space ‘ ‘.</p>
+
+<figure class="highlight"><pre><code class="language-c--" data-lang="c++"><span class="kt">void</span> <span class="n">shipObj</span><span class="o">::</span><span class="n">takeStep</span><span class="p">(</span><span class="n">vector</span> <span class="o">&lt;</span><span class="n">string</span><span class="o">&gt;</span> <span class="o">&amp;</span><span class="n">myMap</span><span class="p">,</span> <span class="kt">bool</span> <span class="n">rightDir</span><span class="p">)</span> <span class="p">{</span>
+    
+    <span class="kt">char</span> <span class="n">nextStep</span> <span class="o">=</span> <span class="n">myMap</span><span class="p">.</span><span class="n">at</span><span class="p">(</span><span class="n">x</span><span class="p">).</span><span class="n">at</span><span class="p">(</span><span class="n">y</span> <span class="o">-</span> <span class="mi">1</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">rightDir</span><span class="p">);</span>
+    
+    <span class="k">switch</span> <span class="p">(</span><span class="n">nextStep</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">case</span> <span class="sc">' '</span><span class="p">:</span>
+            <span class="n">myMap</span><span class="p">.</span><span class="n">at</span><span class="p">(</span><span class="n">x</span><span class="p">).</span><span class="n">at</span><span class="p">(</span><span class="n">y</span><span class="p">)</span> <span class="o">=</span> <span class="sc">' '</span><span class="p">;</span>
+            <span class="n">y</span> <span class="o">+=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">rightDir</span> <span class="o">-</span> <span class="mi">1</span><span class="p">;</span>
+            <span class="n">myMap</span><span class="p">.</span><span class="n">at</span><span class="p">(</span><span class="n">x</span><span class="p">).</span><span class="n">at</span><span class="p">(</span><span class="n">y</span><span class="p">)</span> <span class="o">=</span> <span class="n">shipCh</span><span class="p">;</span>
+            <span class="k">break</span><span class="p">;</span>
+    <span class="p">};</span>
+<span class="p">}</span></code></pre></figure>
+
+<p>There’s a little trick here where we write (2 * rightDir) to get the character to the left or right. Since rightDir is a boolean, the expression is mathematically equivalent either 1 (true) or 0 (false).</p>
+
+<p>Let’s check out our ship in action! So if we start up our program we’ll see the ship’s initial position. Okay cool, but nothing is moving. Ah, we’re missing a couple of pieces. We can’t trigger our takeStep function to move the ship and we don’t have a way to update the screen with the changes to our map.</p>
+
+<p>For the program to take input, a function is used to listen for keypress events. I’m on a Mac with Terminal, so we’re using Carbon.framework with the Quartz event CGEventSourceKeyState. This is different on a PC with Command Prompt, where instead we can implement the GetAsyncKeyState function directly.</p>
+
+<p>For the program to refresh, we’ll first initiate the game loop using a do-while loop that will keep going until some condition is met. If statements corresponding will listen for left and right arrow key input to call takeStep and the esc key will exit the game.</p>
+
+<p>We can set rate of execution inside our do-while loop using the sleep_for function to block the current thread for a period of time. Each time the do-while loop is run, we call the updateScreen method to show our map.</p>
+
+<p>Finally, with each iteration, we place the cursor position back to 0, 0 in the console so that map output will overwrite itself with each iteration. By re-printing the map in place every 100 ms, we’re mimicking movement at a frame rate of 10 per second.</p>
+
+<figure class="highlight"><pre><code class="language-c--" data-lang="c++"><span class="cp">#include &lt;thread&gt;
+#include &lt;chrono&gt;
+#include &lt;Carbon/Carbon.h&gt;
+#include &lt;ncurses.h&gt;
+</span>
+<span class="kt">void</span> <span class="nf">gotoxy</span><span class="p">(</span><span class="kt">int</span> <span class="n">x</span><span class="p">,</span> <span class="kt">int</span> <span class="n">y</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">"%c[%d;%df"</span><span class="p">,</span><span class="mh">0x1B</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">x</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+    
+    <span class="kt">int</span> <span class="n">speed</span> <span class="o">=</span> <span class="mi">100</span><span class="p">;</span>
+    <span class="kt">bool</span> <span class="n">game_running</span> <span class="o">=</span> <span class="nb">true</span><span class="p">;</span>
+    <span class="n">vector</span><span class="o">&lt;</span><span class="n">string</span><span class="o">&gt;</span> <span class="n">gameMap</span><span class="p">;</span>
+    <span class="n">shipObj</span> <span class="n">player</span><span class="p">;</span>
+    
+    <span class="c1">// Using ncurses, clear the screen and refresh
+</span>    <span class="n">initscr</span><span class="p">();</span>
+    <span class="n">refresh</span><span class="p">();</span>
+    
+    <span class="k">do</span> <span class="p">{</span>
+
+        <span class="c1">// Reset the cursor position
+</span>        <span class="n">gotoxy</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+        
+        <span class="c1">// Block the thread to simulate a frame rate
+</span>        <span class="n">this_thread</span><span class="o">::</span><span class="n">sleep_for</span><span class="p">(</span><span class="n">chrono</span><span class="o">::</span><span class="n">milliseconds</span><span class="p">(</span><span class="n">speed</span><span class="p">));</span>
+
+        <span class="n">updateScreen</span><span class="p">(</span><span class="n">gameMap</span><span class="p">);</span>
+        
+        <span class="n">gameMap</span><span class="p">.</span><span class="n">at</span><span class="p">(</span><span class="n">player</span><span class="p">.</span><span class="n">x</span><span class="p">).</span><span class="n">at</span><span class="p">(</span><span class="n">player</span><span class="p">.</span><span class="n">y</span><span class="p">)</span> <span class="o">=</span> <span class="n">player</span><span class="p">.</span><span class="n">shipCh</span><span class="p">;</span>
+        
+        <span class="k">if</span> <span class="p">(</span><span class="n">CGEventSourceKeyState</span><span class="p">(</span><span class="n">kCGEventSourceStateCombinedSessionState</span><span class="p">,</span> 
+            <span class="n">kVK_LeftArrow</span><span class="p">))</span> <span class="p">{</span>
+
+            <span class="n">player</span><span class="p">.</span><span class="n">takeStep</span><span class="p">(</span><span class="n">gameMap</span><span class="p">,</span> <span class="nb">false</span><span class="p">);</span>
+        <span class="p">}</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">CGEventSourceKeyState</span><span class="p">(</span><span class="n">kCGEventSourceStateCombinedSessionState</span><span class="p">,</span> 
+            <span class="n">kVK_RightArrow</span><span class="p">))</span> <span class="p">{</span>
+            
+            <span class="n">player</span><span class="p">.</span><span class="n">takeStep</span><span class="p">(</span><span class="n">gameMap</span><span class="p">,</span> <span class="nb">true</span><span class="p">);</span>
+        <span class="p">}</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">CGEventSourceKeyState</span><span class="p">(</span><span class="n">kCGEventSourceStateCombinedSessionState</span><span class="p">,</span> 
+            <span class="n">kVK_Escape</span><span class="p">)){</span>
+            
+            <span class="n">game_running</span> <span class="o">=</span> <span class="nb">false</span><span class="p">;</span>
+        <span class="p">}</span>
+        
+    <span class="p">}</span> <span class="k">while</span> <span class="p">(</span><span class="n">game_running</span><span class="p">);</span>
+    
+    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span></code></pre></figure>
+
+<p>Our next task is to add our foe, the alien invaders. We can follow the same pattern as with the ship where we use a struct to store the alien properties and methods. Aliens can get vaporized by our player, so we’ll add a property and method for that.</p>
+
+<figure class="highlight"><pre><code class="language-c--" data-lang="c++"><span class="k">const</span> <span class="kt">int</span> <span class="n">INIT_INVADERS</span> <span class="o">=</span> <span class="mi">8</span><span class="p">;</span>
+
+<span class="k">struct</span> <span class="n">invObj</span> <span class="p">{</span>
+    
+    <span class="k">const</span> <span class="kt">char</span> <span class="n">alien</span> <span class="o">=</span> <span class="sc">'A'</span><span class="p">;</span>
+    <span class="kt">bool</span> <span class="n">alive</span> <span class="o">=</span> <span class="nb">true</span><span class="p">;</span>
+    <span class="kt">int</span> <span class="n">x</span><span class="p">;</span>
+    <span class="kt">int</span> <span class="n">y</span><span class="p">;</span>
+    <span class="kt">bool</span> <span class="n">moveRight</span> <span class="o">=</span> <span class="nb">true</span><span class="p">;</span>
+    
+    <span class="n">invObj</span><span class="p">(</span><span class="kt">int</span> <span class="n">xVal</span><span class="p">,</span> <span class="kt">int</span> <span class="n">yVal</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">xVal</span><span class="p">;</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="n">yVal</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="kt">void</span> <span class="n">kill</span><span class="p">()</span> <span class="p">{</span>
+        <span class="n">alive</span> <span class="o">=</span> <span class="nb">false</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">};</span></code></pre></figure>
+
+<p>Going back to the game mechanics, the aliens move right until they hit a border and then to down and move left until they hit a border and so on. Just like the player, we can check to see what the character is to the right or left of the invaders. If it’s a space, we move over. If it’s a border ‘#’, then we move down a row and reverse directions.</p>
+
+<figure class="highlight"><pre><code class="language-c--" data-lang="c++"><span class="kt">void</span> <span class="nf">moveInvaders</span><span class="p">(</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">string</span><span class="o">&gt;</span> <span class="o">&amp;</span><span class="n">myMap</span><span class="p">,</span> <span class="n">vector</span><span class="o">&lt;</span><span class="n">invObj</span><span class="o">&gt;</span> <span class="o">&amp;</span><span class="n">invaders</span><span class="p">)</span> <span class="p">{</span>
+    
+    <span class="kt">char</span> <span class="n">nextStep</span> <span class="o">=</span> <span class="n">myMap</span><span class="p">.</span><span class="n">at</span><span class="p">(</span><span class="n">invaders</span><span class="p">.</span><span class="n">at</span><span class="p">((</span><span class="n">invaders</span><span class="p">.</span><span class="n">size</span><span class="p">()</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> 
+    <span class="n">invaders</span><span class="p">.</span><span class="n">at</span><span class="p">(</span><span class="mi">0</span><span class="p">).</span><span class="n">moveRight</span><span class="p">).</span><span class="n">x</span><span class="p">).</span><span class="n">at</span><span class="p">(</span><span class="n">invaders</span><span class="p">.</span><span class="n">at</span><span class="p">((</span><span class="n">invaders</span><span class="p">.</span><span class="n">size</span><span class="p">()</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> 
+    <span class="n">invaders</span><span class="p">.</span><span class="n">at</span><span class="p">(</span><span class="mi">0</span><span class="p">).</span><span class="n">moveRight</span><span class="p">).</span><span class="n">y</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">invaders</span><span class="p">.</span><span class="n">at</span><span class="p">(</span><span class="mi">0</span><span class="p">).</span><span class="n">moveRight</span> <span class="o">-</span> <span class="mi">1</span><span class="p">);</span>
+    
+    <span class="k">switch</span> <span class="p">(</span><span class="n">nextStep</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">case</span> <span class="sc">'#'</span>  <span class="p">:</span>
+            <span class="k">for</span> <span class="p">(</span><span class="n">invObj</span> <span class="o">&amp;</span><span class="n">invader</span> <span class="o">:</span> <span class="n">invaders</span><span class="p">)</span> <span class="p">{</span>
+                <span class="n">invader</span><span class="p">.</span><span class="n">moveRight</span> <span class="o">=</span> <span class="o">!</span><span class="n">invader</span><span class="p">.</span><span class="n">moveRight</span><span class="p">;</span>
+                <span class="n">myMap</span><span class="p">.</span><span class="n">at</span><span class="p">(</span><span class="n">invader</span><span class="p">.</span><span class="n">x</span><span class="p">).</span><span class="n">at</span><span class="p">(</span><span class="n">invader</span><span class="p">.</span><span class="n">y</span><span class="p">)</span> <span class="o">=</span> <span class="sc">' '</span><span class="p">;</span>
+                <span class="n">invader</span><span class="p">.</span><span class="n">x</span><span class="o">++</span><span class="p">;</span>
+            <span class="p">}</span>
+            <span class="k">break</span><span class="p">;</span>
+        <span class="k">default</span> <span class="o">:</span>
+            <span class="k">for</span> <span class="p">(</span><span class="n">invObj</span> <span class="o">&amp;</span><span class="n">invader</span> <span class="o">:</span> <span class="n">invaders</span><span class="p">)</span> <span class="p">{</span>
+                <span class="n">invader</span><span class="p">.</span><span class="n">y</span> <span class="o">=</span> <span class="n">invader</span><span class="p">.</span><span class="n">y</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="n">invader</span><span class="p">.</span><span class="n">moveRight</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">;</span>
+            <span class="p">}</span>
+            <span class="n">myMap</span><span class="p">.</span><span class="n">at</span><span class="p">(</span><span class="n">invaders</span><span class="p">.</span><span class="n">at</span><span class="p">((</span><span class="n">invaders</span><span class="p">.</span><span class="n">size</span><span class="p">()</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> 
+            <span class="o">!</span><span class="n">invaders</span><span class="p">.</span><span class="n">at</span><span class="p">(</span><span class="mi">0</span><span class="p">).</span><span class="n">moveRight</span><span class="p">).</span><span class="n">x</span><span class="p">).</span><span class="n">at</span><span class="p">(</span><span class="n">invaders</span><span class="p">.</span><span class="n">at</span><span class="p">((</span><span class="n">invaders</span><span class="p">.</span><span class="n">size</span><span class="p">()</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> 
+            <span class="o">!</span><span class="n">invaders</span><span class="p">.</span><span class="n">at</span><span class="p">(</span><span class="mi">0</span><span class="p">).</span><span class="n">moveRight</span><span class="p">).</span><span class="n">y</span> <span class="o">-</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">invaders</span><span class="p">.</span><span class="n">at</span><span class="p">(</span><span class="mi">0</span><span class="p">).</span><span class="n">moveRight</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">=</span> <span class="sc">' '</span><span class="p">;</span>
+            <span class="k">break</span><span class="p">;</span>
+    <span class="p">};</span>
+
+    <span class="k">for</span> <span class="p">(</span><span class="n">invObj</span> <span class="o">&amp;</span><span class="n">invader</span> <span class="o">:</span> <span class="n">invaders</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">invader</span><span class="p">.</span><span class="n">alive</span><span class="p">)</span> <span class="p">{</span>
+            <span class="n">myMap</span><span class="p">.</span><span class="n">at</span><span class="p">(</span><span class="n">invader</span><span class="p">.</span><span class="n">x</span><span class="p">).</span><span class="n">at</span><span class="p">(</span><span class="n">invader</span><span class="p">.</span><span class="n">y</span><span class="p">)</span> <span class="o">=</span> <span class="n">invader</span><span class="p">.</span><span class="n">alien</span><span class="p">;</span>
+        <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+            <span class="n">myMap</span><span class="p">.</span><span class="n">at</span><span class="p">(</span><span class="n">invader</span><span class="p">.</span><span class="n">x</span><span class="p">).</span><span class="n">at</span><span class="p">(</span><span class="n">invader</span><span class="p">.</span><span class="n">y</span><span class="p">)</span> <span class="o">=</span> <span class="sc">' '</span><span class="p">;</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span></code></pre></figure>
+
+<p>Now when the game starts, we’ll have to create our alien objects so let’s move that and loading the map into an init function so we can keep our main program compact.</p>
+
+<figure class="highlight"><pre><code class="language-c--" data-lang="c++"><span class="kt">void</span> <span class="n">init</span><span class="p">(</span><span class="n">vector</span> <span class="o">&lt;</span><span class="n">string</span><span class="o">&gt;</span> <span class="o">&amp;</span><span class="n">gameMap</span><span class="p">,</span> <span class="n">vector</span><span class="o">&lt;</span><span class="n">invObj</span><span class="o">&gt;</span> <span class="o">&amp;</span><span class="n">invaders</span><span class="p">){</span>
+    
+    <span class="n">string</span> <span class="n">mapName</span><span class="p">;</span>
+    
+    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">INIT_INVADERS</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+        
+        <span class="n">invObj</span> <span class="n">invader</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">);</span>
+        <span class="n">invaders</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">invader</span><span class="p">);</span>
+    <span class="p">}</span>
+    
+    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"Enter file path to the map: "</span><span class="p">;</span>
+    <span class="n">getline</span><span class="p">(</span><span class="n">cin</span><span class="p">,</span> <span class="n">mapPath</span><span class="p">);</span>
+
+    <span class="n">gameMap</span> <span class="o">=</span> <span class="n">loadMap</span><span class="p">(</span><span class="n">mapPath</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kt">int</span> <span class="n">main</span><span class="p">()</span> <span class="p">{</span>
+    
+    <span class="kt">int</span> <span class="n">speed</span> <span class="o">=</span> <span class="mi">100</span><span class="p">;</span>
+    <span class="kt">bool</span> <span class="n">game_running</span> <span class="o">=</span> <span class="nb">true</span><span class="p">;</span>
+    <span class="n">vector</span><span class="o">&lt;</span><span class="n">string</span><span class="o">&gt;</span> <span class="n">gameMap</span><span class="p">;</span>
+    <span class="n">vector</span><span class="o">&lt;</span><span class="n">invObj</span><span class="o">&gt;</span> <span class="n">invaders</span><span class="p">;</span>
+    <span class="n">shipObj</span> <span class="n">player</span><span class="p">;</span>
+    
+    <span class="n">init</span><span class="p">(</span><span class="n">gameMap</span><span class="p">,</span> <span class="n">invaders</span><span class="p">);</span>
+
+    <span class="p">...</span>
+    <span class="p">...</span>
+
+    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span></code></pre></figure>
+
+<p>Looking back at our list, it looks like we’re almost done! The last item for us to build is the player shot. We can think of this just like the other objects except that it travels vertically in the y direction from the location of the player’s ship until it hits something, either a border ‘#’, a bunker ‘x’, or an alien ‘A’.</p>
+
+<figure class="highlight"><pre><code class="language-c--" data-lang="c++"><span class="k">struct</span> <span class="n">shotObj</span> <span class="p">{</span>
+    <span class="k">const</span> <span class="kt">char</span> <span class="n">shotCh</span> <span class="o">=</span> <span class="sc">'!'</span><span class="p">;</span>
+    <span class="kt">int</span> <span class="n">x</span><span class="p">;</span>
+    <span class="kt">int</span> <span class="n">y</span><span class="p">;</span>
+    <span class="kt">bool</span> <span class="n">currShot</span> <span class="o">=</span> <span class="nb">false</span><span class="p">;</span>
+    <span class="kt">void</span> <span class="n">takeShot</span><span class="p">(</span><span class="n">vector</span> <span class="o">&lt;</span><span class="n">string</span><span class="o">&gt;</span> <span class="o">&amp;</span><span class="n">myMap</span><span class="p">,</span> <span class="k">const</span> <span class="n">shipObj</span> <span class="o">&amp;</span><span class="n">player</span><span class="p">,</span> <span class="n">vector</span><span class="o">&lt;</span><span class="n">invObj</span><span class="o">&gt;</span> <span class="o">&amp;</span><span class="n">invaders</span><span class="p">,</span> <span class="kt">int</span> <span class="o">&amp;</span><span class="n">score</span><span class="p">,</span> <span class="kt">bool</span> <span class="n">fire</span><span class="p">);</span>
+<span class="p">};</span></code></pre></figure>
+
+<p>For the takeShot method, we’ll add extra actions if we hit an invader ‘A’ where we increment a score variable and call the invader’s kill method to remove it from the map.</p>
+
+<figure class="highlight"><pre><code class="language-c--" data-lang="c++"><span class="kt">void</span> <span class="n">shotObj</span><span class="o">::</span><span class="n">takeShot</span><span class="p">(</span><span class="n">vector</span> <span class="o">&lt;</span><span class="n">string</span><span class="o">&gt;</span> <span class="o">&amp;</span><span class="n">myMap</span><span class="p">,</span> <span class="k">const</span> <span class="n">shipObj</span> <span class="o">&amp;</span><span class="n">player</span><span class="p">,</span> <span class="n">vector</span><span class="o">&lt;</span><span class="n">invObj</span><span class="o">&gt;</span> <span class="o">&amp;</span><span class="n">invaders</span><span class="p">,</span> <span class="kt">int</span> <span class="o">&amp;</span><span class="n">score</span><span class="p">,</span> <span class="kt">bool</span> <span class="n">fire</span><span class="p">)</span> <span class="p">{</span>
+    
+    <span class="k">if</span> <span class="p">(</span><span class="n">fire</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="n">currShot</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">currShot</span> <span class="o">=</span> <span class="nb">true</span><span class="p">;</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">player</span><span class="p">.</span><span class="n">x</span> <span class="o">-</span> <span class="mi">1</span><span class="p">;</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="n">player</span><span class="p">.</span><span class="n">y</span><span class="p">;</span>
+    <span class="p">}</span>
+    
+    <span class="k">if</span> <span class="p">(</span><span class="n">currShot</span><span class="p">)</span> <span class="p">{</span>
+        
+        <span class="kt">char</span> <span class="n">nextStep</span> <span class="o">=</span> <span class="n">myMap</span><span class="p">.</span><span class="n">at</span><span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="mi">1</span><span class="p">).</span><span class="n">at</span><span class="p">(</span><span class="n">y</span><span class="p">);</span>
+        
+        <span class="n">myMap</span><span class="p">.</span><span class="n">at</span><span class="p">(</span><span class="n">x</span><span class="p">).</span><span class="n">at</span><span class="p">(</span><span class="n">y</span><span class="p">)</span> <span class="o">=</span> <span class="sc">' '</span><span class="p">;</span>
+        
+        <span class="k">switch</span> <span class="p">(</span><span class="n">nextStep</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">case</span> <span class="sc">' '</span><span class="p">:</span>
+                <span class="n">x</span><span class="o">--</span><span class="p">;</span>
+                <span class="n">myMap</span><span class="p">.</span><span class="n">at</span><span class="p">(</span><span class="n">x</span><span class="p">).</span><span class="n">at</span><span class="p">(</span><span class="n">y</span><span class="p">)</span> <span class="o">=</span> <span class="n">shotCh</span><span class="p">;</span>
+            <span class="k">break</span><span class="p">;</span>
+        <span class="k">case</span> <span class="sc">'#'</span><span class="p">:</span>
+                <span class="n">currShot</span> <span class="o">=</span> <span class="nb">false</span><span class="p">;</span>
+            <span class="k">break</span><span class="p">;</span>
+        <span class="k">case</span> <span class="sc">'x'</span><span class="p">:</span>
+                <span class="n">myMap</span><span class="p">.</span><span class="n">at</span><span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="mi">1</span><span class="p">).</span><span class="n">at</span><span class="p">(</span><span class="n">y</span><span class="p">)</span> <span class="o">=</span> <span class="sc">' '</span><span class="p">;</span>
+                <span class="n">currShot</span> <span class="o">=</span> <span class="nb">false</span><span class="p">;</span>
+            <span class="k">break</span><span class="p">;</span>
+        <span class="k">case</span> <span class="sc">'A'</span><span class="p">:</span>
+                <span class="k">for</span> <span class="p">(</span><span class="n">invObj</span> <span class="o">&amp;</span><span class="n">invader</span> <span class="o">:</span> <span class="n">invaders</span><span class="p">)</span> <span class="p">{</span>
+                    <span class="k">if</span> <span class="p">(</span><span class="n">invader</span><span class="p">.</span><span class="n">y</span> <span class="o">==</span> <span class="n">y</span><span class="p">)</span> <span class="p">{</span>
+                        <span class="n">invader</span><span class="p">.</span><span class="n">kill</span><span class="p">();</span>
+                    <span class="p">}</span>
+                <span class="p">}</span>
+                <span class="n">score</span><span class="o">++</span><span class="p">;</span>
+                <span class="n">currShot</span> <span class="o">=</span> <span class="nb">false</span><span class="p">;</span>
+            <span class="k">break</span><span class="p">;</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span></code></pre></figure>
+
+<p>There can only be 1 shot at a time, so if currShot is false then we set the starting position to the ship’s location. If a shot is already fired, then we calculate it’s next position and run that character through the switch statement.</p>
+
+<p>As a last step, the spacebar is added as a condition to call the takeShot method. The up and down arrow also allow us to module the game speed. The score is displayed and the exit condition updated if all the invaders are killed.</p>
+
+<figure class="highlight"><pre><code class="language-c--" data-lang="c++"><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+    
+    <span class="kt">int</span> <span class="n">speed</span> <span class="o">=</span> <span class="mi">100</span><span class="p">;</span>
+    <span class="kt">int</span> <span class="n">score</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="kt">bool</span> <span class="n">game_running</span> <span class="o">=</span> <span class="nb">true</span><span class="p">;</span>
+    <span class="n">vector</span><span class="o">&lt;</span><span class="n">string</span><span class="o">&gt;</span> <span class="n">gameMap</span><span class="p">;</span>
+    <span class="n">vector</span><span class="o">&lt;</span><span class="n">invObj</span><span class="o">&gt;</span> <span class="n">invaders</span><span class="p">;</span>
+    <span class="n">shipObj</span> <span class="n">player</span><span class="p">;</span>
+    <span class="n">shotObj</span> <span class="n">shot</span><span class="p">;</span>
+    
+    <span class="n">init</span><span class="p">(</span><span class="n">gameMap</span><span class="p">,</span> <span class="n">invaders</span><span class="p">);</span>
+
+    <span class="n">initscr</span><span class="p">();</span>
+    <span class="n">refresh</span><span class="p">();</span>
+    
+    <span class="k">do</span> <span class="p">{</span>
+
+        <span class="n">gotoxy</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+        
+        <span class="n">this_thread</span><span class="o">::</span><span class="n">sleep_for</span><span class="p">(</span><span class="n">chrono</span><span class="o">::</span><span class="n">milliseconds</span><span class="p">(</span><span class="n">speed</span><span class="p">));</span>
+        
+        <span class="n">moveInvaders</span><span class="p">(</span><span class="n">gameMap</span><span class="p">,</span> <span class="n">invaders</span><span class="p">);</span>
+        <span class="n">shot</span><span class="p">.</span><span class="n">takeShot</span><span class="p">(</span><span class="n">gameMap</span><span class="p">,</span> <span class="n">player</span><span class="p">,</span> <span class="n">invaders</span><span class="p">,</span> <span class="n">score</span><span class="p">,</span> <span class="nb">false</span><span class="p">);</span>
+        <span class="n">updateScreen</span><span class="p">(</span><span class="n">gameMap</span><span class="p">);</span>
+        
+        <span class="n">gameMap</span><span class="p">.</span><span class="n">at</span><span class="p">(</span><span class="n">pac</span><span class="p">.</span><span class="n">x</span><span class="p">).</span><span class="n">at</span><span class="p">(</span><span class="n">pac</span><span class="p">.</span><span class="n">y</span><span class="p">)</span> <span class="o">=</span> <span class="n">pac</span><span class="p">.</span><span class="n">pacCh</span><span class="p">;</span>
+        
+        <span class="k">if</span> <span class="p">(</span><span class="n">CGEventSourceKeyState</span><span class="p">(</span><span class="n">kCGEventSourceStateCombinedSessionState</span><span class="p">,</span> 
+            <span class="n">kVK_LeftArrow</span><span class="p">))</span> <span class="p">{</span>
+
+            <span class="n">player</span><span class="p">.</span><span class="n">takeStep</span><span class="p">(</span><span class="n">gameMap</span><span class="p">,</span> <span class="nb">false</span><span class="p">);</span>
+        <span class="p">}</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">CGEventSourceKeyState</span><span class="p">(</span><span class="n">kCGEventSourceStateCombinedSessionState</span><span class="p">,</span> 
+            <span class="n">kVK_RightArrow</span><span class="p">))</span> <span class="p">{</span>
+            
+            <span class="n">player</span><span class="p">.</span><span class="n">takeStep</span><span class="p">(</span><span class="n">gameMap</span><span class="p">,</span> <span class="nb">true</span><span class="p">);</span>
+        <span class="p">}</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">CGEventSourceKeyState</span><span class="p">(</span><span class="n">kCGEventSourceStateCombinedSessionState</span><span class="p">,</span> 
+            <span class="n">kVK_Space</span><span class="p">))</span> <span class="p">{</span>
+            
+           <span class="n">shot</span><span class="p">.</span><span class="n">takeShot</span><span class="p">(</span><span class="n">gameMap</span><span class="p">,</span> <span class="n">player</span><span class="p">,</span> <span class="n">invaders</span><span class="p">,</span> <span class="n">score</span><span class="p">,</span> <span class="nb">true</span><span class="p">);</span>
+        <span class="p">}</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">CGEventSourceKeyState</span><span class="p">(</span><span class="n">kCGEventSourceStateCombinedSessionState</span><span class="p">,</span> 
+            <span class="n">kVK_DownArrow</span><span class="p">))</span> <span class="p">{</span>
+    
+            <span class="n">speed</span> <span class="o">+=</span> <span class="mi">10</span><span class="p">;</span>
+        <span class="p">}</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">CGEventSourceKeyState</span><span class="p">(</span><span class="n">kCGEventSourceStateCombinedSessionState</span><span class="p">,</span> 
+            <span class="n">kVK_UpArrow</span><span class="p">))</span> <span class="p">{</span>
+            
+            <span class="n">speed</span> <span class="o">-=</span> <span class="mi">10</span><span class="p">;</span>
+        <span class="p">}</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">CGEventSourceKeyState</span><span class="p">(</span><span class="n">kCGEventSourceStateCombinedSessionState</span><span class="p">,</span> 
+            <span class="n">kVK_Escape</span><span class="p">)){</span>
+            
+            <span class="n">game_running</span> <span class="o">=</span> <span class="nb">false</span><span class="p">;</span>
+        <span class="p">}</span>
+        
+        <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"Current score: "</span> <span class="o">&lt;&lt;</span> <span class="n">score</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+    
+    <span class="p">}</span> <span class="k">while</span> <span class="p">(</span><span class="n">game_running</span> <span class="o">&amp;&amp;</span> <span class="n">score</span> <span class="o">!=</span> <span class="n">INIT_INVADERS</span><span class="p">);</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="n">score</span> <span class="o">==</span> <span class="n">INIT_INVADERS</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"</span><span class="se">\n\n</span><span class="s">YOU WIN!"</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span></code></pre></figure>
+
+<p><img src="http://localhost:3000/articles/imgs/gameplay.png" alt="Space Invaders Gameplay" /></p>
+
+<p>Congrats, we’ve built a complete and functional version of Space Invaders! We kept our code modular and efficient so it’s easy to update and enhance. With a bit more work, we could improve the game by adding levels and score keeping. You can check out the completed code on <a href="https://github.com/jmcilhargey/space-invaders/blob/master/main.cpp">GitHub</a>.</p>
+
+  </div>
+  <p class="article-date">
+    <time datetime="2016-07-26T00:00:00-07:00" itemprop="datePublished">Jul 26, 2016</time>
+    
+  </p>
+</article>
+
+      </div>
+    </main>
+    <footer class="footer">
+  <ul>
+    <li>Created by Joe McIlhargey - 2016.</li>
+    <li>Some projects inspired by Freecodecamp, Udacity, and Codecademy</li>
+  </ul>
+</footer>
+  </body>
+</html>
