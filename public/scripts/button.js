@@ -1,6 +1,8 @@
 "use strict";
 
-function toggleDrawerMenu(button) {
+function toggleDrawerMenu(button, event) {
+
+	event.preventDefault();
 
 	var navDrawer = document.getElementsByClassName("header-nav")[0];
 
