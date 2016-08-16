@@ -1,6 +1,6 @@
 "use strict";
 
 angular.module("portfolioApp")
-	.factory("dataCache", ["$cacheFactory", function($cacheFactory) {
+	.factory("dataCache", function($cacheFactory) {
 		return $cacheFactory("projectData")
-	}]);
+	});

@@ -8,9 +8,9 @@
   <title>Building Space Invaders in C++</title>
   <meta name="description" content="As a kid, I spent many afternoons and pocketfuls of quarters at the local arcade, competing with friends and chasing high scores. Today, world records are st...">
   <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400" rel="stylesheet">
-  <link rel="stylesheet" href="../../styles/main.min.css">
-  <link rel="canonical" href="http://joemcilhargey.com/articles/building-space-invaders-in-c.html">
-  <link rel="alternate" type="application/rss+xml" title="Articles" href="http://joemcilhargey.com/articles/feed.xml">
+  <link rel="stylesheet" href="/styles/main.css">
+  <link rel="canonical" href="http://localhost:3000/articles/articles/building-space-invaders-in-c.html">
+  <link rel="alternate" type="application/rss+xml" title="Articles" href="http://localhost:3000/articles/articles/feed.xml">
 </head>
 
   <body>
@@ -68,7 +68,7 @@
         </li>
       </ul>
     </nav>
-    <button class="nav-menu" onclick="toggleDrawerMenu(this,event)" ontouchstart="toggleDrawerMenu(this,event)">
+    <button class="nav-menu" onclick="toggleDrawerMenu(this, event)" ontouchstart="toggleDrawerMenu(this, event)">
       <svg viewBox="0 0 18 15">
         <use xlink:href="#svg-menu" />
       </svg>
@@ -80,7 +80,7 @@
         <article class="article-entry" itemscope itemtype="http://schema.org/BlogPosting">
   <header class="article-header">
     
-    <img class="article-image" src="../imgs/invaders.png">
+    <img class="article-image" src="http://localhost:3000/articles/imgs/invaders.png">
     
     <h1 class="article-title" itemprop="name headline">Building Space Invaders in C++</h1>
   </header>
@@ -109,7 +109,7 @@
 
 <p>To create the map, we can either generate the strings in the program or store them in an outside file. Here we create a text file although you could just as easily compute the game map in a function. A cool modification might be to create a base map and then implement a random generator to place aliens and obstacles on the map.</p>
 
-<p><img src="../imgs/map.png" alt="Space Invaders Map" /></p>
+<p><img src="http://localhost:3000/articles/img/map.png" alt="Space Invaders Map" /></p>
 
 <p>With a plain text map.txt above, we can now create a file stream object to read the file line-by-line into a vector of strings.</p>
 
@@ -465,7 +465,7 @@
     <span class="p">}</span>
 <span class="p">}</span></code></pre></figure>
 
-<p><img src="../imgs/gameplay.png" alt="Space Invaders Gameplay" /></p>
+<p><img src="http://localhost:3000/articles/imgs/gameplay.png" alt="Space Invaders Gameplay" /></p>
 
 <p>Congrats, we’ve built a complete and functional version of Space Invaders! We kept our code modular and efficient so it’s easy to update and enhance. With a bit more work, we could improve the game by adding levels and score keeping. You can check out the completed code on <a href="https://github.com/jmcilhargey/space-invaders/blob/master/main.cpp">GitHub</a>.</p>
 
@@ -484,6 +484,5 @@
     <li>Some projects inspired by Freecodecamp, Udacity, and Codecademy</li>
   </ul>
 </footer>
-  <script src="../../scripts/button.min.js"></script>
   </body>
 </html>

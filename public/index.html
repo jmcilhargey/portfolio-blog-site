@@ -3,28 +3,27 @@
 <html lang="en-US">
 
   <head>
-    <meta charset="utf-8" name="description" content"Sharing tutorials, articles, and projects on programming in Javascript">
-    <meta name=viewport content="width=device-width, initial-scale=1">
+    <meta charset="utf-8">
 
     <title>Joe McIlhargey</title>
 
     <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400" rel="stylesheet">
-    <link href="/styles/main.min.css" rel="stylesheet">
+    <link href="/styles/main.css" rel="stylesheet">
   </head>
 
-  <body data-ng-app="portfolioApp">
-    <data-ng-include src="'templates/svgs.html'"></data-ng-include>
-    <data-ng-include src="'templates/header.html'"></data-ng-include>
+  <body ng-app="portfolioApp">
+    <ng-include src="'templates/svgs.html'"></ng-include>
+    <ng-include src="'templates/header.html'"></ng-include>
 
-    <main class="site-content" data-ng-controller="ProjectsCtrl">
-      <data-projects></data-projects>
+    <main class="site-content" ng-controller="ProjectsCtrl">
+      <projects></projects>
     </main>
 
-    <data-ng-include src="'templates/footer.html'"></data-ng-include>
+    <ng-include src="'templates/footer.html'"></ng-include>
 
-    <script src="/scripts/vendor.bundle.min.js"></script>
-    <script src="/scripts/portfolio.bundle.min.js"></script>
-    <script src="/scripts/button.min.js"></script>
+    <script src="/scripts/vendor.bundle.js"></script>
+    <script src="/scripts/portfolio.bundle.js"></script>
+    <script src="/scripts/button.js"></script>
   </body>
 
 </html>
