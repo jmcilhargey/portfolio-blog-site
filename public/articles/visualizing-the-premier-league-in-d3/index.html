@@ -1,0 +1,891 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Visualizing the 2015-2016 Premier League in d3.js</title>
+  <meta name="description" content="How unlikely was it that Leicester City FC would win the Premier League? For the last 30 years, either Manchester United, Chelsea, Arsenal, or Manchester Cit...">
+  <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400" rel="stylesheet">
+  <link rel="stylesheet" href="../../styles/main.min.css">
+  <link rel="canonical" href="http://joemcilhargey.com/articles/visualizing-the-premier-league-in-d3">
+  <link rel="alternate" type="application/rss+xml" title="Articles" href="http://joemcilhargey.com/articles/feed.xml">
+</head>
+
+  <body>
+    <svg display="none">
+	<defs>
+		<g id="svg-menu">
+		 	<path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.031C17.335,0,18,0.665,18,1.484L18,1.484z"/>
+	      	<path d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484 h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z"/>
+	      	<path d="M18,13.516C18,14.335,17.335,15,16.516,15H1.484C0.665,15,0,14.335,0,13.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.031C17.335,12.031,18,12.696,18,13.516L18,13.516z"/>
+		</g>
+		<g id="svg-github">
+			<path d="M1664 896q0 251-146.5 451.5t-378.5 277.5q-27 5-39.5-7t-12.5-30v-211q0-97-52-142 57-6 102.5-18t94-39 81-66.5 53-105 20.5-150.5q0-121-79-206 37-91-8-204-28-9-81 11t-92 44l-38 24q-93-26-192-26t-192 26q-16-11-42.5-27t-83.5-38.5-86-13.5q-44 113-7 204-79 85-79 206 0 85 20.5 150t52.5 105 80.5 67 94 39 102.5 18q-40 36-49 103-21 10-45 15t-57 5-65.5-21.5-55.5-62.5q-19-32-48.5-52t-49.5-24l-20-3q-21 0-29 4.5t-5 11.5 9 14 13 12l7 5q22 10 43.5 38t31.5 51l10 23q13 38 44 61.5t67 30 69.5 7 55.5-3.5l23-4q0 38 .5 89t.5 54q0 18-13 30t-40 7q-232-77-378.5-277.5t-146.5-451.5q0-209 103-385.5t279.5-279.5 385.5-103 385.5 103 279.5 279.5 103 385.5z"/>
+		</g>
+		<g id="svg-freecodecamp">
+			<path d="M1600 1696v64q0 13-9.5 22.5t-22.5 9.5h-1344q-13 0-22.5-9.5t-9.5-22.5v-64q0-13 9.5-22.5t22.5-9.5h1344q13 0 22.5 9.5t9.5 22.5zm-256-1056q0 78-24.5 144t-64 112.5-87.5 88-96 77.5-87.5 72-64 81.5-24.5 96.5q0 96 67 224l-4-1 1 1q-90-41-160-83t-138.5-100-113.5-122.5-72.5-150.5-27.5-184q0-78 24.5-144t64-112.5 87.5-88 96-77.5 87.5-72 64-81.5 24.5-96.5q0-94-66-224l3 1-1-1q90 41 160 83t138.5 100 113.5 122.5 72.5 150.5 27.5 184z"/>
+		</g>
+		<g id="svg-linkedin">
+			<path d="M477 625v991h-330v-991h330zm21-306q1 73-50.5 122t-135.5 49h-2q-82 0-132-49t-50-122q0-74 51.5-122.5t134.5-48.5 133 48.5 51 122.5zm1166 729v568h-329v-530q0-105-40.5-164.5t-126.5-59.5q-63 0-105.5 34.5t-63.5 85.5q-11 30-11 81v553h-329q2-399 2-647t-1-296l-1-48h329v144h-2q20-32 41-56t56.5-52 87-43.5 114.5-15.5q171 0 275 113.5t104 332.5z"/>
+		</g>
+	</defs>
+</svg>
+    <div class="header-wrapper">
+  <header class="site-header">
+    <div class="header-name">
+      <h2><a href="/">Joe McIlhargey</a></h2>
+      <small>Full Stack Developer</small>
+    </div>
+    <nav class="header-nav">
+      <ul class="nav-pages">
+        <li><a href="/">Projects</a></li>
+        <li><a href="/articles/index.html">Articles</a></li>
+        <li><a href="/about">About</a></li>
+      </ul>
+      <ul class="nav-socials">
+        <li>
+          <a class="socials-github" href="https://github.com/jmcilhargey">
+            <svg viewBox="0 0 1792 1792" xmlns="http://www.w3.org/2000/svg">
+              <use xlink:href="#svg-github"/>
+            </svg>
+          </a>
+        </li>
+        <li>
+          <a class="socials-linkedin" href="https://www.linkedin.com/in/joemcilhargey">
+            <svg viewBox="0 0 1792 1792" xmlns="http://www.w3.org/2000/svg">
+              <use xlink:href="#svg-linkedin"/>
+            </svg>
+          </a>
+        </li>
+        <li>
+          <a class="socials-freecodecamp" href="http://www.freecodecamp.com/jmcilhargey">
+            <svg viewBox="0 0 1792 1792" xmlns="http://www.w3.org/2000/svg">
+              <use xlink:href="#svg-freecodecamp"/>
+            </svg>
+          </a>
+        </li>
+      </ul>
+    </nav>
+    <button class="nav-menu" onclick="toggleDrawerMenu(this,event)" ontouchstart="toggleDrawerMenu(this,event)">
+      <svg viewBox="0 0 18 15">
+        <use xlink:href="#svg-menu" />
+      </svg>
+    </button>
+  </header>
+</div>
+    <main class="site-content">
+      <div class="article-container">
+        <article class="article-entry" itemscope itemtype="http://schema.org/BlogPosting">
+  <header class="article-header">
+    
+    <h1 class="article-title" itemprop="name headline">Visualizing the 2015-2016 Premier League in d3.js</h1>
+  </header>
+
+  <div class="article-content" itemprop="articleBody">
+    <p>How unlikely was it that Leicester City FC would win the Premier League? For the last 30 years, either Manchester United, Chelsea, Arsenal, or Manchester City have taken the title. So dominant are the “Big Four” that early season odds placed Leicester’s chances at 5000/1, yet Leicester defied the odds and did the seemingly impossible.</p>
+
+<style>
+
+	body {
+		color: #424242;
+	}
+	div {
+		display: block;
+	}
+	.title {
+		text-align: center;
+	}
+	#graph1 {
+		height: 425px;
+		margin: 10px;
+	}
+	#graph1 svg {
+		display: block;
+		margin: 0 auto;
+	}
+	.dot {
+		stroke: none;
+	}
+	.axis path {
+		stroke: #757575;
+	}
+	.zero path {
+		stroke-dasharray: 5, 10;
+		stroke: #9E9E9E;
+	}
+	.label {
+		fill: #757575;
+	}
+	.week {
+		font-size: 60px;
+		font-weight: 600;
+	}
+	.tooltip {
+		position: absolute;
+		top: 0;
+		width: 150px;
+		height: 25px;
+		border-radius: 5px;
+		padding: 5px;
+		background-color: transparent;
+		color: black;
+		text-align: center;
+		opacity: 0;
+		pointer-events: none;
+		font: 12px sans-serif;
+	}
+	.overlay {
+		fill: none;
+		cursor: ew-resize;
+	}
+	#graph2 {
+		height: 450px;
+		margin: 10px;
+	}
+	#graph2 svg {
+		display: block;
+		margin: 0 auto;
+	}
+	.title {
+		font-size: 24px;
+		fill: #424242;
+	}
+	.circle {
+		pointer-events: all;
+	}
+</style>
+
+<div id="graph2">
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/4.2.1/d3.min.js"></script>
+
+<script type="text/javascript">
+
+	var diameter = 450;
+
+	var radScale2 = d3.scaleLinear().domain([0, 15]).range([0, 50]);
+	var colorScale = d3.scaleLinear().domain([1, 11, 20]).range([d3.color("green").darker(0.5), d3.color("yellow"), d3.color("red").darker(0.5)]);
+
+	var graph2 = d3.select("#graph2").append("svg")
+		.attr("width", diameter)
+		.attr("height", diameter)
+		.attr("class", "bubble");
+
+	graph2.append("text")
+		.attr("class", "title")
+		.attr("text-anchor", "end")
+		.attr("y", 50)
+		.attr("x", 325)
+		.text("Wage Bill vs Position");
+
+	graph2.append("text")
+		.attr("class", "label")
+		.attr("text-anchor", "end")
+		.attr("y", 400)
+		.attr("x", 450)
+		.attr("font-style", "italic")
+		.text("click & drag to compare");
+
+	d3.json("./../data/epl-results-by-wage-bill.json", function (error, data) {
+
+		if (error) { throw error; }
+
+		function makeRoot(data) {
+			return { children: data };
+		}
+		function getRadius(d) {
+			return Math.sqrt(d.data.wagebill);
+		}
+		function getColor(d) {
+			return d.data.position;
+		}
+		function onTick() {
+			node
+				.attr("cx", function(d) { return d.x; })
+  				.attr("cy", function(d) { return d.y; });
+		}
+		function started() {
+			var circle = d3.select(this).classed("dragging", true);
+
+			d3.event.on("drag", dragged).on("end", ended);
+
+			function dragged(d) {
+				circle.attr("cx", d.x = d3.event.x).attr("cy", d.y = d3.event.y);
+			}
+			function ended() {
+				circle.classed("dragging", false);
+			}
+		}
+		function mouseover(d) {
+			tooltip2
+				.html("<span><strong>" + d.data.name + "</strong><br>Position: " + d.data.position + "<br>Wage Bill: &#163;" + d.data.wagebill + "m</span>")
+				.style("opacity", "1")
+
+		}
+		function mouseout() {
+			tooltip2.style("opacity", "0");
+		}
+		function mousemove() {
+			tooltip2.style("left", (d3.event.pageX - 40) + "px")
+  				.style("top", (d3.event.pageY - 20) + "px");
+		}
+
+		var root = d3.hierarchy(makeRoot(data))
+			.sum(function(d) { return d.children ? 0 : 1; });
+
+		d3.packSiblings(root);
+
+		var force = d3.forceSimulation(root.children)
+			.force("charge", d3.forceManyBody().strength(15))
+			.force("center", d3.forceCenter(225, 250))
+			.force("collide", d3.forceCollide(function(d) { return radScale2(getRadius(d)) }))
+			.on("tick", onTick);
+
+		var drag = d3.drag().on("start", started);
+
+		var node = graph2.selectAll("circle")
+			.data(root.children)
+			.enter()
+			.append("circle")
+			.attr("class", "circle")
+			.attr("fill", function(d) { return colorScale(getColor(d)); })
+			.attr("opacity", 0.8)
+			.call(drag)
+
+			.on("mouseover", mouseover)
+			.on("mouseout", mouseout)
+			.on("mousemove", mousemove);
+
+		var tooltip2 = d3.select("body")
+			.append("div")
+			.attr("class", "tooltip")
+			.style("opacity", "0");
+			
+		node.transition()
+			.duration(750)
+			.delay(function(d, i) { return i * 50 })
+			.attr("r", function(d) { return radScale2(getRadius(d)); });
+	});
+</script>
+
+<p>The Premier League season takes place over 41 weeks, 38 of which are matchweeks where games are played. To win it all, a team must be consistent over the longhaul. Sports analysts study league tables and track team positions over the course of the season, trying to discover patterns and make predictions. It turns out we can enhance our ability to make connections and form hypotheses by adding a visual element to our data.</p>
+
+<p>The following is a guide to build a interactive graph (shown below) of the 2015 Premier League season as an introduction to d3.js.</p>
+
+<h1 class="title">Leicester City FC - Path to Victory</h1>
+
+<div id="graph1">
+</div>
+
+<script type="text/javascript">
+
+	function yPos(d) {
+		return d.goalDiff;
+	}
+	function xPos(d) {
+		return d.points;
+	}
+	function radius(d) {
+		return d.goals;
+	}
+	function position(dot) {
+		dot.transition()
+			.duration(100)
+			.attr("cx", function(d) { return xScale(xPos(d)) })
+			.attr("cy", function(d) { return yScale(yPos(d)) })
+			.attr("r", function(d) { return radScale1(radius(d)) })
+	}
+	function order(a, b) {
+		return radius(a) - radius(b);
+	}
+	function abbreviate(name) {
+		return name.split(" ").reduce(function(abbr, word) {
+			return abbr + word.slice(0, 3) + " ";
+		}, "")
+	}
+
+	var margin = {
+		left: 25,
+		right: 10,
+		top: 10,
+		bottom: 20
+	};
+	var width = 600 - margin.right;
+	var height = 400 - margin.top - margin.bottom;
+
+	var graph1 = d3.select("#graph1").append("svg")
+		.attr("width", width + margin.left + margin.right)
+		.attr("height", height + margin.bottom + margin.top)
+		.append("g")
+		.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+	var xScale = d3.scaleLinear().domain([0, 85]).range([0, width]);
+	var yScale = d3.scaleLinear().domain([-60, 60]).range([height, 0]);
+	var radScale1 = d3.scaleLinear().domain([0, 75]).range([1, 30]);
+
+	var xAxis = d3.axisBottom(xScale).tickArguments([15, d3.format("0")]);
+	var yAxis = d3.axisLeft(yScale);
+
+	var colors = d3.scaleOrdinal(d3.schemeCategory20);
+
+	graph1.append("g")
+		.attr("class", "axis")
+		.attr("transform", "translate(0," + height + ")")
+		.call(xAxis);
+
+	graph1.append("g")
+		.attr("class", "zero axis")
+    	.attr("transform", "translate(0," + yScale(0) + ")")
+    	.call(xAxis.tickArguments([0, d3.format("")]).tickSizeOuter([0]));
+
+	graph1.append("g")
+		.attr("class", "axis")
+		.call(yAxis);
+
+	graph1.append("text")
+		.attr("class", "label")
+		.attr("text-anchor", "end")
+		.attr("x", width)
+		.attr("y", height - 10)
+		.text("Points");
+
+	graph1.append("text")
+		.attr("class", "label")
+		.attr("text-anchor", "end")
+		.attr("y", 0)
+		.attr("dy", "1.5em")
+		.attr("transform", "rotate(-90)")
+		.text("Goal Differential");
+
+	var label = graph1.append("text")
+		.attr("class", "label week")
+		.attr("text-anchor", "end")
+		.attr("y", height - 10)
+		.attr("x", 300)
+		.text(1);
+
+	graph1.append("text")
+		.attr("class", "label")
+		.attr("text-anchor", "end")
+		.attr("y", height - 10)
+		.attr("x", 340)
+		.text("Week");
+
+	d3.json("./../data/epl-results-by-week.json", function(error, data) {
+
+		if (error) { throw error; }
+
+		function mouseover(d) {
+			tooltip1.html("<span><strong>" + d.name + "</strong></span>")
+			.style("opacity", "1")
+
+		}
+		function mouseout() {
+			tooltip1.style("opacity", "0");
+		}
+		function mousemove() {
+			tooltip1.style("left", (d3.event.pageX - 40) + "px")
+  				.style("top", (d3.event.pageY - 20) + "px");
+		}
+		function color(d, i) {
+			return colors(i);
+		}
+		function interpolateData(week) {
+			return data.map(function(d) {
+				return {
+					name: d.name,
+					wins: d.stats[week].wins,
+					points: d.stats[week].points,
+					goals: d.stats[week].goals,
+					goalDiff: d.stats[week].goalDiff
+				}
+			})
+		}
+
+		var weeks = d3.interpolateRound(0, 40);
+
+		function displayWeek() {
+			
+			return function(t) {
+
+				dot.data(interpolateData(weeks(t)))
+				.call(position)
+				.sort(order);
+
+				label.text(weeks(t) + 1);
+			}
+		}
+		function enableInteraction() {
+
+			var weekScale = d3.scaleLinear()
+				.domain([0, 40])
+				.range([rect.x, rect.x + rect.width])
+				.clamp(true)
+
+			graph1.interrupt();
+
+			overlay.on("mousemove", scrollWeek);
+
+			function scrollWeek() {
+
+				var week = Math.round(weekScale.invert(d3.mouse(this)[0]));
+
+				dot.data(interpolateData(week))
+				.call(position)
+				.sort(order);
+
+				label.text(week + 1);
+			}
+		}
+		var rect = label.node().getBBox();
+
+		var overlay = graph1.append("rect")
+			.attr("class", "overlay")
+			.attr("x", rect.x - 30)
+			.attr("y", rect.y)
+			.attr("width", rect.width + 75)
+			.attr("height", rect.height)
+			.attr("style", "pointer-events: all")
+			.on("mouseover", enableInteraction);
+
+		var tooltip1 = d3.select("body")
+			.append("div")
+			.attr("class", "tooltip")
+			.style("opacity", "0");
+
+		var dot = graph1.append("g")
+			.attr("class", "dot")
+			.selectAll(".dot")
+			.data(interpolateData(0))
+			.enter()
+			.append("circle")
+			.attr("fill", color)
+			.attr("opacity", 0.8)
+			.call(position)
+
+			.on("mouseover", mouseover)
+			.on("mouseout", mouseout)
+			.on("mousemove", mousemove);
+
+		graph1.transition()
+			.duration(40000)
+			.ease(d3.easeLinear)
+			.tween("week", displayWeek)
+	});
+
+</script>
+
+<p>This graph is inspired by Gapminder’s ‘Health &amp; Wealth of Nations’ and Mike Bostock’s representation in d3. Points and goal differential are tracked as a function of week in the season where the size of the bubble is proportional to total goals. Hovering the cursor over the week enables scroll interaction and hovering over a bubble displays the team name.</p>
+
+<p>To start, we pulled the season match data from the <a href="http://api.football-data.org/">football-data</a> open API which returns JSON data with an array of fixture data in the following form:</p>
+
+<figure class="highlight"><pre><code class="language-json" data-lang="json"><span class="s2">"fixtures"</span><span class="err">:</span><span class="p">[</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+		</span><span class="nt">"date"</span><span class="p">:</span><span class="s2">"2015-08-08T11:45:00Z"</span><span class="p">,</span><span class="w">
+		</span><span class="nt">"status"</span><span class="p">:</span><span class="s2">"FINISHED"</span><span class="p">,</span><span class="w">
+		</span><span class="nt">"matchday"</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span><span class="w">
+		</span><span class="nt">"homeTeamName"</span><span class="p">:</span><span class="s2">"Manchester United FC"</span><span class="p">,</span><span class="w">
+		</span><span class="nt">"awayTeamName"</span><span class="p">:</span><span class="s2">"Tottenham Hotspur FC"</span><span class="p">,</span><span class="w">
+		</span><span class="nt">"result"</span><span class="p">:{</span><span class="w">
+		</span><span class="nt">"goalsHomeTeam"</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span><span class="w">
+		</span><span class="nt">"goalsAwayTeam"</span><span class="p">:</span><span class="mi">0</span><span class="w">
+		</span><span class="p">},</span><span class="w">
+		</span><span class="nt">"odds"</span><span class="p">:</span><span class="kc">null</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+  </span><span class="err">...</span><span class="w">
+</span><span class="p">]</span></code></pre></figure>
+
+<p>We want to transform the data such that each team has statistics for goals, goal differential, and points on a weekly basis. Because weeks are sequential and referenced in order, an array is used to store the weeks. Within this array, a simple object can store a snapshot of the team’s statics for that week. Node.js has a native file system <mark>fs</mark> module we can use to read the initial data, transform the data with a script, and write the converted data to a json file.</p>
+
+<p>In the script below, an initial pass through the data builds empty data structures <mark>matchData</mark> and <mark>runningStats</mark>. The object <mark>runningStats</mark> calculates on an ongoing basis the team performance for each fixture. The numerical week for a given match is calculated with <mark>getWeek</mark> and that number is used as the index to store weekly team data. In the event a team has more than 1 match a week, the latest total for the week is stored. Finally, the resultant object is transformed to an array of objects to make data iteration in d3 easier.</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="s2">"use strict"</span><span class="p">;</span>
+
+<span class="kd">var</span> <span class="nx">fs</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s2">"fs"</span><span class="p">);</span>
+
+<span class="kd">var</span> <span class="nx">dataString</span> <span class="o">=</span> <span class="nx">fs</span><span class="p">.</span><span class="nx">readFileSync</span><span class="p">(</span><span class="s2">"./match-results-2015.json"</span><span class="p">,</span> <span class="s2">"utf-8"</span><span class="p">);</span>
+<span class="kd">var</span> <span class="nx">initialData</span> <span class="o">=</span> <span class="nx">JSON</span><span class="p">.</span><span class="nx">parse</span><span class="p">(</span><span class="nx">dataString</span><span class="p">);</span>
+<span class="kd">var</span> <span class="nx">matchData</span> <span class="o">=</span> <span class="p">{};</span>
+<span class="kd">var</span> <span class="nx">runningStats</span> <span class="o">=</span> <span class="p">{};</span>
+
+<span class="nx">initialData</span><span class="p">.</span><span class="nx">fixtures</span><span class="p">.</span><span class="nx">forEach</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">fixture</span><span class="p">)</span> <span class="p">{</span>
+  
+  <span class="kd">var</span> <span class="nx">homeTeam</span> <span class="o">=</span> <span class="nx">fixture</span><span class="p">.</span><span class="nx">homeTeamName</span><span class="p">;</span>
+  <span class="kd">var</span> <span class="nx">awayTeam</span> <span class="o">=</span> <span class="nx">fixture</span><span class="p">.</span><span class="nx">awayTeamName</span><span class="p">;</span>
+  
+  <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">matchData</span><span class="p">.</span><span class="nx">hasOwnProperty</span><span class="p">(</span><span class="nx">homeTeam</span><span class="p">))</span> <span class="p">{</span>
+    <span class="nx">matchData</span><span class="p">[</span><span class="nx">homeTeam</span><span class="p">]</span> <span class="o">=</span> <span class="k">new</span> <span class="nb">Array</span><span class="p">(</span><span class="mi">41</span><span class="p">);</span>
+    <span class="nx">runningStats</span><span class="p">[</span><span class="nx">homeTeam</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+   		<span class="na">wins</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="na">points</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="na">goals</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="na">goalDiff</span><span class="p">:</span> <span class="mi">0</span>      
+    <span class="p">};</span>
+  <span class="p">}</span>
+  <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">matchData</span><span class="p">.</span><span class="nx">hasOwnProperty</span><span class="p">(</span><span class="nx">awayTeam</span><span class="p">))</span> <span class="p">{</span>
+    <span class="nx">matchData</span><span class="p">[</span><span class="nx">awayTeam</span><span class="p">]</span> <span class="o">=</span> <span class="k">new</span> <span class="nb">Array</span><span class="p">(</span><span class="mi">41</span><span class="p">);</span>
+    <span class="nx">runningStats</span><span class="p">[</span><span class="nx">awayTeam</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+   		<span class="na">wins</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="na">points</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="na">goals</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="na">goalDiff</span><span class="p">:</span> <span class="mi">0</span>      
+    <span class="p">};</span>
+  <span class="p">}</span>
+<span class="p">});</span>
+
+<span class="kd">var</span> <span class="nx">startDate</span> <span class="o">=</span> <span class="k">new</span> <span class="nb">Date</span><span class="p">(</span><span class="mi">2015</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">);</span>
+
+<span class="kd">function</span> <span class="nx">getWeek</span><span class="p">(</span><span class="nx">dateString</span><span class="p">)</span> <span class="p">{</span>
+
+	<span class="kd">var</span> <span class="nx">currDate</span> <span class="o">=</span> <span class="k">new</span> <span class="nb">Date</span><span class="p">(</span><span class="nx">dateString</span><span class="p">);</span>
+	<span class="k">return</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">ceil</span><span class="p">((</span><span class="nx">currDate</span> <span class="o">-</span> <span class="nx">startDate</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">60</span> <span class="o">*</span> <span class="mi">60</span> <span class="o">*</span> <span class="mi">24</span> <span class="o">*</span> <span class="mi">1000</span><span class="p">)</span> <span class="o">/</span> <span class="mi">7</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="nx">initialData</span><span class="p">.</span><span class="nx">fixtures</span><span class="p">.</span><span class="nx">forEach</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">fixture</span><span class="p">)</span> <span class="p">{</span>
+  
+  <span class="kd">var</span> <span class="nx">homeTeam</span> <span class="o">=</span> <span class="nx">fixture</span><span class="p">.</span><span class="nx">homeTeamName</span><span class="p">;</span>
+  <span class="kd">var</span> <span class="nx">awayTeam</span> <span class="o">=</span> <span class="nx">fixture</span><span class="p">.</span><span class="nx">awayTeamName</span><span class="p">;</span>
+  
+  <span class="k">if</span> <span class="p">(</span><span class="nx">fixture</span><span class="p">.</span><span class="nx">result</span><span class="p">.</span><span class="nx">goalsHomeTeam</span> <span class="o">&gt;</span> <span class="nx">fixture</span><span class="p">.</span><span class="nx">result</span><span class="p">.</span><span class="nx">goalsAwayTeam</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">runningStats</span><span class="p">[</span><span class="nx">homeTeam</span><span class="p">].</span><span class="nx">wins</span> <span class="o">+=</span> <span class="mi">1</span><span class="p">;</span>
+    <span class="nx">runningStats</span><span class="p">[</span><span class="nx">homeTeam</span><span class="p">].</span><span class="nx">points</span> <span class="o">+=</span> <span class="mi">3</span><span class="p">;</span>
+  <span class="p">}</span>
+  
+  <span class="k">if</span> <span class="p">(</span><span class="nx">fixture</span><span class="p">.</span><span class="nx">result</span><span class="p">.</span><span class="nx">goalsAwayTeam</span> <span class="o">&gt;</span> <span class="nx">fixture</span><span class="p">.</span><span class="nx">result</span><span class="p">.</span><span class="nx">goalsHomeTeam</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">runningStats</span><span class="p">[</span><span class="nx">awayTeam</span><span class="p">].</span><span class="nx">wins</span> <span class="o">+=</span> <span class="mi">1</span><span class="p">;</span>
+    <span class="nx">runningStats</span><span class="p">[</span><span class="nx">awayTeam</span><span class="p">].</span><span class="nx">points</span> <span class="o">+=</span> <span class="mi">3</span><span class="p">;</span>
+  <span class="p">}</span>
+  
+  <span class="k">if</span> <span class="p">(</span><span class="nx">fixture</span><span class="p">.</span><span class="nx">result</span><span class="p">.</span><span class="nx">goalsAwayTeam</span> <span class="o">===</span> <span class="nx">fixture</span><span class="p">.</span><span class="nx">result</span><span class="p">.</span><span class="nx">goalsHomeTeam</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">runningStats</span><span class="p">[</span><span class="nx">homeTeam</span><span class="p">].</span><span class="nx">points</span> <span class="o">+=</span> <span class="mi">1</span><span class="p">;</span>
+    <span class="nx">runningStats</span><span class="p">[</span><span class="nx">awayTeam</span><span class="p">].</span><span class="nx">points</span> <span class="o">+=</span> <span class="mi">1</span><span class="p">;</span>    
+  <span class="p">}</span>
+  
+  <span class="nx">runningStats</span><span class="p">[</span><span class="nx">homeTeam</span><span class="p">].</span><span class="nx">goals</span> <span class="o">+=</span> <span class="nx">fixture</span><span class="p">.</span><span class="nx">result</span><span class="p">.</span><span class="nx">goalsHomeTeam</span><span class="p">;</span>
+  <span class="nx">runningStats</span><span class="p">[</span><span class="nx">awayTeam</span><span class="p">].</span><span class="nx">goals</span> <span class="o">+=</span> <span class="nx">fixture</span><span class="p">.</span><span class="nx">result</span><span class="p">.</span><span class="nx">goalsAwayTeam</span><span class="p">;</span>
+
+  <span class="nx">runningStats</span><span class="p">[</span><span class="nx">homeTeam</span><span class="p">].</span><span class="nx">goalDiff</span> <span class="o">+=</span> <span class="nx">fixture</span><span class="p">.</span><span class="nx">result</span><span class="p">.</span><span class="nx">goalsHomeTeam</span> <span class="o">-</span> <span class="nx">fixture</span><span class="p">.</span><span class="nx">result</span><span class="p">.</span><span class="nx">goalsAwayTeam</span><span class="p">;</span>
+  <span class="nx">runningStats</span><span class="p">[</span><span class="nx">awayTeam</span><span class="p">].</span><span class="nx">goalDiff</span> <span class="o">+=</span> <span class="nx">fixture</span><span class="p">.</span><span class="nx">result</span><span class="p">.</span><span class="nx">goalsAwayTeam</span> <span class="o">-</span> <span class="nx">fixture</span><span class="p">.</span><span class="nx">result</span><span class="p">.</span><span class="nx">goalsHomeTeam</span><span class="p">;</span>
+
+  <span class="kd">var</span> <span class="nx">currWeek</span> <span class="o">=</span> <span class="nx">getWeek</span><span class="p">(</span><span class="nx">fixture</span><span class="p">.</span><span class="nx">date</span><span class="p">);</span>
+
+  <span class="nx">matchData</span><span class="p">[</span><span class="nx">homeTeam</span><span class="p">][</span><span class="nx">currWeek</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="nx">JSON</span><span class="p">.</span><span class="nx">parse</span><span class="p">(</span><span class="nx">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">(</span><span class="nx">runningStats</span><span class="p">[</span><span class="nx">homeTeam</span><span class="p">]));</span>
+  <span class="nx">matchData</span><span class="p">[</span><span class="nx">awayTeam</span><span class="p">][</span><span class="nx">currWeek</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="nx">JSON</span><span class="p">.</span><span class="nx">parse</span><span class="p">(</span><span class="nx">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">(</span><span class="nx">runningStats</span><span class="p">[</span><span class="nx">awayTeam</span><span class="p">]));</span>
+  
+<span class="p">});</span>
+
+<span class="kd">var</span> <span class="nx">formattedData</span> <span class="o">=</span> <span class="p">[];</span>
+
+<span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">team</span> <span class="k">in</span> <span class="nx">matchData</span><span class="p">)</span> <span class="p">{</span>
+
+	<span class="kd">var</span> <span class="nx">matchResults</span> <span class="o">=</span> <span class="nx">matchData</span><span class="p">[</span><span class="nx">team</span><span class="p">];</span>
+
+	<span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">matchResults</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+		<span class="k">if</span> <span class="p">(</span><span class="nx">matchResults</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span> <span class="o">==</span> <span class="kc">undefined</span><span class="p">)</span> <span class="p">{</span>
+			<span class="nx">matchResults</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span> <span class="o">=</span> <span class="nx">matchResults</span><span class="p">[</span><span class="nx">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">];</span>
+		<span class="p">}</span>
+	<span class="p">}</span>
+	<span class="nx">formattedData</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span> <span class="p">{</span> <span class="na">name</span><span class="p">:</span> <span class="nx">team</span><span class="p">,</span> <span class="na">stats</span><span class="p">:</span> <span class="nx">matchData</span><span class="p">[</span><span class="nx">team</span><span class="p">]})</span>
+<span class="p">}</span>
+
+<span class="nx">fs</span><span class="p">.</span><span class="nx">writeFileSync</span><span class="p">(</span><span class="s2">"epl-results-by-week.json"</span><span class="p">,</span> <span class="nx">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">(</span><span class="nx">formattedData</span><span class="p">,</span> <span class="kc">null</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="s2">"utf-8"</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">err</span><span class="p">,</span> <span class="nx">stats</span><span class="p">,</span> <span class="nx">data</span><span class="p">)</span> <span class="p">{</span>
+
+	<span class="k">if</span> <span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="p">{</span>
+		<span class="k">throw</span> <span class="k">new</span> <span class="nb">Error</span><span class="p">(</span><span class="s2">"Unable to write to file: "</span> <span class="o">+</span> <span class="nx">err</span><span class="p">);</span>
+	<span class="p">}</span>
+<span class="p">});</span></code></pre></figure>
+
+<p>The data we get after processing the initial json data is in the following format.</p>
+
+<figure class="highlight"><pre><code class="language-json" data-lang="json"><span class="p">[</span><span class="w">
+  </span><span class="p">{</span><span class="w">
+    </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Tottenham Hotspur FC"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"stats"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+      </span><span class="p">{</span><span class="w">
+        </span><span class="nt">"wins"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w">
+        </span><span class="nt">"points"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w">
+        </span><span class="nt">"goals"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w">
+        </span><span class="nt">"goalDiff"</span><span class="p">:</span><span class="w"> </span><span class="mi">-1</span><span class="w">
+      </span><span class="p">},</span><span class="w">
+      </span><span class="p">{</span><span class="w">
+        </span><span class="nt">"wins"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w">
+        </span><span class="nt">"points"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
+        </span><span class="nt">"goals"</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w">
+        </span><span class="nt">"goalDiff"</span><span class="p">:</span><span class="w"> </span><span class="mi">-1</span><span class="w">
+      </span><span class="p">},</span><span class="w">
+      </span><span class="err">...</span><span class="w">
+    </span><span class="p">]</span><span class="w">
+  </span><span class="p">},</span><span class="w">
+  </span><span class="err">...</span><span class="w">
+</span><span class="p">]</span></code></pre></figure>
+
+<p>Data binding in D3 works by joining our array of data points with a selection of DOM elements. We don’t create the DOM elements and then bind the data. Instead, d3 evaluates data against a selection and then updates the DOM accordingly. This means that visualization can change dynamically as the number of data points changes. d3’s creator Mike Bostock breaks it down in <a href="https://bost.ocks.org/mike/join/">this article</a>.</p>
+
+<p>Another important feature of d3 is that it utilizes method chaining where you can combine multiple methods into a single line of code. This works because each method returns a reference to the selection that gets passed on to the next method. Since Javascript ignores whitespace, we can place these methods on individual lines to make them more readable.</p>
+
+<p>To start with, we’ll load the d3 library and create an empty SVG element and append it to the DOM. It’s a good practice at this step to include margins and move the SVG to prevent clipping data at the ends of the range.</p>
+
+<figure class="highlight"><pre><code class="language-html" data-lang="html"><span class="nt">&lt;body&gt;</span>
+	
+<span class="nt">&lt;h1</span> <span class="na">class=</span><span class="s">"title"</span><span class="nt">&gt;</span>Leicester FC - Path to Victory<span class="nt">&lt;/h1&gt;</span>
+
+<span class="nt">&lt;div</span> <span class="na">id=</span><span class="s">"graph"</span><span class="nt">&gt;</span>
+<span class="nt">&lt;/div&gt;</span>
+
+<span class="nt">&lt;script </span><span class="na">src=</span><span class="s">"https://cdnjs.cloudflare.com/ajax/libs/d3/4.2.1/d3.min.js"</span><span class="nt">&gt;&lt;/script&gt;</span>
+
+<span class="nt">&lt;script </span><span class="na">type=</span><span class="s">"text/javascript"</span><span class="nt">&gt;</span>
+
+	<span class="kd">var</span> <span class="nx">margin</span> <span class="o">=</span> <span class="p">{</span>
+		<span class="na">left</span><span class="p">:</span> <span class="mi">25</span><span class="p">,</span>
+		<span class="na">right</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span>
+		<span class="na">top</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span>
+		<span class="na">bottom</span><span class="p">:</span> <span class="mi">20</span>
+	<span class="p">};</span>
+	<span class="kd">var</span> <span class="nx">width</span> <span class="o">=</span> <span class="mi">600</span> <span class="o">-</span> <span class="nx">margin</span><span class="p">.</span><span class="nx">right</span><span class="p">;</span>
+	<span class="kd">var</span> <span class="nx">height</span> <span class="o">=</span> <span class="mi">400</span> <span class="o">-</span> <span class="nx">margin</span><span class="p">.</span><span class="nx">top</span> <span class="o">-</span> <span class="nx">margin</span><span class="p">.</span><span class="nx">bottom</span><span class="p">;</span>
+
+	<span class="kd">var</span> <span class="nx">graph</span> <span class="o">=</span> <span class="nx">d3</span><span class="p">.</span><span class="nx">select</span><span class="p">(</span><span class="s2">"#graph"</span><span class="p">).</span><span class="nx">append</span><span class="p">(</span><span class="s2">"svg"</span><span class="p">)</span>
+		<span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">"width"</span><span class="p">,</span> <span class="nx">width</span> <span class="o">+</span> <span class="nx">margin</span><span class="p">.</span><span class="nx">left</span> <span class="o">+</span> <span class="nx">margin</span><span class="p">.</span><span class="nx">right</span><span class="p">)</span>
+		<span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">"height"</span><span class="p">,</span> <span class="nx">height</span> <span class="o">+</span> <span class="nx">margin</span><span class="p">.</span><span class="nx">bottom</span> <span class="o">+</span> <span class="nx">margin</span><span class="p">.</span><span class="nx">top</span><span class="p">)</span>
+		<span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="s2">"g"</span><span class="p">)</span>
+		<span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">"transform"</span><span class="p">,</span> <span class="s2">"translate("</span> <span class="o">+</span> <span class="nx">margin</span><span class="p">.</span><span class="nx">left</span> <span class="o">+</span> <span class="s2">","</span> <span class="o">+</span> <span class="nx">margin</span><span class="p">.</span><span class="nx">top</span> <span class="o">+</span> <span class="s2">")"</span><span class="p">);</span>
+
+<span class="nt">&lt;/script&gt;</span>
+
+<span class="nt">&lt;/body&gt;</span></code></pre></figure>
+
+<p>Next comes the task of mapping the data to the blank SVG graph. The domain defines the numeric boundaries of our input data while the range maps those values to a particular set of values. Because our data is numeric and continuous, we can use a linear scale for x for total points, y for goal differential, and radius for total goals. In this case, we can look at the data to calculate the domain for each data type. If you have dynamic data or a large data set for example, d3 includes methods to calculate min and max values.</p>
+
+<p>The completed scales are then used to generate axes for x and y dimensions. d3 has many built-in methods to represent visual attributes so here we’ll use a pre-defined 20 pigment color scheme to represent each team. As a last step, the axes we created are appended to the SVG graph and positioned.</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">xScale</span> <span class="o">=</span> <span class="nx">d3</span><span class="p">.</span><span class="nx">scaleLinear</span><span class="p">().</span><span class="nx">domain</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">85</span><span class="p">]).</span><span class="nx">range</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="nx">width</span><span class="p">]);</span>
+<span class="kd">var</span> <span class="nx">yScale</span> <span class="o">=</span> <span class="nx">d3</span><span class="p">.</span><span class="nx">scaleLinear</span><span class="p">().</span><span class="nx">domain</span><span class="p">([</span><span class="o">-</span><span class="mi">60</span><span class="p">,</span> <span class="mi">60</span><span class="p">]).</span><span class="nx">range</span><span class="p">([</span><span class="nx">height</span><span class="p">,</span> <span class="mi">0</span><span class="p">]);</span>
+<span class="kd">var</span> <span class="nx">radScale</span> <span class="o">=</span> <span class="nx">d3</span><span class="p">.</span><span class="nx">scaleLinear</span><span class="p">().</span><span class="nx">domain</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">75</span><span class="p">]).</span><span class="nx">range</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">30</span><span class="p">]);</span>
+
+<span class="kd">var</span> <span class="nx">xAxis</span> <span class="o">=</span> <span class="nx">d3</span><span class="p">.</span><span class="nx">axisBottom</span><span class="p">(</span><span class="nx">xScale</span><span class="p">).</span><span class="nx">tickArguments</span><span class="p">([</span><span class="mi">15</span><span class="p">,</span> <span class="nx">d3</span><span class="p">.</span><span class="nx">format</span><span class="p">(</span><span class="s2">"0"</span><span class="p">)]);</span>
+<span class="kd">var</span> <span class="nx">yAxis</span> <span class="o">=</span> <span class="nx">d3</span><span class="p">.</span><span class="nx">axisLeft</span><span class="p">(</span><span class="nx">yScale</span><span class="p">);</span>
+
+<span class="kd">var</span> <span class="nx">colors</span> <span class="o">=</span> <span class="nx">d3</span><span class="p">.</span><span class="nx">scaleOrdinal</span><span class="p">(</span><span class="nx">d3</span><span class="p">.</span><span class="nx">schemeCategory20</span><span class="p">);</span>
+
+<span class="nx">graph</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="s2">"g"</span><span class="p">)</span>
+	<span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">"class"</span><span class="p">,</span> <span class="s2">"axis"</span><span class="p">)</span>
+	<span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">"transform"</span><span class="p">,</span> <span class="s2">"translate(0,"</span> <span class="o">+</span> <span class="nx">height</span> <span class="o">+</span> <span class="s2">")"</span><span class="p">)</span>
+	<span class="p">.</span><span class="nx">call</span><span class="p">(</span><span class="nx">xAxis</span><span class="p">);</span>
+
+<span class="nx">graph</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="s2">"g"</span><span class="p">)</span>
+	<span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">"class"</span><span class="p">,</span> <span class="s2">"zero axis"</span><span class="p">)</span>
+	<span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">"transform"</span><span class="p">,</span> <span class="s2">"translate(0,"</span> <span class="o">+</span> <span class="nx">yScale</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="s2">")"</span><span class="p">)</span>
+	<span class="p">.</span><span class="nx">call</span><span class="p">(</span><span class="nx">xAxis</span><span class="p">.</span><span class="nx">tickArguments</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="nx">d3</span><span class="p">.</span><span class="nx">format</span><span class="p">(</span><span class="s2">""</span><span class="p">)]).</span><span class="nx">tickSizeOuter</span><span class="p">([</span><span class="mi">0</span><span class="p">]));</span>
+
+<span class="nx">graph</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="s2">"g"</span><span class="p">)</span>
+	<span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">"class"</span><span class="p">,</span> <span class="s2">"axis"</span><span class="p">)</span>
+	<span class="p">.</span><span class="nx">call</span><span class="p">(</span><span class="nx">yAxis</span><span class="p">);</span></code></pre></figure>
+
+<p>Setting text is as simple as appending an SVG text element and then chaining methods to customize the location and content. Like before, we use the <mark>attr()</mark> method so we can set attributes dynamically as opposed to say keeping them in a stylesheet. Each call of <mark>attr()</mark> returns a reference to the selected text element so we can chain them together. We save one of those references to the <mark>label</mark> variable for convenient access since it needs to be updated when we cycle through the data.</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">graph1</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="s2">"text"</span><span class="p">)</span>
+	<span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">"class"</span><span class="p">,</span> <span class="s2">"label"</span><span class="p">)</span>
+	<span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">"text-anchor"</span><span class="p">,</span> <span class="s2">"end"</span><span class="p">)</span>
+	<span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">"x"</span><span class="p">,</span> <span class="nx">width</span><span class="p">)</span>
+	<span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">"y"</span><span class="p">,</span> <span class="nx">height</span> <span class="o">-</span> <span class="mi">10</span><span class="p">)</span>
+	<span class="p">.</span><span class="nx">text</span><span class="p">(</span><span class="s2">"Points"</span><span class="p">);</span>
+
+<span class="nx">graph1</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="s2">"text"</span><span class="p">)</span>
+	<span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">"class"</span><span class="p">,</span> <span class="s2">"label"</span><span class="p">)</span>
+	<span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">"text-anchor"</span><span class="p">,</span> <span class="s2">"end"</span><span class="p">)</span>
+	<span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">"y"</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+	<span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">"dy"</span><span class="p">,</span> <span class="s2">"1.5em"</span><span class="p">)</span>
+	<span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">"transform"</span><span class="p">,</span> <span class="s2">"rotate(-90)"</span><span class="p">)</span>
+	<span class="p">.</span><span class="nx">text</span><span class="p">(</span><span class="s2">"Goal Differential"</span><span class="p">);</span>
+
+<span class="kd">var</span> <span class="nx">label</span> <span class="o">=</span> <span class="nx">graph1</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="s2">"text"</span><span class="p">)</span>
+	<span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">"class"</span><span class="p">,</span> <span class="s2">"label week"</span><span class="p">)</span>
+	<span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">"text-anchor"</span><span class="p">,</span> <span class="s2">"end"</span><span class="p">)</span>
+	<span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">"y"</span><span class="p">,</span> <span class="nx">height</span> <span class="o">-</span> <span class="mi">10</span><span class="p">)</span>
+	<span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">"x"</span><span class="p">,</span> <span class="mi">300</span><span class="p">)</span>
+	<span class="p">.</span><span class="nx">text</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+
+<span class="nx">graph1</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="s2">"text"</span><span class="p">)</span>
+	<span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">"class"</span><span class="p">,</span> <span class="s2">"label"</span><span class="p">)</span>
+	<span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">"text-anchor"</span><span class="p">,</span> <span class="s2">"end"</span><span class="p">)</span>
+	<span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">"y"</span><span class="p">,</span> <span class="nx">height</span> <span class="o">-</span> <span class="mi">10</span><span class="p">)</span>
+	<span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">"x"</span><span class="p">,</span> <span class="mi">340</span><span class="p">)</span>
+	<span class="p">.</span><span class="nx">text</span><span class="p">(</span><span class="s2">"Week"</span><span class="p">);</span></code></pre></figure>
+
+<p>Now that we’ve formatted the graph, it’s time to load data and render the visualization. d3 provides some handy functions to retrieve data in a manner like XMLHttpRequest. You can parse many standard formats in d3 including txt, json, csv, tsv, html, and xml. Our data is in json format and d3’s got a convenience function <mark>d3.json()</mark>. This function sets the media type, asynchronously requests the json file at a url or local path, parses the response text, and returns the data via callback function when complete.</p>
+
+<p>When the function completes, our is json stored in the <mark>data</mark> local variable. With the data available, we can  bind the stats for each premier league team to an SVG circle. We’ll wrap the circles in a g element as a container and then call <mark>data()</mark> with the 1st week of premier league matches.</p>
+
+<p>We choose the week by passing the index into the <mark>interpolateData</mark> function, which uses the map function to return an array of objects with each object corresponding to a team’s name, wins, points, goals, and goalDiff for that week. The next chained function <mark>enter()</mark> creates placeholder DOM elements for each data point (20 in total, 1 for each team) and then <mark>append("circle")</mark> creates a circle element for each. After the data is bound with <mark>data()</mark>, we can create anonymous functions and pass in the data (d) and index (i) for individual datum as we do here for color and position. How cool is that!?</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">function</span> <span class="nx">yPos</span><span class="p">(</span><span class="nx">d</span><span class="p">)</span> <span class="p">{</span>
+	<span class="k">return</span> <span class="nx">d</span><span class="p">.</span><span class="nx">goalDiff</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="kd">function</span> <span class="nx">xPos</span><span class="p">(</span><span class="nx">d</span><span class="p">)</span> <span class="p">{</span>
+	<span class="k">return</span> <span class="nx">d</span><span class="p">.</span><span class="nx">points</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="kd">function</span> <span class="nx">radius</span><span class="p">(</span><span class="nx">d</span><span class="p">)</span> <span class="p">{</span>
+	<span class="k">return</span> <span class="nx">d</span><span class="p">.</span><span class="nx">goals</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="kd">function</span> <span class="nx">position</span><span class="p">(</span><span class="nx">dot</span><span class="p">)</span> <span class="p">{</span>
+	<span class="nx">dot</span><span class="p">.</span><span class="nx">transition</span><span class="p">()</span>
+		<span class="p">.</span><span class="nx">duration</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span>
+		<span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">"cx"</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">d</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="nx">xScale</span><span class="p">(</span><span class="nx">xPos</span><span class="p">(</span><span class="nx">d</span><span class="p">))</span> <span class="p">})</span>
+		<span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">"cy"</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">d</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="nx">yScale</span><span class="p">(</span><span class="nx">yPos</span><span class="p">(</span><span class="nx">d</span><span class="p">))</span> <span class="p">})</span>
+		<span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">"r"</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">d</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="nx">radScale1</span><span class="p">(</span><span class="nx">radius</span><span class="p">(</span><span class="nx">d</span><span class="p">))</span> <span class="p">})</span>
+<span class="p">}</span>
+
+<span class="nx">d3</span><span class="p">.</span><span class="nx">json</span><span class="p">(</span><span class="s2">"./data/epl-results-by-week.json"</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">error</span><span class="p">,</span> <span class="nx">data</span><span class="p">)</span> <span class="p">{</span>
+
+	<span class="k">if</span> <span class="p">(</span><span class="nx">error</span><span class="p">)</span> <span class="p">{</span> <span class="k">throw</span> <span class="nx">error</span><span class="p">;</span> <span class="p">}</span>
+
+	<span class="kd">function</span> <span class="nx">color</span><span class="p">(</span><span class="nx">d</span><span class="p">,</span> <span class="nx">i</span><span class="p">)</span> <span class="p">{</span>
+		<span class="k">return</span> <span class="nx">colors</span><span class="p">(</span><span class="nx">i</span><span class="p">);</span>
+	<span class="p">}</span>
+	<span class="kd">function</span> <span class="nx">interpolateData</span><span class="p">(</span><span class="nx">week</span><span class="p">)</span> <span class="p">{</span>
+		<span class="k">return</span> <span class="nx">data</span><span class="p">.</span><span class="nx">map</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">d</span><span class="p">)</span> <span class="p">{</span>
+			<span class="k">return</span> <span class="p">{</span>
+				<span class="na">name</span><span class="p">:</span> <span class="nx">d</span><span class="p">.</span><span class="nx">name</span><span class="p">,</span>
+				<span class="na">wins</span><span class="p">:</span> <span class="nx">d</span><span class="p">.</span><span class="nx">stats</span><span class="p">[</span><span class="nx">week</span><span class="p">].</span><span class="nx">wins</span><span class="p">,</span>
+				<span class="na">points</span><span class="p">:</span> <span class="nx">d</span><span class="p">.</span><span class="nx">stats</span><span class="p">[</span><span class="nx">week</span><span class="p">].</span><span class="nx">points</span><span class="p">,</span>
+				<span class="na">goals</span><span class="p">:</span> <span class="nx">d</span><span class="p">.</span><span class="nx">stats</span><span class="p">[</span><span class="nx">week</span><span class="p">].</span><span class="nx">goals</span><span class="p">,</span>
+				<span class="na">goalDiff</span><span class="p">:</span> <span class="nx">d</span><span class="p">.</span><span class="nx">stats</span><span class="p">[</span><span class="nx">week</span><span class="p">].</span><span class="nx">goalDiff</span>
+			<span class="p">}</span>
+		<span class="p">})</span>
+	<span class="p">}</span>
+
+	<span class="kd">var</span> <span class="nx">dot</span> <span class="o">=</span> <span class="nx">graph1</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="s2">"g"</span><span class="p">)</span>
+		<span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">"class"</span><span class="p">,</span> <span class="s2">"dot"</span><span class="p">)</span>
+		<span class="p">.</span><span class="nx">selectAll</span><span class="p">(</span><span class="s2">".dot"</span><span class="p">)</span>
+		<span class="p">.</span><span class="nx">data</span><span class="p">(</span><span class="nx">interpolateData</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
+		<span class="p">.</span><span class="nx">enter</span><span class="p">()</span>
+		<span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="s2">"circle"</span><span class="p">)</span>
+		<span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">"fill"</span><span class="p">,</span> <span class="nx">color</span><span class="p">)</span>
+		<span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">"opacity"</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">)</span>
+		<span class="p">.</span><span class="nx">call</span><span class="p">(</span><span class="nx">position</span><span class="p">)</span>
+
+		<span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s2">"mouseover"</span><span class="p">,</span> <span class="nx">mouseover</span><span class="p">)</span>
+		<span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s2">"mouseout"</span><span class="p">,</span> <span class="nx">mouseout</span><span class="p">)</span>
+		<span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s2">"mousemove"</span><span class="p">,</span> <span class="nx">mousemove</span><span class="p">);</span>
+<span class="p">});</span></code></pre></figure>
+
+<p>In the last code segment, we attached mouse event handlers to the circles and here we see why. We make a div that acts as an invisible tooltip that’s revealed on mouseover. Since the position property is set as absolute, we can match the tooltip’s location to the cursor.</p>
+
+<figure class="highlight"><pre><code class="language-css" data-lang="css"><span class="nc">.tooltip</span> <span class="p">{</span>
+	<span class="nl">position</span><span class="p">:</span> <span class="nb">absolute</span><span class="p">;</span>
+	<span class="nl">width</span><span class="p">:</span> <span class="m">150px</span><span class="p">;</span>
+	<span class="nl">height</span><span class="p">:</span> <span class="m">25px</span><span class="p">;</span>
+	<span class="nl">border-radius</span><span class="p">:</span> <span class="m">5px</span><span class="p">;</span>
+	<span class="nl">padding</span><span class="p">:</span> <span class="m">5px</span><span class="p">;</span>
+	<span class="nl">background-color</span><span class="p">:</span> <span class="nb">transparent</span><span class="p">;</span>
+	<span class="nl">color</span><span class="p">:</span> <span class="no">black</span><span class="p">;</span>
+	<span class="nl">text-align</span><span class="p">:</span> <span class="nb">center</span><span class="p">;</span>
+	<span class="nl">opacity</span><span class="p">:</span> <span class="m">0</span><span class="p">;</span>
+	<span class="nl">pointer-events</span><span class="p">:</span> <span class="nb">none</span><span class="p">;</span>
+	<span class="nl">font</span><span class="p">:</span> <span class="m">12px</span> <span class="nb">sans-serif</span><span class="p">;</span>
+<span class="p">}</span></code></pre></figure>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript">	<span class="kd">function</span> <span class="nx">mouseover</span><span class="p">(</span><span class="nx">d</span><span class="p">)</span> <span class="p">{</span>
+		<span class="nx">tooltip1</span><span class="p">.</span><span class="nx">html</span><span class="p">(</span><span class="s2">"&lt;span&gt;&lt;strong&gt;"</span> <span class="o">+</span> <span class="nx">d</span><span class="p">.</span><span class="nx">name</span> <span class="o">+</span> <span class="s2">"&lt;/strong&gt;&lt;/span&gt;"</span><span class="p">)</span>
+		<span class="p">.</span><span class="nx">style</span><span class="p">(</span><span class="s2">"opacity"</span><span class="p">,</span> <span class="s2">"1"</span><span class="p">)</span>
+
+	<span class="p">}</span>
+	<span class="kd">function</span> <span class="nx">mouseout</span><span class="p">()</span> <span class="p">{</span>
+		<span class="nx">tooltip1</span><span class="p">.</span><span class="nx">style</span><span class="p">(</span><span class="s2">"opacity"</span><span class="p">,</span> <span class="s2">"0"</span><span class="p">);</span>
+	<span class="p">}</span>
+	<span class="kd">function</span> <span class="nx">mousemove</span><span class="p">()</span> <span class="p">{</span>
+		<span class="nx">tooltip1</span><span class="p">.</span><span class="nx">style</span><span class="p">(</span><span class="s2">"left"</span><span class="p">,</span> <span class="p">(</span><span class="nx">d3</span><span class="p">.</span><span class="nx">event</span><span class="p">.</span><span class="nx">pageX</span> <span class="o">-</span> <span class="mi">40</span><span class="p">)</span> <span class="o">+</span> <span class="s2">"px"</span><span class="p">)</span>
+				<span class="p">.</span><span class="nx">style</span><span class="p">(</span><span class="s2">"top"</span><span class="p">,</span> <span class="p">(</span><span class="nx">d3</span><span class="p">.</span><span class="nx">event</span><span class="p">.</span><span class="nx">pageY</span> <span class="o">-</span> <span class="mi">20</span><span class="p">)</span> <span class="o">+</span> <span class="s2">"px"</span><span class="p">);</span>
+	<span class="p">}</span>
+
+	<span class="kd">var</span> <span class="nx">tooltip1</span> <span class="o">=</span> <span class="nx">d3</span><span class="p">.</span><span class="nx">select</span><span class="p">(</span><span class="s2">"body"</span><span class="p">)</span>
+		<span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="s2">"div"</span><span class="p">)</span>
+		<span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">"class"</span><span class="p">,</span> <span class="s2">"tooltip"</span><span class="p">)</span>
+		<span class="p">.</span><span class="nx">style</span><span class="p">(</span><span class="s2">"opacity"</span><span class="p">,</span> <span class="s2">"0"</span><span class="p">);</span>		</code></pre></figure>
+
+<p>We’re in the home stretch! At the moment, we’ve displayed the data for the 1st week in the standings. To iterate through the rest of the data, we’ll initialize a timer with <mark>transition()</mark>. Then, within the transition, we create a tween which has a function invoked for each tick of the transition. The eased time t is passed into this function. This t falls between 0 and 1 and takes on a value proportional to how far along we are in the transition. We then interpolate t to our range of week indices 0 - 40 and pass that into <mark>data()</mark> to update the position and order of the circles. <mark>order()</mark> is just used to position overlapping circles based on their radius.</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript">	<span class="kd">var</span> <span class="nx">weeks</span> <span class="o">=</span> <span class="nx">d3</span><span class="p">.</span><span class="nx">interpolateRound</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">40</span><span class="p">);</span>
+
+	<span class="kd">function</span> <span class="nx">order</span><span class="p">(</span><span class="nx">a</span><span class="p">,</span> <span class="nx">b</span><span class="p">)</span> <span class="p">{</span>
+		<span class="k">return</span> <span class="nx">radius</span><span class="p">(</span><span class="nx">a</span><span class="p">)</span> <span class="o">-</span> <span class="nx">radius</span><span class="p">(</span><span class="nx">b</span><span class="p">);</span>
+	<span class="p">}</span>
+	<span class="kd">function</span> <span class="nx">displayWeek</span><span class="p">()</span> <span class="p">{</span>
+		
+		<span class="k">return</span> <span class="kd">function</span><span class="p">(</span><span class="nx">t</span><span class="p">)</span> <span class="p">{</span>
+
+			<span class="nx">dot</span><span class="p">.</span><span class="nx">data</span><span class="p">(</span><span class="nx">interpolateData</span><span class="p">(</span><span class="nx">weeks</span><span class="p">(</span><span class="nx">t</span><span class="p">)))</span>
+			<span class="p">.</span><span class="nx">call</span><span class="p">(</span><span class="nx">position</span><span class="p">)</span>
+			<span class="p">.</span><span class="nx">sort</span><span class="p">(</span><span class="nx">order</span><span class="p">);</span>
+
+			<span class="nx">label</span><span class="p">.</span><span class="nx">text</span><span class="p">(</span><span class="nx">weeks</span><span class="p">(</span><span class="nx">t</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">);</span>
+		<span class="p">}</span>
+	<span class="p">}</span>
+
+	<span class="nx">graph1</span><span class="p">.</span><span class="nx">transition</span><span class="p">()</span>
+		<span class="p">.</span><span class="nx">duration</span><span class="p">(</span><span class="mi">40000</span><span class="p">)</span>
+		<span class="p">.</span><span class="nx">ease</span><span class="p">(</span><span class="nx">d3</span><span class="p">.</span><span class="nx">easeLinear</span><span class="p">)</span>
+		<span class="p">.</span><span class="nx">tween</span><span class="p">(</span><span class="s2">"week"</span><span class="p">,</span> <span class="nx">displayWeek</span><span class="p">);</span></code></pre></figure>
+
+<p>Now we’ve got a working graph that will play out the weeks in order from start to finish. For some bonus points, we can add an overlay to the week label that allows us to cycle through the weeks. <mark>getBBox()</mark> gives us the dimensions of the week label and we append a rectangle with those dimension and attach a mouseover listener. On a mouseover event, we set a range for the width of the rectangle and then use the cursor location to determine which week to display.</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript">	<span class="kd">function</span> <span class="nx">enableInteraction</span><span class="p">()</span> <span class="p">{</span>
+
+		<span class="kd">var</span> <span class="nx">weekScale</span> <span class="o">=</span> <span class="nx">d3</span><span class="p">.</span><span class="nx">scaleLinear</span><span class="p">()</span>
+			<span class="p">.</span><span class="nx">domain</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">40</span><span class="p">])</span>
+			<span class="p">.</span><span class="nx">range</span><span class="p">([</span><span class="nx">rect</span><span class="p">.</span><span class="nx">x</span><span class="p">,</span> <span class="nx">rect</span><span class="p">.</span><span class="nx">x</span> <span class="o">+</span> <span class="nx">rect</span><span class="p">.</span><span class="nx">width</span><span class="p">])</span>
+			<span class="p">.</span><span class="nx">clamp</span><span class="p">(</span><span class="kc">true</span><span class="p">)</span>
+
+		<span class="nx">graph1</span><span class="p">.</span><span class="nx">interrupt</span><span class="p">();</span>
+
+		<span class="nx">overlay</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s2">"mousemove"</span><span class="p">,</span> <span class="nx">scrollWeek</span><span class="p">);</span>
+
+		<span class="kd">function</span> <span class="nx">scrollWeek</span><span class="p">()</span> <span class="p">{</span>
+
+			<span class="kd">var</span> <span class="nx">week</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">round</span><span class="p">(</span><span class="nx">weekScale</span><span class="p">.</span><span class="nx">invert</span><span class="p">(</span><span class="nx">d3</span><span class="p">.</span><span class="nx">mouse</span><span class="p">(</span><span class="k">this</span><span class="p">)[</span><span class="mi">0</span><span class="p">]));</span>
+
+			<span class="nx">dot</span><span class="p">.</span><span class="nx">data</span><span class="p">(</span><span class="nx">interpolateData</span><span class="p">(</span><span class="nx">week</span><span class="p">))</span>
+			<span class="p">.</span><span class="nx">call</span><span class="p">(</span><span class="nx">position</span><span class="p">)</span>
+			<span class="p">.</span><span class="nx">sort</span><span class="p">(</span><span class="nx">order</span><span class="p">);</span>
+
+			<span class="nx">label</span><span class="p">.</span><span class="nx">text</span><span class="p">(</span><span class="nx">week</span> <span class="o">+</span> <span class="mi">1</span><span class="p">);</span>
+		<span class="p">}</span>
+	<span class="p">}</span>
+
+	<span class="kd">var</span> <span class="nx">rect</span> <span class="o">=</span> <span class="nx">label</span><span class="p">.</span><span class="nx">node</span><span class="p">().</span><span class="nx">getBBox</span><span class="p">();</span>
+
+	<span class="kd">var</span> <span class="nx">overlay</span> <span class="o">=</span> <span class="nx">graph1</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="s2">"rect"</span><span class="p">)</span>
+		<span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">"class"</span><span class="p">,</span> <span class="s2">"overlay"</span><span class="p">)</span>
+		<span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">"x"</span><span class="p">,</span> <span class="nx">rect</span><span class="p">.</span><span class="nx">x</span> <span class="o">-</span> <span class="mi">30</span><span class="p">)</span>
+		<span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">"y"</span><span class="p">,</span> <span class="nx">rect</span><span class="p">.</span><span class="nx">y</span><span class="p">)</span>
+		<span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">"width"</span><span class="p">,</span> <span class="nx">rect</span><span class="p">.</span><span class="nx">width</span> <span class="o">+</span> <span class="mi">75</span><span class="p">)</span>
+		<span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">"height"</span><span class="p">,</span> <span class="nx">rect</span><span class="p">.</span><span class="nx">height</span><span class="p">)</span>
+		<span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">"style"</span><span class="p">,</span> <span class="s2">"pointer-events: all"</span><span class="p">)</span>
+		<span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s2">"mouseover"</span><span class="p">,</span> <span class="nx">enableInteraction</span><span class="p">);</span></code></pre></figure>
+
+<p>Congrats! We’ve built an interactive visualization with d3.js. Hopefully this showed just how powerful and versatile the d3 library is and this is just a sampling of what’s possible with d3. See the full project on <a href="https://github.com/jmcilhargey/premier-league-2015-d3">GitHub</a></p>
+
+<p>It’s cool to take note of some trends that developed during the 2015 season. We can see how Manchester City took an early lead, how Leicester emerged in the top spot mid-season, how Manchester United was actually fortunate to finish 5th, and how the final positions appear clustered into 3 groups (with Aston Villa in the rear).</p>
+
+  </div>
+  <p class="article-date">
+    <time datetime="2016-08-12T00:00:00-07:00" itemprop="datePublished">Aug 12, 2016</time>
+    
+  </p>
+</article>
+
+      </div>
+    </main>
+    <footer class="footer">
+  <ul>
+    <li>Created by Joe McIlhargey - 2016.</li>
+    <li>Some projects inspired by Freecodecamp, Udacity, and Codecademy</li>
+  </ul>
+</footer>
+	<script src="../../scripts/button.min.js"></script>
+  </body>
+</html>

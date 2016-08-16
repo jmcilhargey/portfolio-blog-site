@@ -3,8 +3,8 @@
   <channel>
     <title>Articles</title>
     <description>Sharing ongoing projects, beginner tutorials, and articles on various technologies</description>
-    <link>http://localhost:4000/articles/articles/</link>
-    <atom:link href="http://localhost:4000/articles/articles/feed.xml" rel="self" type="application/rss+xml"/>
+    <link>http://joemcilhargey.com/articles/articles/</link>
+    <atom:link href="http://joemcilhargey.com/articles/feed.xml" rel="self" type="application/rss+xml"/>
     <pubDate>Fri, 05 Aug 2016 18:58:45 -0700</pubDate>
     <lastBuildDate>Fri, 05 Aug 2016 18:58:45 -0700</lastBuildDate>
     <generator>Jekyll v3.1.6</generator>
@@ -873,8 +873,8 @@
 &lt;p&gt;Check out the completed source code on GitHub and feel free to use the code however you’d like. Thanks for reading!&lt;/p&gt;
 </description>
         <pubDate>Wed, 03 Aug 2016 00:00:00 -0700</pubDate>
-        <link>http://localhost:4000/articles/articles/building-pacman-in-java</link>
-        <guid isPermaLink="true">http://localhost:4000/articles/articles/building-pacman-in-java</guid>
+        <link>http://joemcilhargey.com/articles/building-pacman-in-java</link>
+        <guid isPermaLink="true">http://joemcilhargey.com/articles/building-pacman-in-java</guid>
         
         
         <category>tutorial,</category>
@@ -908,7 +908,7 @@
 
 &lt;p&gt;To create the map, we can either generate the strings in the program or store them in an outside file. Here we create a text file although you could just as easily compute the game map in a function. A cool modification might be to create a base map and then implement a random generator to place aliens and obstacles on the map.&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;http://localhost:4000/articles/img/map.png&quot; alt=&quot;Space Invaders Map&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://joemcilhargey.com/articles/img/map.png&quot; alt=&quot;Space Invaders Map&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;With a plain text map.txt above, we can now create a file stream object to read the file line-by-line into a vector of strings.&lt;/p&gt;
 
@@ -1264,13 +1264,13 @@
     &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
 &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
 
-&lt;p&gt;&lt;img src=&quot;http://localhost:4000/articles/imgs/gameplay.png&quot; alt=&quot;Space Invaders Gameplay&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://joemcilhargey.com/articles/imgs/gameplay.png&quot; alt=&quot;Space Invaders Gameplay&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;Congrats, we’ve built a complete and functional version of Space Invaders! We kept our code modular and efficient so it’s easy to update and enhance. With a bit more work, we could improve the game by adding levels and score keeping. You can check out the completed code on &lt;a href=&quot;https://github.com/jmcilhargey/space-invaders/blob/master/main.cpp&quot;&gt;GitHub&lt;/a&gt;.&lt;/p&gt;
 </description>
         <pubDate>Tue, 26 Jul 2016 00:00:00 -0700</pubDate>
-        <link>http://localhost:4000/articles/articles/building-space-invaders-in-c</link>
-        <guid isPermaLink="true">http://localhost:4000/articles/articles/building-space-invaders-in-c</guid>
+        <link>http://joemcilhargey.com/articles/building-space-invaders-in-c</link>
+        <guid isPermaLink="true">http://joemcilhargey.com/articles/building-space-invaders-in-c</guid>
         
         
         <category>tutorial,</category>

@@ -3,14 +3,11 @@
 var angular = require("angular");
 
 angular.module("portfolioApp", ["ui.router"])
-	.config(function($stateProvider, $urlRouterProvider) {
-
-		//$urlRouterProvider
-		//	.otherwise("/");
+	.config(["$stateProvider", "$urlRouterProvider", function($stateProvider, $urlRouterProvider) {
 
 		$stateProvider
 			.state("articles", {
 				url: "/articles",
-				templateUrl: "articles/index.html",
+				templateUrl: "articles/index.html"
 			});
-	});
+	}]);
