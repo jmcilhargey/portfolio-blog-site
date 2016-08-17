@@ -3,3 +3,4 @@ src/seed.js
 npm-debug.log
 .DS_Store
 /*.env
+minify.js

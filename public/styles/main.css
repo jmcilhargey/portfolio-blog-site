@@ -38,7 +38,7 @@ img, video {
 body {
   margin: 0;
   font-family: 'Source Sans Pro', sans-serif;
-  color: rgba(0, 0, 0, 0.75);
+  color: #424242;
   background-color: white;
   font-size: 1em;
   letter-spacing: 0.01em;
@@ -53,12 +53,6 @@ body {
   min-height: 100vh;
 }
 
-svg {
-  height: 28px;
-  width: 28px;
-  fill: rgba(0, 0, 0, 0.65);
-}
-
 /* Header */
 
 .header-wrapper {
@@ -69,7 +63,7 @@ svg {
 .site-header {
   padding: 1.5em 2em;
   background-color: #dce1e9;
-  color: rgba(0, 0, 0, 0.65);
+  color: #616161;
   display: flex;
   display: -webkit-flex;
   display: -ms-flexbox;
@@ -191,6 +185,12 @@ svg {
   position: relative;
 }
 
+.nav-menu svg {
+  width: 36px;
+  height: 36px;
+  fill: #616161;
+}
+
 .nav-menu:hover {
   cursor: pointer; 
 }
@@ -207,6 +207,9 @@ svg {
 }
 
 .nav-socials svg {
+  height: 28px;
+  width: 28px;
+  fill: rgba(0, 0, 0, 0.65);
   transition: fill 0.25s ease-in;
   -webkit-transition: fill 0.25s ease-in;
 }
@@ -305,7 +308,6 @@ svg {
 
 .project-summary {
   margin: 0 0.5em;
-  color: #404040;
 }
 
 .grid-project a:hover .project-image,
@@ -379,7 +381,7 @@ section:before {
 .article-date { 
   font-style: italic;
   font-size: 0.9em;
-  color: rgba(0, 0, 0, 0.5);
+  color: #757575;
 }
 
 .article-link {
@@ -425,7 +427,7 @@ section:before {
 .footer {
   font-weight: 300;
   padding: 1.5em;
-  color: white;
+  color: #fff;
   background-color: #273043;
   text-align: center;
 }
