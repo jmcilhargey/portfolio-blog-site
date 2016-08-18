@@ -1,0 +1,6 @@
+{
+  "GCLOUD_PROJECT": "joe-mcilhargey",
+  "DATA_BACKEND": "mongodb",
+  "MONGO_URL": "mongodb://portfolio-1-server-1:27017/portfolio",
+  "MONGO_COLLECTION": "projects"
+}

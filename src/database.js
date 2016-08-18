@@ -8,4 +8,4 @@ mongoose.connect(process.env.DATABASE_URL, function(err) {
 	} else {
 		console.log("Connected to MongoDB")
 	}
-})
+});
