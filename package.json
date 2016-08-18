@@ -18,7 +18,7 @@
   },
   "engines": {
     "node": ">=4.4.5",
-    "npm": "~2.15.5"
+    "npm": ">=3.10.3"
   },
   "devDependencies": {
     "webpack": "^1.13.1",
