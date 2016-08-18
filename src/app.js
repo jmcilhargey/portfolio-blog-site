@@ -1,7 +1,10 @@
 "use strict";
 
+require('dotenv').config();
+
 var express = require("express");
-var router = require("./api")
+var compression = require("compression");
+var router = require("./api");
 
 var app = express();
 
@@ -12,12 +15,19 @@ var forceSSL = function(req, res, next) {
 	return next();
 };
 
-require("./database");
-require("./seed");
-
 if (process.env.NODE_ENV || "development" === "production") {
 	app.use(forceSSL);
 }
+
+app.use(function(err, req, res, next) {
+  	res.status(500);
+  	res.render('error', { error: err });
+});
+
+app.use(compression());
+
+require("./database");
+require("./seed");
 
 app.use("/", express.static("public"));
 

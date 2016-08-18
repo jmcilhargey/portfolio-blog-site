@@ -11,12 +11,14 @@
   "dependencies": {
     "angular": "^1.5.8",
     "angular-ui-router": "^0.3.1",
+    "compression": "^1.6.2",
     "express": "^4.14.0",
-    "mongoose": "4.5.7"
+    "mongoose": "4.5.7",
+    "redis": "^2.6.2"
   },
-  "engines" : { 
-    "node" : ">=4.4.5",
-    "npm" : "~2.15.5"
+  "engines": {
+    "node": ">=4.4.5",
+    "npm": "~2.15.5"
   },
   "devDependencies": {
     "webpack": "^1.13.1",
