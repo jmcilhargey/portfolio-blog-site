@@ -7,19 +7,19 @@ var projects = [
 		"title": "Local Nightlife",
 		"link": "https://local-nightlife.herokuapp.com/",		
 		"pic": "https://dl.dropboxusercontent.com/u/63260308/Portfolio/Images/nightlife_app.png",
-		"desc": "Uses Yelp's API and Google Oauth to search for local events and then allows authenticated users to RSVP and see list of attendees. Built on the MEAN stack."
-	},	
+		"desc": "Uses Yelp's API and Google OAuth to allow users to search for events by city. Authenticated users can to RSVP for events and see a list of other attendees. Built on the MEAN stack."
+	},
 	{
 		"title": "Gold Medals",
 		"link": "https://olympic-medals.herokuapp.com/",		
 		"pic": "https://dl.dropboxusercontent.com/u/63260308/Portfolio/Images/olympics.png",
-		"desc": "Olympic medal tracker built with the MEAN stack that stores gold medal winners and allows new medals to be added for Summer Games 2016!"
+		"desc": "Olympic medal tracker built with the MEAN stack that stores gold medal winners by event. A d3.js graph breaks down the winners by country and date as the games develop"
 	},
 	{
 		"title": "Easy Polls",
 		"link": "https://voting-polling-app.herokuapp.com/",		
 		"pic": "https://dl.dropboxusercontent.com/u/63260308/Portfolio/Images/votingapp.png",
-		"desc": "Create, vote, and share polls on any topic. View a d3 bar chart that gives a breakdown of votes. Built on the MEAN stack with authentication through Github."
+		"desc": "An app to create, vote, and share polls on any topic. A d3.js bar chart that gives a breakdown of votes for each poll. Users can also randomly generate polls Built on the MEAN stack with authentication through Github."
 	},
 	{
 		"title": "Simon",
