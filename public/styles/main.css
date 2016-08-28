@@ -1,7 +1,3 @@
----
-
----
-
 * {
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -273,7 +269,7 @@ body {
   -webkit-flex: 1 1 auto;
   -webkit-box-flex: 1 1 auto;
   -ms-flex: 1 1 auto;
-  margin: 1em
+  margin: 1em;
 }
 
 @media screen and (min-width: 54em) {
@@ -398,7 +394,6 @@ section:before {
   display: block;
   margin: 0 auto 2em;
   max-width: 100%;
-  max-height: 300px;
   opacity: 0.95;
 }
 
@@ -452,7 +447,7 @@ code {
   margin: 0 0 2em;
   border: none;
   border-radius: 3px;
-  background-color: #f7f7f7;
+  background-color: #f2f4f0;
   tab-size: 4;
 }
 
@@ -467,7 +462,7 @@ code {
 }
 
 .highlight .hll {
-  background-color: #ffffcc
+  background-color: #ffffcc;
 }
 
 .highlight .c,
@@ -480,7 +475,7 @@ code {
 }
 .highlight .err {
   color: #a40000; 
-  border: 1px solid #ffcdd2
+  border: 1px solid #ffcdd2;
 }
 
 .highlight .g,
@@ -502,7 +497,7 @@ code {
 .highlight .vc,
 .highlight .vg,
 .highlight .vi {
-  color: #424242
+  color: #424242;
 }
 
 .highlight .k,
@@ -515,7 +510,7 @@ code {
 .highlight .nb,
 .highlight .nt,
 .highlight .ow {
-  color: #1976D2;
+  color: #1976d2;
 }
 
 .highlight .o {
@@ -525,17 +520,17 @@ code {
 
 .highlight .gd,
 .highlight .gt {
-  color: #b71c1c
+  color: #b71c1c;
 }
 .highlight .gr {
-  color: #e53935
+  color: #e53935;
 }
 
 .highlight .gh {
   color: #039be5;
 }
 .highlight .gi {
-  color: #00c853
+  color: #00c853;
 }
 .highlight .gu {
   color: #6200ea;
@@ -547,7 +542,7 @@ code {
 .highlight .mi,
 .highlight .mo,
 .highlight .il {
-  color: #01579b;
+  color: #283593;
 }
 
 .highlight .s,
@@ -561,10 +556,10 @@ code {
 .highlight .ss,
 .highlight .sb,
 .highlight .sc {
-  color: #00c853
+  color: #00c853;
 }
 .highlight .na {
-  color: #ab47bc
+  color: #ab47bc;
 }
 
 .highlight .nd {
@@ -572,13 +567,13 @@ code {
 }
 
 .highlight .ni {
-  color: #e65100
+  color: #e65100;
 }
 .highlight .ne {
   color: #d50000;
 }
 .highlight .nl {
-  color: #ff9800
+  color: #c2185b;
 }
 
 .highlight .w {
@@ -591,5 +586,5 @@ code {
 }
 
 .highlight .bp {
-  color: #01579b
+  color: #01579b;
 }
