@@ -1,0 +1,858 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Programming a Talented Slack Bot in Node</title>
+  <meta name="description" content="This year Amazon’s Echo brought the convenience of AI into homes and Google’s Deep Mind demonstrated the power of machine learning. The commercialization and...">
+  <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400" rel="stylesheet">
+  <link rel="stylesheet" href="../../styles/main.css">
+  <link rel="canonical" href="https://www.joemcilhargey.com/articles/programming-a-talented-slack-bot-in-node">
+  <link rel="alternate" type="application/rss+xml" title="Articles" href="https://www.joemcilhargey.com/articles/feed.xml">
+</head>
+
+  <body>
+    <svg display="none">
+	<defs>
+		<g id="svg-menu">
+		 	<path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.031C17.335,0,18,0.665,18,1.484L18,1.484z"/>
+	      	<path d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484 h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z"/>
+	      	<path d="M18,13.516C18,14.335,17.335,15,16.516,15H1.484C0.665,15,0,14.335,0,13.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.031C17.335,12.031,18,12.696,18,13.516L18,13.516z"/>
+		</g>
+		<g id="svg-github">
+			<path d="M1664 896q0 251-146.5 451.5t-378.5 277.5q-27 5-39.5-7t-12.5-30v-211q0-97-52-142 57-6 102.5-18t94-39 81-66.5 53-105 20.5-150.5q0-121-79-206 37-91-8-204-28-9-81 11t-92 44l-38 24q-93-26-192-26t-192 26q-16-11-42.5-27t-83.5-38.5-86-13.5q-44 113-7 204-79 85-79 206 0 85 20.5 150t52.5 105 80.5 67 94 39 102.5 18q-40 36-49 103-21 10-45 15t-57 5-65.5-21.5-55.5-62.5q-19-32-48.5-52t-49.5-24l-20-3q-21 0-29 4.5t-5 11.5 9 14 13 12l7 5q22 10 43.5 38t31.5 51l10 23q13 38 44 61.5t67 30 69.5 7 55.5-3.5l23-4q0 38 .5 89t.5 54q0 18-13 30t-40 7q-232-77-378.5-277.5t-146.5-451.5q0-209 103-385.5t279.5-279.5 385.5-103 385.5 103 279.5 279.5 103 385.5z"/>
+		</g>
+		<g id="svg-freecodecamp">
+			<path d="M1600 1696v64q0 13-9.5 22.5t-22.5 9.5h-1344q-13 0-22.5-9.5t-9.5-22.5v-64q0-13 9.5-22.5t22.5-9.5h1344q13 0 22.5 9.5t9.5 22.5zm-256-1056q0 78-24.5 144t-64 112.5-87.5 88-96 77.5-87.5 72-64 81.5-24.5 96.5q0 96 67 224l-4-1 1 1q-90-41-160-83t-138.5-100-113.5-122.5-72.5-150.5-27.5-184q0-78 24.5-144t64-112.5 87.5-88 96-77.5 87.5-72 64-81.5 24.5-96.5q0-94-66-224l3 1-1-1q90 41 160 83t138.5 100 113.5 122.5 72.5 150.5 27.5 184z"/>
+		</g>
+		<g id="svg-linkedin">
+			<path d="M477 625v991h-330v-991h330zm21-306q1 73-50.5 122t-135.5 49h-2q-82 0-132-49t-50-122q0-74 51.5-122.5t134.5-48.5 133 48.5 51 122.5zm1166 729v568h-329v-530q0-105-40.5-164.5t-126.5-59.5q-63 0-105.5 34.5t-63.5 85.5q-11 30-11 81v553h-329q2-399 2-647t-1-296l-1-48h329v144h-2q20-32 41-56t56.5-52 87-43.5 114.5-15.5q171 0 275 113.5t104 332.5z"/>
+		</g>
+	</defs>
+</svg>
+    <div class="header-wrapper">
+  <header class="site-header">
+    <div class="header-name">
+      <h2><a href="/">Joe McIlhargey</a></h2>
+      <small>Full Stack Developer</small>
+    </div>
+    <nav class="header-nav">
+      <ul class="nav-pages">
+        <li><a href="/">Projects</a></li>
+        <li><a href="/articles/index.html">Articles</a></li>
+        <li><a href="/about">About</a></li>
+      </ul>
+      <ul class="nav-socials">
+        <li>
+          <a class="socials-github" href="https://github.com/jmcilhargey">
+            <svg viewBox="0 0 1792 1792" xmlns="http://www.w3.org/2000/svg">
+              <use xlink:href="#svg-github"/>
+            </svg>
+          </a>
+        </li>
+        <li>
+          <a class="socials-linkedin" href="https://www.linkedin.com/in/joemcilhargey">
+            <svg viewBox="0 0 1792 1792" xmlns="http://www.w3.org/2000/svg">
+              <use xlink:href="#svg-linkedin"/>
+            </svg>
+          </a>
+        </li>
+        <li>
+          <a class="socials-freecodecamp" href="http://www.freecodecamp.com/jmcilhargey">
+            <svg viewBox="0 0 1792 1792" xmlns="http://www.w3.org/2000/svg">
+              <use xlink:href="#svg-freecodecamp"/>
+            </svg>
+          </a>
+        </li>
+      </ul>
+    </nav>
+    <button class="nav-menu" onclick="toggleDrawerMenu(this,event)" ontouchstart="toggleDrawerMenu(this,event)">
+      <svg viewBox="0 0 18 15">
+        <use xlink:href="#svg-menu" />
+      </svg>
+    </button>
+  </header>
+</div>
+    <main class="site-content">
+      <div class="article-container">
+        <article class="article-entry" itemscope itemtype="http://schema.org/BlogPosting">
+  <header class="article-header">
+
+    <h1 class="article-title" itemprop="name headline">Programming a Talented Slack Bot in Node</h1>
+  </header>
+
+  <div class="article-content" itemprop="articleBody">
+    <p>This year Amazon’s Echo brought the convenience of AI into homes and Google’s Deep Mind demonstrated the power of machine learning. The commercialization and advancement of these technologies suggests there’s more to come. We can program a bot of our own that will tell us the weather, fetch news and stock prices, calculate travel times and even request an Uber to come pick us up.</p>
+
+<p>Slack is an online cloud-based tool used by teams and companies to faciliate and organize communication. We’ll use the RTM (Real Time Messaging) API to establish a websocket connection between Slack and our Node.js server. Websockets allow us to send and receive chat data in a continuous fashion. Although there are Node libraries for Slack, we can build our own with a few lines of code and in doing so better learn how the API works.</p>
+
+<p>Let’s start by initiating a new session with the RTM API. On successful authentication, the API passes back a JSON result with info about our bots, users, and channels. We’re also given a websocket URL used to connect with the message server. RTM authentication requires an API token, so we must first sign up with Slack and create a new bot <a href="https://my.slack.com/services/new/bot">here</a>.</p>
+
+<p>Because we’re accessing a multiple APIs, we’ll create modules to organize and separate our code into parts. To start, we’ll make a helper function join URL parameters for HTTP/HTTPS GET requests. Our method takes an object with parameters and returns a URL-encoded string.</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="s2">"use strict"</span><span class="p">;</span>
+
+<span class="nx">module</span><span class="p">.</span><span class="nx">exports</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">object</span><span class="p">)</span> <span class="p">{</span>
+
+	<span class="k">if</span> <span class="p">(</span><span class="k">typeof</span> <span class="nx">object</span> <span class="o">===</span> <span class="s2">"object"</span> <span class="o">&amp;&amp;</span> <span class="nx">object</span> <span class="o">!==</span> <span class="kc">null</span><span class="p">)</span> <span class="p">{</span>
+
+		<span class="k">return</span> <span class="nb">Object</span><span class="p">.</span><span class="nx">keys</span><span class="p">(</span><span class="nx">object</span><span class="p">).</span><span class="nx">map</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">key</span><span class="p">)</span> <span class="p">{</span>
+
+			<span class="kd">var</span> <span class="nx">string</span> <span class="o">=</span> <span class="nb">encodeURIComponent</span><span class="p">(</span><span class="nx">key</span><span class="p">)</span> <span class="o">+</span> <span class="s2">"="</span><span class="p">;</span>
+
+			<span class="k">if</span> <span class="p">(</span><span class="nb">Array</span><span class="p">.</span><span class="nx">isArray</span><span class="p">(</span><span class="nx">object</span><span class="p">[</span><span class="nx">key</span><span class="p">]))</span> <span class="p">{</span>
+				<span class="k">return</span> <span class="nx">object</span><span class="p">[</span><span class="nx">key</span><span class="p">].</span><span class="nx">map</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">element</span><span class="p">)</span> <span class="p">{</span>
+					<span class="k">return</span> <span class="nx">string</span> <span class="o">+</span> <span class="nb">encodeURIComponent</span><span class="p">(</span><span class="nx">element</span><span class="p">);</span>
+				<span class="p">}).</span><span class="nx">join</span><span class="p">(</span><span class="s2">"&amp;"</span><span class="p">);</span>
+
+			<span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+				<span class="k">return</span> <span class="nx">string</span> <span class="o">+</span> <span class="nb">encodeURIComponent</span><span class="p">(</span><span class="nx">object</span><span class="p">[</span><span class="nx">key</span><span class="p">]);</span>
+			<span class="p">}</span>
+		<span class="p">}).</span><span class="nx">join</span><span class="p">(</span><span class="s2">"&amp;"</span><span class="p">);</span>
+	<span class="p">}</span>
+<span class="p">}</span></code></pre></figure>
+
+<p>With our helper function and bot token, we’re ready to connect to the RTM API. The code below uses the built-in HTTPS method in Node. Our response object listens for data events. Data is streamed over in chunks of binary data and stored in a buffer object, which we can convert into readable strings with <mark>toString()</mark>. When the stream ends, we parse the string as a JSON since we know this is Slack formats the data.</p>
+
+<p>We’re using a Javascript promise constructor to store the results of our HTTPS call. This is a handy way to pass back the data <mark>resolve()</mark> or error <mark>reject()</mark> to our main script that we’ll build next. A promise object holds the results of our asynchronous HTTPS request when it completes. By returning a promise, we can use its <mark>.then()</mark> method to handle the result in our main script. We’ll see how this allows for organized and readable code structure as we start adding APIs to our websocket connection.</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="s2">"use strict"</span><span class="p">;</span>
+
+<span class="kd">var</span> <span class="nx">https</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s2">"https"</span><span class="p">);</span>
+<span class="kd">var</span> <span class="nx">qs</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s2">"./querystring"</span><span class="p">);</span>
+
+<span class="nx">module</span><span class="p">.</span><span class="nx">exports</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">token</span><span class="p">)</span> <span class="p">{</span>
+
+	<span class="kd">var</span> <span class="nx">slackProperties</span> <span class="o">=</span> <span class="p">{</span>
+		<span class="na">token</span><span class="p">:</span> <span class="nx">token</span><span class="p">,</span>
+		<span class="na">simple_latest</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+		<span class="na">no_unreads</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+		<span class="na">pretty</span><span class="p">:</span> <span class="mi">1</span>
+	<span class="p">};</span>
+
+	<span class="kd">var</span> <span class="nx">httpsOptions</span> <span class="o">=</span> <span class="p">{</span>
+		<span class="na">hostname</span><span class="p">:</span> <span class="s2">"slack.com"</span><span class="p">,</span>
+		<span class="na">port</span><span class="p">:</span> <span class="mi">443</span><span class="p">,</span>
+		<span class="na">path</span><span class="p">:</span> <span class="s2">"/api/rtm.start?"</span> <span class="o">+</span> <span class="nx">qs</span><span class="p">(</span><span class="nx">slackProperties</span><span class="p">),</span>
+		<span class="na">method</span><span class="p">:</span> <span class="s2">"GET"</span>
+	<span class="p">};</span>
+
+	<span class="kd">var</span> <span class="nx">promise</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Promise</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">resolve</span><span class="p">,</span> <span class="nx">reject</span><span class="p">)</span> <span class="p">{</span>
+
+		<span class="kd">var</span> <span class="nx">request</span> <span class="o">=</span> <span class="nx">https</span><span class="p">.</span><span class="nx">request</span><span class="p">(</span><span class="nx">httpsOptions</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">response</span><span class="p">)</span> <span class="p">{</span>
+
+			<span class="kd">var</span> <span class="nx">string</span> <span class="o">=</span> <span class="s2">""</span><span class="p">;</span>
+
+			<span class="nx">response</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s2">"error"</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">error</span><span class="p">)</span> <span class="p">{</span>
+				<span class="nx">reject</span><span class="p">(</span><span class="s2">"responseError: "</span> <span class="o">+</span> <span class="nx">error</span><span class="p">);</span>
+			<span class="p">});</span>
+
+			<span class="nx">response</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s2">"data"</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">chunk</span><span class="p">)</span> <span class="p">{</span>
+				<span class="nx">string</span> <span class="o">+=</span> <span class="nx">chunk</span><span class="p">.</span><span class="nx">toString</span><span class="p">(</span><span class="s2">"utf-8"</span><span class="p">);</span>
+			<span class="p">});</span>
+
+			<span class="nx">response</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s2">"end"</span><span class="p">,</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+				<span class="nx">resolve</span><span class="p">(</span><span class="nx">JSON</span><span class="p">.</span><span class="nx">parse</span><span class="p">(</span><span class="nx">string</span><span class="p">));</span>
+			<span class="p">});</span>
+		<span class="p">});</span>
+		<span class="nx">request</span><span class="p">.</span><span class="nx">end</span><span class="p">();</span>
+
+		<span class="nx">request</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s1">'error'</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">error</span><span class="p">)</span> <span class="p">{</span>
+		 	<span class="nx">reject</span><span class="p">(</span><span class="s2">"requestError: "</span> <span class="o">+</span> <span class="nx">error</span><span class="p">);</span>
+		<span class="p">});</span>
+	<span class="p">});</span>
+	<span class="k">return</span> <span class="nx">promise</span><span class="p">;</span>
+<span class="p">};</span></code></pre></figure>
+
+<p>Sweet! We can <mark>console.log()</mark> the response from Slack and see that we get a unique websocket URL under the “url” key. Let’s import the method from the <mark>session.js</mark> file we just built and chain the <mark>.then()</mark> method to the promise. Then install and import the <mark>ws</mark> library and construct a new client to server websocket connection with <mark>data.url</mark>.</p>
+
+<p>Now that we’re connected with our Slack account, we can listen for message events that have specific content to trigger actions. We’ll start plugging in APIs and have our websocket listen for keywords to trigger data requests.</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="s2">"use strict"</span><span class="p">;</span>
+
+<span class="nx">require</span><span class="p">(</span><span class="s2">"./env"</span><span class="p">);</span>
+
+<span class="kd">var</span> <span class="nx">WebSocket</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s2">"ws"</span><span class="p">);</span>
+<span class="kd">var</span> <span class="nx">slackConnect</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s2">"./session"</span><span class="p">);</span>
+
+<span class="nx">slackConnect</span><span class="p">(</span><span class="nx">process</span><span class="p">.</span><span class="nx">env</span><span class="p">.</span><span class="nx">BOT_KEY</span><span class="p">).</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">data</span><span class="p">)</span> <span class="p">{</span>
+
+	<span class="kd">var</span> <span class="nx">ws</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">WebSocket</span><span class="p">(</span><span class="nx">data</span><span class="p">.</span><span class="nx">url</span><span class="p">);</span>
+
+	<span class="nx">ws</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s2">"open"</span><span class="p">,</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+		<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">"Connected to Slack!"</span><span class="p">);</span>
+	<span class="p">});</span>
+
+	<span class="kd">var</span> <span class="nx">id</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+
+	<span class="nx">ws</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s2">"message"</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">message</span><span class="p">)</span> <span class="p">{</span>
+
+		<span class="k">try</span> <span class="p">{</span>
+			<span class="kd">var</span> <span class="nx">messageJSON</span> <span class="o">=</span> <span class="nx">JSON</span><span class="p">.</span><span class="nx">parse</span><span class="p">(</span><span class="nx">message</span><span class="p">);</span>
+		<span class="p">}</span> <span class="k">catch</span><span class="p">(</span><span class="nx">error</span><span class="p">)</span> <span class="p">{</span>
+			<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">error</span><span class="p">);</span>
+		<span class="p">}</span>
+
+		<span class="kd">var</span> <span class="nx">messageText</span> <span class="o">=</span> <span class="nx">messageJSON</span><span class="p">.</span><span class="nx">text</span> <span class="o">||</span> <span class="s2">""</span><span class="p">;</span>
+
+		<span class="c1">// Here's where our conditionals will go</span>
+
+	<span class="p">});</span>
+
+	<span class="nx">ws</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s2">"error"</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">error</span><span class="p">)</span> <span class="p">{</span>
+		<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">error</span><span class="p">);</span>
+	<span class="p">});</span>
+
+<span class="p">},</span> <span class="kd">function</span><span class="p">(</span><span class="nx">error</span><span class="p">)</span> <span class="p">{</span>
+	<span class="k">throw</span> <span class="nx">error</span><span class="p">;</span>
+<span class="p">});</span></code></pre></figure>
+
+<p>When a message is sent in chat, the content is broadcasted to our websocket in the form of an object. This object not only contains the message text, but also who sent the message and what channel the message was sent on. Let’s start by creating and importing a module to request top stories from the New York Times. NYT has a ton of free APIs and we can grab our key <a href="https://developer.nytimes.com/">here</a>. We’ll wrap our scripts in a IIFE</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="s2">"use strict"</span><span class="p">;</span>
+
+<span class="kd">var</span> <span class="nx">https</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s2">"https"</span><span class="p">);</span>
+<span class="kd">var</span> <span class="nx">qs</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s2">"../querystring"</span><span class="p">);</span>
+
+<span class="nx">module</span><span class="p">.</span><span class="nx">exports</span> <span class="o">=</span> <span class="p">{</span>
+
+	<span class="na">get</span><span class="p">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+
+		<span class="kd">var</span> <span class="nx">nytOptions</span> <span class="o">=</span> <span class="p">{</span>
+			<span class="s2">"api-key"</span><span class="p">:</span> <span class="nx">process</span><span class="p">.</span><span class="nx">env</span><span class="p">.</span><span class="nx">NYT_KEY</span>
+		<span class="p">}</span>
+
+		<span class="kd">var</span> <span class="nx">section</span> <span class="o">=</span> <span class="s2">"home"</span><span class="p">;</span>
+
+		<span class="kd">var</span> <span class="nx">promise</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Promise</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">resolve</span><span class="p">,</span> <span class="nx">reject</span><span class="p">)</span> <span class="p">{</span>
+
+			<span class="kd">var</span> <span class="nx">httpsOptions</span> <span class="o">=</span> <span class="p">{</span>
+				<span class="na">hostname</span><span class="p">:</span> <span class="s2">"api.nytimes.com"</span><span class="p">,</span>
+				<span class="na">port</span><span class="p">:</span> <span class="mi">443</span><span class="p">,</span>
+				<span class="na">path</span><span class="p">:</span> <span class="s2">"/svc/topstories/v2/"</span> <span class="o">+</span> <span class="nx">section</span> <span class="o">+</span> <span class="s2">".json?"</span> <span class="o">+</span> <span class="nx">qs</span><span class="p">(</span><span class="nx">nytOptions</span><span class="p">),</span>
+				<span class="na">method</span><span class="p">:</span> <span class="s2">"GET"</span>
+			<span class="p">};</span>
+
+			<span class="kd">var</span> <span class="nx">request</span> <span class="o">=</span> <span class="nx">https</span><span class="p">.</span><span class="nx">request</span><span class="p">(</span><span class="nx">httpsOptions</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">response</span><span class="p">)</span> <span class="p">{</span>
+
+				<span class="kd">var</span> <span class="nx">string</span> <span class="o">=</span> <span class="s2">""</span><span class="p">;</span>
+
+				<span class="nx">response</span><span class="p">.</span><span class="nx">setEncoding</span><span class="p">(</span><span class="s2">"utf-8"</span><span class="p">);</span>
+
+				<span class="nx">response</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s2">"data"</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">chunk</span><span class="p">)</span> <span class="p">{</span>
+					<span class="nx">string</span> <span class="o">+=</span> <span class="nx">chunk</span><span class="p">;</span>
+				<span class="p">});</span>
+
+				<span class="nx">response</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s2">"end"</span><span class="p">,</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+
+					<span class="k">try</span> <span class="p">{</span>
+						<span class="nx">resolve</span><span class="p">(</span><span class="nx">JSON</span><span class="p">.</span><span class="nx">parse</span><span class="p">(</span><span class="nx">string</span><span class="p">));</span>
+					<span class="p">}</span> <span class="k">catch</span> <span class="p">(</span><span class="nx">error</span><span class="p">)</span> <span class="p">{</span>
+						<span class="nx">reject</span><span class="p">(</span><span class="nx">error</span><span class="p">);</span>
+					<span class="p">}</span>
+				<span class="p">});</span>
+			<span class="p">});</span>
+			<span class="nx">request</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s2">"error"</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">error</span><span class="p">)</span> <span class="p">{</span>
+				<span class="nx">reject</span><span class="p">(</span><span class="nx">error</span><span class="p">);</span>
+			<span class="p">});</span>
+			<span class="nx">request</span><span class="p">.</span><span class="nx">end</span><span class="p">();</span>
+		<span class="p">});</span>
+		<span class="k">return</span> <span class="nx">promise</span><span class="p">;</span>
+	<span class="p">}</span>
+<span class="p">}</span></code></pre></figure>
+
+<p>Back in our websocket script, we can now create an intro message and a condition to display the NYT data. Before we do that though, we have to decide where our bot will broadcast it’s message. Messages can be sent directly back to the user or broadcast on channel. Thankfully we get this info on every message object we receive so we can just send it back to the same channel.</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">ws</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s2">"message"</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">message</span><span class="p">)</span> <span class="p">{</span>
+
+	<span class="k">try</span> <span class="p">{</span>
+		<span class="kd">var</span> <span class="nx">messageJSON</span> <span class="o">=</span> <span class="nx">JSON</span><span class="p">.</span><span class="nx">parse</span><span class="p">(</span><span class="nx">message</span><span class="p">);</span>
+	<span class="p">}</span> <span class="k">catch</span><span class="p">(</span><span class="nx">error</span><span class="p">)</span> <span class="p">{</span>
+		<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">error</span><span class="p">);</span>
+	<span class="p">}</span>
+
+	<span class="kd">var</span> <span class="nx">messageText</span> <span class="o">=</span> <span class="nx">messageJSON</span><span class="p">.</span><span class="nx">text</span> <span class="o">||</span> <span class="s2">""</span><span class="p">;</span>
+
+		<span class="k">if</span> <span class="p">(</span><span class="nx">messageText</span> <span class="o">===</span> <span class="s2">"help"</span><span class="p">)</span>
+
+			<span class="kd">var</span> <span class="nx">text</span> <span class="o">=</span> <span class="s2">"Hello! :bowtie: I'm a multi-talented bot. I know these commands:\n"</span>
+			<span class="nx">text</span> <span class="o">+=</span> <span class="s2">"`setstocks [ticker symbols]` to save a list of stocks\n"</span><span class="p">;</span>
+			<span class="nx">text</span> <span class="o">+=</span> <span class="s2">"`getstocks` to display the current stats for saved stocks\n"</span><span class="p">;</span>
+			<span class="nx">text</span> <span class="o">+=</span> <span class="s2">"`getnews` to get a list of the top 10 NY Times articles\n"</span><span class="p">;</span>
+			<span class="nx">text</span> <span class="o">+=</span> <span class="s2">"`setaddress [address1] [address2]` to set a start and end address\n"</span><span class="p">;</span>
+			<span class="nx">text</span> <span class="o">+=</span> <span class="s2">"`getroute` to see Google's estimated travel time and distance\n"</span><span class="p">;</span>
+			<span class="nx">text</span> <span class="o">+=</span> <span class="s2">"`getride` to see Uber's esimated rates and times"</span><span class="p">;</span>
+
+			<span class="nx">ws</span><span class="p">.</span><span class="nx">send</span><span class="p">(</span><span class="nx">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">({</span>
+			    <span class="s2">"id"</span><span class="p">:</span> <span class="nx">id</span><span class="p">,</span>
+			    <span class="s2">"type"</span><span class="p">:</span> <span class="s2">"message"</span><span class="p">,</span>
+			    <span class="s2">"channel"</span><span class="p">:</span> <span class="nx">messageJSON</span><span class="p">.</span><span class="nx">channel</span><span class="p">,</span>
+			    <span class="s2">"text"</span><span class="p">:</span> <span class="nx">text</span>
+			<span class="p">}));</span>
+			<span class="nx">id</span> <span class="o">+=</span> <span class="mi">1</span><span class="p">;</span>
+		<span class="p">}</span>
+
+		<span class="k">if</span> <span class="p">(</span><span class="nx">messageText</span> <span class="o">===</span> <span class="s2">"getnews"</span><span class="p">)</span> <span class="p">{</span>
+
+			<span class="nx">news</span><span class="p">.</span><span class="nx">get</span><span class="p">().</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">data</span><span class="p">)</span> <span class="p">{</span>
+
+				<span class="kd">var</span> <span class="nx">text</span> <span class="o">=</span> <span class="s2">""</span><span class="p">;</span>
+
+				<span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="mi">10</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+					<span class="nx">text</span> <span class="o">+=</span> <span class="s2">"_"</span> <span class="o">+</span> <span class="nx">data</span><span class="p">.</span><span class="nx">results</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">title</span> <span class="o">+</span> <span class="s2">"_"</span> <span class="o">+</span> <span class="s2">"\n"</span> <span class="o">+</span> <span class="nx">data</span><span class="p">.</span><span class="nx">results</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">url</span> <span class="o">+</span> <span class="s2">"\n"</span><span class="p">;</span>
+				<span class="p">}</span>
+
+				<span class="nx">ws</span><span class="p">.</span><span class="nx">send</span><span class="p">(</span><span class="nx">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">({</span>
+				    <span class="s2">"id"</span><span class="p">:</span> <span class="nx">id</span><span class="p">,</span>
+				    <span class="s2">"type"</span><span class="p">:</span> <span class="s2">"message"</span><span class="p">,</span>
+				    <span class="s2">"channel"</span><span class="p">:</span> <span class="nx">messageJSON</span><span class="p">.</span><span class="nx">channel</span><span class="p">,</span>
+				    <span class="s2">"mrkdwn"</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+				    <span class="s2">"text"</span><span class="p">:</span> <span class="nx">text</span>
+				<span class="p">}));</span>
+				<span class="nx">id</span> <span class="o">+=</span> <span class="mi">1</span><span class="p">;</span>
+
+			<span class="p">},</span> <span class="kd">function</span><span class="p">(</span><span class="nx">error</span><span class="p">)</span> <span class="p">{</span>
+				<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">error</span><span class="p">);</span>
+			<span class="p">});</span>
+		<span class="p">}</span>
+<span class="p">});</span></code></pre></figure>
+
+<p>There we have it! We build a string and then send it back as part of an object with an id we assign to the channel the message came in on. The NYT API sends back 30 articles and we loop through the first 10 and grab their name and url.</p>
+
+<p>The text itself can be formatted so we can we add things like emojis <mark>:bowtoe</mark> and basic markdown characters like <mark></mark> <mark></mark> and <mark></mark> to bold, code, and italic words respectively. Slack has an article explaining the topic <a href="https://api.slack.com/docs/message-formatting">here</a>. The docs say we need character encodings for &lt;, &gt;, and &amp; so we can write a basic script for our strings if needed.</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="s2">"use strict"</span><span class="p">;</span>
+
+<span class="nx">module</span><span class="p">.</span><span class="nx">exports</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">string</span><span class="p">)</span> <span class="p">{</span>
+
+	<span class="kd">var</span> <span class="nx">htmlString</span> <span class="o">=</span> <span class="s2">""</span><span class="p">;</span>
+
+	<span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">string</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+
+		<span class="k">if</span> <span class="p">(</span><span class="nx">string</span><span class="p">.</span><span class="nx">charAt</span><span class="p">(</span><span class="nx">i</span><span class="p">)</span> <span class="o">===</span> <span class="s2">"&amp;"</span><span class="p">)</span> <span class="p">{</span>
+			<span class="nx">htmlString</span> <span class="o">+=</span> <span class="s2">"&amp;amp;"</span><span class="p">;</span>
+		<span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">string</span><span class="p">.</span><span class="nx">charAt</span><span class="p">(</span><span class="nx">i</span><span class="p">)</span> <span class="o">===</span> <span class="s2">"&lt;"</span><span class="p">)</span> <span class="p">{</span>
+			<span class="nx">htmlString</span> <span class="o">+=</span> <span class="s2">"&amp;lt;"</span><span class="p">;</span>
+		<span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">string</span><span class="p">.</span><span class="nx">charAt</span><span class="p">(</span><span class="nx">i</span><span class="p">)</span> <span class="o">===</span> <span class="s2">"&gt;"</span><span class="p">)</span> <span class="p">{</span>
+			<span class="nx">htmlString</span> <span class="o">+=</span> <span class="s2">"&amp;gt;"</span><span class="p">;</span>
+		<span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+			<span class="nx">htmlString</span> <span class="o">+=</span> <span class="nx">string</span><span class="p">.</span><span class="nx">charAt</span><span class="p">(</span><span class="nx">i</span><span class="p">);</span>
+		<span class="p">}</span>
+	<span class="p">}</span>
+	<span class="k">return</span> <span class="nx">htmlString</span><span class="p">;</span>
+<span class="p">}</span></code></pre></figure>
+
+<p>We can replicate this pattern to start adding additional APIs for our bot to report on. Quandl offers a robust API for financial API although live quotes carry a cost. For demo purposes, we can use Google’s deprecated HTTP API to get real-time data on a list of stocks. We’ll listen for a <mark>setstocks</mark> keyword. A regex grabs the stock list text inside brackets and saves it to a variable as a string. For persistent storage, we could instead write this to a file or store it in a database.</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="s2">"use strict"</span><span class="p">;</span>
+
+<span class="kd">var</span> <span class="nx">http</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s2">"http"</span><span class="p">);</span>
+<span class="kd">var</span> <span class="nx">qs</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s2">"../querystring"</span><span class="p">);</span>
+
+<span class="kd">var</span> <span class="nx">stockList</span> <span class="o">=</span> <span class="s2">""</span><span class="p">;</span>
+
+<span class="nx">module</span><span class="p">.</span><span class="nx">exports</span> <span class="o">=</span> <span class="p">{</span>
+
+	<span class="na">get</span><span class="p">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+
+		<span class="kd">var</span> <span class="nx">googleOptions</span> <span class="o">=</span> <span class="p">{</span>
+			<span class="na">q</span><span class="p">:</span> <span class="nx">stockList</span>
+		<span class="p">}</span>
+
+		<span class="kd">var</span> <span class="nx">promise</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Promise</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">resolve</span><span class="p">,</span> <span class="nx">reject</span><span class="p">)</span> <span class="p">{</span>
+
+			<span class="kd">var</span> <span class="nx">httpOptions</span> <span class="o">=</span> <span class="p">{</span>
+			<span class="na">hostname</span><span class="p">:</span> <span class="s2">"finance.google.com"</span><span class="p">,</span>
+			<span class="na">port</span><span class="p">:</span> <span class="mi">80</span><span class="p">,</span>
+			<span class="na">path</span><span class="p">:</span> <span class="s2">"/finance/info?"</span> <span class="o">+</span> <span class="nx">qs</span><span class="p">(</span><span class="nx">googleOptions</span><span class="p">),</span>
+			<span class="na">method</span><span class="p">:</span> <span class="s2">"GET"</span>
+			<span class="p">};</span>
+
+			<span class="kd">var</span> <span class="nx">request</span> <span class="o">=</span> <span class="nx">http</span><span class="p">.</span><span class="nx">request</span><span class="p">(</span><span class="nx">httpOptions</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">response</span><span class="p">)</span> <span class="p">{</span>
+
+				<span class="kd">var</span> <span class="nx">string</span> <span class="o">=</span> <span class="s2">""</span><span class="p">;</span>
+
+				<span class="nx">response</span><span class="p">.</span><span class="nx">setEncoding</span><span class="p">(</span><span class="s2">"utf-8"</span><span class="p">);</span>
+
+				<span class="nx">response</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s2">"data"</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">chunk</span><span class="p">)</span> <span class="p">{</span>
+					<span class="nx">string</span> <span class="o">+=</span> <span class="nx">chunk</span><span class="p">;</span>
+				<span class="p">});</span>
+
+				<span class="nx">response</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s2">"end"</span><span class="p">,</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+					<span class="nx">string</span> <span class="o">=</span> <span class="nx">string</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span><span class="sr">/</span><span class="se">\/\/</span><span class="sr">/g</span><span class="p">,</span> <span class="s2">""</span><span class="p">);</span>
+
+					<span class="k">try</span> <span class="p">{</span>
+						<span class="nx">resolve</span><span class="p">(</span><span class="nx">JSON</span><span class="p">.</span><span class="nx">parse</span><span class="p">(</span><span class="nx">string</span><span class="p">));</span>
+					<span class="p">}</span> <span class="k">catch</span> <span class="p">(</span><span class="nx">error</span><span class="p">)</span> <span class="p">{</span>
+						<span class="nx">reject</span><span class="p">(</span><span class="nx">error</span><span class="p">);</span>
+					<span class="p">}</span>
+				<span class="p">});</span>
+			<span class="p">});</span>
+			<span class="nx">request</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s2">"error"</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">error</span><span class="p">)</span> <span class="p">{</span>
+				<span class="nx">reject</span><span class="p">(</span><span class="nx">error</span><span class="p">);</span>
+			<span class="p">});</span>
+			<span class="nx">request</span><span class="p">.</span><span class="nx">end</span><span class="p">();</span>
+		<span class="p">});</span>
+		<span class="k">return</span> <span class="nx">promise</span><span class="p">;</span>
+	<span class="p">},</span>
+	<span class="na">set</span><span class="p">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">stocksString</span><span class="p">)</span> <span class="p">{</span>
+
+		<span class="kd">var</span> <span class="nx">regex</span> <span class="o">=</span> <span class="k">new</span> <span class="nb">RegExp</span><span class="p">(</span><span class="sr">/</span><span class="se">\[([</span><span class="sr">A-Za-z,.</span><span class="se">\s]</span><span class="sr">+</span><span class="se">)\]</span><span class="sr">/</span><span class="p">);</span>
+		<span class="kd">var</span> <span class="nx">match</span> <span class="o">=</span> <span class="nx">regex</span><span class="p">.</span><span class="nx">exec</span><span class="p">(</span><span class="nx">stocksString</span><span class="p">);</span>
+
+		<span class="k">if</span> <span class="p">(</span><span class="nx">match</span> <span class="o">!==</span> <span class="kc">null</span><span class="p">)</span> <span class="p">{</span>
+			<span class="nx">stockList</span> <span class="o">=</span> <span class="nx">match</span><span class="p">[</span><span class="mi">1</span><span class="p">].</span><span class="nx">split</span><span class="p">(</span><span class="s2">" "</span><span class="p">).</span><span class="nx">join</span><span class="p">(</span><span class="s2">","</span><span class="p">);</span>
+		<span class="p">}</span>
+	<span class="p">}</span>
+<span class="p">}</span></code></pre></figure>
+
+<p>Now add the conditional in our websocket connection that trigger on specific message text.</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="k">if</span> <span class="p">(</span><span class="nx">messageText</span><span class="p">.</span><span class="nx">includes</span><span class="p">(</span><span class="s2">"setstocks"</span><span class="p">))</span> <span class="p">{</span>
+
+	<span class="nx">stocks</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="nx">messageText</span><span class="p">);</span>
+
+	<span class="nx">ws</span><span class="p">.</span><span class="nx">send</span><span class="p">(</span><span class="nx">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">({</span>
+				<span class="s2">"id"</span><span class="p">:</span> <span class="nx">id</span><span class="p">,</span>
+				<span class="s2">"type"</span><span class="p">:</span> <span class="s2">"message"</span><span class="p">,</span>
+				<span class="s2">"channel"</span><span class="p">:</span> <span class="nx">messageJSON</span><span class="p">.</span><span class="nx">channel</span><span class="p">,</span>
+				<span class="s2">"text"</span><span class="p">:</span> <span class="s2">"Thanks! I've recorded your stock list."</span>
+	<span class="p">}));</span>
+	<span class="nx">id</span> <span class="o">+=</span> <span class="mi">1</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="k">if</span> <span class="p">(</span><span class="nx">messageText</span> <span class="o">===</span> <span class="s2">"getstocks"</span><span class="p">)</span> <span class="p">{</span>
+
+	<span class="nx">stocks</span><span class="p">.</span><span class="nx">get</span><span class="p">().</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">data</span><span class="p">)</span> <span class="p">{</span>
+
+		<span class="kd">var</span> <span class="nx">text</span> <span class="o">=</span> <span class="s2">""</span><span class="p">;</span>
+
+		<span class="nx">data</span><span class="p">.</span><span class="nx">forEach</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">stock</span><span class="p">)</span> <span class="p">{</span>
+			<span class="nx">text</span> <span class="o">+=</span> <span class="s2">"*"</span> <span class="o">+</span> <span class="nx">stock</span><span class="p">.</span><span class="nx">t</span> <span class="o">+</span> <span class="s2">"*\t"</span> <span class="o">+</span> <span class="nx">stock</span><span class="p">.</span><span class="nx">l</span> <span class="o">+</span> <span class="s2">"\t"</span> <span class="o">+</span> <span class="nx">stock</span><span class="p">.</span><span class="nx">c</span> <span class="o">+</span> <span class="s2">"\t"</span> <span class="o">+</span> <span class="nx">stock</span><span class="p">.</span><span class="nx">cp</span> <span class="o">+</span> <span class="s2">"%\n"</span><span class="p">;</span>
+		<span class="p">})</span>
+
+		<span class="nx">ws</span><span class="p">.</span><span class="nx">send</span><span class="p">(</span><span class="nx">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">({</span>
+				<span class="s2">"id"</span><span class="p">:</span> <span class="nx">id</span><span class="p">,</span>
+				<span class="s2">"type"</span><span class="p">:</span> <span class="s2">"message"</span><span class="p">,</span>
+				<span class="s2">"channel"</span><span class="p">:</span> <span class="nx">messageJSON</span><span class="p">.</span><span class="nx">channel</span><span class="p">,</span>
+				<span class="s2">"mrkdwn"</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+				<span class="s2">"text"</span><span class="p">:</span> <span class="nx">text</span>
+		<span class="p">}));</span>
+		<span class="nx">id</span> <span class="o">+=</span> <span class="mi">1</span><span class="p">;</span>
+
+	<span class="p">},</span> <span class="kd">function</span><span class="p">(</span><span class="nx">error</span><span class="p">)</span> <span class="p">{</span>
+		<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">error</span><span class="p">);</span>
+	<span class="p">});</span>
+<span class="p">}</span>
+
+<span class="k">if</span> <span class="p">(</span><span class="nx">messageText</span> <span class="o">===</span> <span class="s2">"getnews"</span><span class="p">)</span> <span class="p">{</span>
+
+	<span class="k">if</span> <span class="p">(</span><span class="nx">messageText</span><span class="p">.</span><span class="nx">includes</span><span class="p">(</span><span class="s2">"setstocks"</span><span class="p">))</span> <span class="p">{</span>
+
+		<span class="nx">stocks</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="nx">messageText</span><span class="p">);</span>
+
+		<span class="nx">ws</span><span class="p">.</span><span class="nx">send</span><span class="p">(</span><span class="nx">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">({</span>
+					<span class="s2">"id"</span><span class="p">:</span> <span class="nx">id</span><span class="p">,</span>
+					<span class="s2">"type"</span><span class="p">:</span> <span class="s2">"message"</span><span class="p">,</span>
+					<span class="s2">"channel"</span><span class="p">:</span> <span class="nx">messageJSON</span><span class="p">.</span><span class="nx">channel</span><span class="p">,</span>
+					<span class="s2">"text"</span><span class="p">:</span> <span class="s2">"Thanks! I've recorded your stock list."</span>
+		<span class="p">}));</span>
+		<span class="nx">id</span> <span class="o">+=</span> <span class="mi">1</span><span class="p">;</span>
+	<span class="p">}</span>
+
+	<span class="k">if</span> <span class="p">(</span><span class="nx">messageText</span> <span class="o">===</span> <span class="s2">"getstocks"</span><span class="p">)</span> <span class="p">{</span>
+
+		<span class="nx">stocks</span><span class="p">.</span><span class="nx">get</span><span class="p">().</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">data</span><span class="p">)</span> <span class="p">{</span>
+
+			<span class="kd">var</span> <span class="nx">text</span> <span class="o">=</span> <span class="s2">""</span><span class="p">;</span>
+
+			<span class="nx">data</span><span class="p">.</span><span class="nx">forEach</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">stock</span><span class="p">)</span> <span class="p">{</span>
+				<span class="nx">text</span> <span class="o">+=</span> <span class="s2">"*"</span> <span class="o">+</span> <span class="nx">stock</span><span class="p">.</span><span class="nx">t</span> <span class="o">+</span> <span class="s2">"*\t"</span> <span class="o">+</span> <span class="nx">stock</span><span class="p">.</span><span class="nx">l</span> <span class="o">+</span> <span class="s2">"\t"</span> <span class="o">+</span> <span class="nx">stock</span><span class="p">.</span><span class="nx">c</span> <span class="o">+</span> <span class="s2">"\t"</span> <span class="o">+</span> <span class="nx">stock</span><span class="p">.</span><span class="nx">cp</span> <span class="o">+</span> <span class="s2">"%\n"</span><span class="p">;</span>
+			<span class="p">})</span>
+
+			<span class="nx">ws</span><span class="p">.</span><span class="nx">send</span><span class="p">(</span><span class="nx">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">({</span>
+					<span class="s2">"id"</span><span class="p">:</span> <span class="nx">id</span><span class="p">,</span>
+					<span class="s2">"type"</span><span class="p">:</span> <span class="s2">"message"</span><span class="p">,</span>
+					<span class="s2">"channel"</span><span class="p">:</span> <span class="nx">messageJSON</span><span class="p">.</span><span class="nx">channel</span><span class="p">,</span>
+					<span class="s2">"mrkdwn"</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+					<span class="s2">"text"</span><span class="p">:</span> <span class="nx">text</span>
+			<span class="p">}));</span>
+			<span class="nx">id</span> <span class="o">+=</span> <span class="mi">1</span><span class="p">;</span>
+
+		<span class="p">},</span> <span class="kd">function</span><span class="p">(</span><span class="nx">error</span><span class="p">)</span> <span class="p">{</span>
+			<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">error</span><span class="p">);</span>
+		<span class="p">});</span>
+	<span class="p">}</span>
+
+	<span class="k">if</span> <span class="p">(</span><span class="nx">messageText</span> <span class="o">===</span> <span class="s2">"getnews"</span><span class="p">)</span> <span class="p">{</span>
+
+		<span class="nx">news</span><span class="p">.</span><span class="nx">get</span><span class="p">().</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">data</span><span class="p">)</span> <span class="p">{</span>
+
+			<span class="kd">var</span> <span class="nx">text</span> <span class="o">=</span> <span class="s2">""</span><span class="p">;</span>
+
+			<span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="mi">10</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+				<span class="nx">text</span> <span class="o">+=</span> <span class="s2">"_"</span> <span class="o">+</span> <span class="nx">data</span><span class="p">.</span><span class="nx">results</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">title</span> <span class="o">+</span> <span class="s2">"_"</span> <span class="o">+</span> <span class="s2">"\n"</span> <span class="o">+</span> <span class="nx">data</span><span class="p">.</span><span class="nx">results</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">url</span> <span class="o">+</span> <span class="s2">"\n"</span><span class="p">;</span>
+			<span class="p">}</span>
+
+			<span class="nx">ws</span><span class="p">.</span><span class="nx">send</span><span class="p">(</span><span class="nx">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">({</span>
+					<span class="s2">"id"</span><span class="p">:</span> <span class="nx">id</span><span class="p">,</span>
+					<span class="s2">"type"</span><span class="p">:</span> <span class="s2">"message"</span><span class="p">,</span>
+					<span class="s2">"channel"</span><span class="p">:</span> <span class="nx">messageJSON</span><span class="p">.</span><span class="nx">channel</span><span class="p">,</span>
+					<span class="s2">"mrkdwn"</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+					<span class="s2">"text"</span><span class="p">:</span> <span class="nx">text</span>
+			<span class="p">}));</span>
+			<span class="nx">id</span> <span class="o">+=</span> <span class="mi">1</span><span class="p">;</span>
+
+		<span class="p">},</span> <span class="kd">function</span><span class="p">(</span><span class="nx">error</span><span class="p">)</span> <span class="p">{</span>
+			<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">error</span><span class="p">);</span>
+		<span class="p">});</span>
+	<span class="p">}</span></code></pre></figure>
+
+<p>Sweet! We can queue up a list of news articles and stock quotes in seconds with a short command. We also have a basis to add additional features to.</p>
+
+<p><img src="../imgs/news-stocks.png" alt="Slack bot showing New York Times news and live stock quotes" /></p>
+
+<p>Say we’re getting ready for work and we want to plan our commute. How long is the trip with current traffic conditions? How many minutes away is the nearest Uber? And how much would a ride cost? In this final part, we’ll combine Google and Uber APIs to give us real time traffic and price info.</p>
+
+<p>Our Google module will make use of the Google Distance Matrix and Google Maps Geolocation APIs. Google makes it simple to develop apps with multiple APIs since a key is attached a project and a project can utilize multiple APIs. A developer can also limit API calls for a key to certain IP addresses on the server side or origin URIs on the client side. Head over to the <a href="https://console.developers.google.com/">Google API Console</a> to create a new project. From the API Manager, select the Library option to start adding APIs for your key.</p>
+
+<p>The export from our module will be an object that contains the following methods:</p>
+
+<p><strong><em>setAddress</em></strong> - Similar to the method for setting stocks, setAddress captures the content between sets of brackets with a regex and stores the strings as elements in an array.</p>
+
+<p><strong><em>getRoute</em></strong> - This method takes the addresses we set before and returns data that includes the distance and estimated time for us to drive from point A to B. In the future, we could expand this method to accommodate things like multiple waypoints and different travel methods.</p>
+
+<p><strong><em>getGeo</em></strong> - We’re thinking ahead because Uber’s API requires latitude and longitude points to calculate times and fares. getGeo makes a geolocation API call to Google for each entry in the directions array and returns an array of objects that contain the lat and lng for each.</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="s2">"use strict"</span><span class="p">;</span>
+
+<span class="kd">var</span> <span class="nx">https</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s2">"https"</span><span class="p">);</span>
+<span class="kd">var</span> <span class="nx">qs</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s2">"../querystring"</span><span class="p">);</span>
+
+<span class="kd">var</span> <span class="nx">addresses</span> <span class="o">=</span> <span class="p">[];</span>
+
+<span class="nx">module</span><span class="p">.</span><span class="nx">exports</span> <span class="o">=</span> <span class="p">{</span>
+
+	<span class="na">getRoute</span><span class="p">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+
+		<span class="kd">var</span> <span class="nx">googOptions</span> <span class="o">=</span> <span class="p">{</span>
+			<span class="na">origins</span><span class="p">:</span> <span class="nx">addresses</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+			<span class="na">destinations</span><span class="p">:</span> <span class="nx">addresses</span><span class="p">.</span><span class="nx">slice</span><span class="p">(</span><span class="mi">1</span><span class="p">).</span><span class="nx">join</span><span class="p">(</span><span class="s2">"|"</span><span class="p">),</span>
+			<span class="na">mode</span><span class="p">:</span> <span class="s2">"driving"</span><span class="p">,</span>
+			<span class="na">language</span><span class="p">:</span> <span class="s2">"english"</span><span class="p">,</span>
+			<span class="na">units</span><span class="p">:</span> <span class="s2">"imperial"</span><span class="p">,</span>
+			<span class="na">departure_time</span><span class="p">:</span> <span class="s2">"now"</span><span class="p">,</span>
+			<span class="na">traffic_model</span><span class="p">:</span> <span class="s2">"best_guess"</span><span class="p">,</span>
+			<span class="na">key</span><span class="p">:</span> <span class="nx">process</span><span class="p">.</span><span class="nx">env</span><span class="p">.</span><span class="nx">GOOG_KEY</span>
+		<span class="p">}</span>
+
+		<span class="kd">var</span> <span class="nx">promise</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Promise</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">resolve</span><span class="p">,</span> <span class="nx">reject</span><span class="p">)</span> <span class="p">{</span>
+
+			<span class="kd">var</span> <span class="nx">httpsOptions</span> <span class="o">=</span> <span class="p">{</span>
+				<span class="na">hostname</span><span class="p">:</span> <span class="s2">"maps.googleapis.com"</span><span class="p">,</span>
+				<span class="na">port</span><span class="p">:</span> <span class="mi">443</span><span class="p">,</span>
+				<span class="na">path</span><span class="p">:</span> <span class="s2">"/maps/api/distancematrix/json?"</span> <span class="o">+</span> <span class="nx">qs</span><span class="p">(</span><span class="nx">googOptions</span><span class="p">),</span>
+				<span class="na">method</span><span class="p">:</span> <span class="s2">"GET"</span>
+			<span class="p">};</span>
+
+			<span class="kd">var</span> <span class="nx">request</span> <span class="o">=</span> <span class="nx">https</span><span class="p">.</span><span class="nx">request</span><span class="p">(</span><span class="nx">httpsOptions</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">response</span><span class="p">)</span> <span class="p">{</span>
+
+				<span class="kd">var</span> <span class="nx">string</span> <span class="o">=</span> <span class="s2">""</span><span class="p">;</span>
+
+				<span class="nx">response</span><span class="p">.</span><span class="nx">setEncoding</span><span class="p">(</span><span class="s2">"utf-8"</span><span class="p">);</span>
+
+				<span class="nx">response</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s2">"data"</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">chunk</span><span class="p">)</span> <span class="p">{</span>
+					<span class="nx">string</span> <span class="o">+=</span> <span class="nx">chunk</span><span class="p">;</span>
+				<span class="p">});</span>
+
+				<span class="nx">response</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s2">"end"</span><span class="p">,</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+
+					<span class="k">try</span> <span class="p">{</span>
+						<span class="nx">resolve</span><span class="p">(</span><span class="nx">JSON</span><span class="p">.</span><span class="nx">parse</span><span class="p">(</span><span class="nx">string</span><span class="p">));</span>
+					<span class="p">}</span> <span class="k">catch</span> <span class="p">(</span><span class="nx">error</span><span class="p">)</span> <span class="p">{</span>
+						<span class="nx">reject</span><span class="p">(</span><span class="nx">error</span><span class="p">);</span>
+					<span class="p">}</span>
+				<span class="p">});</span>
+			<span class="p">});</span>
+			<span class="nx">request</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s2">"error"</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">error</span><span class="p">)</span> <span class="p">{</span>
+				<span class="nx">reject</span><span class="p">(</span><span class="nx">error</span><span class="p">);</span>
+			<span class="p">});</span>
+			<span class="nx">request</span><span class="p">.</span><span class="nx">end</span><span class="p">();</span>
+		<span class="p">});</span>
+		<span class="k">return</span> <span class="nx">promise</span><span class="p">;</span>
+	<span class="p">},</span>
+	<span class="na">getGeo</span><span class="p">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+
+		<span class="kd">var</span> <span class="nx">promise</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Promise</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">resolve</span><span class="p">,</span> <span class="nx">reject</span><span class="p">)</span> <span class="p">{</span>
+
+			<span class="kd">var</span> <span class="nx">geoCoordinates</span> <span class="o">=</span> <span class="p">[];</span>
+			<span class="kd">var</span> <span class="nx">completedRequests</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+
+			<span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">addresses</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+
+				<span class="kd">var</span> <span class="nx">googOptions</span> <span class="o">=</span> <span class="p">{</span>
+					<span class="na">address</span><span class="p">:</span> <span class="nx">addresses</span><span class="p">[</span><span class="nx">i</span><span class="p">],</span>
+					<span class="na">components</span><span class="p">:</span> <span class="s2">"country:US"</span><span class="p">,</span>
+					<span class="na">key</span><span class="p">:</span> <span class="nx">process</span><span class="p">.</span><span class="nx">env</span><span class="p">.</span><span class="nx">GOOG_KEY</span>
+				<span class="p">}</span>
+
+				<span class="kd">var</span> <span class="nx">httpsOptions</span> <span class="o">=</span> <span class="p">{</span>
+					<span class="na">hostname</span><span class="p">:</span> <span class="s2">"maps.googleapis.com"</span><span class="p">,</span>
+					<span class="na">port</span><span class="p">:</span> <span class="mi">443</span><span class="p">,</span>
+					<span class="na">path</span><span class="p">:</span> <span class="s2">"/maps/api/geocode/json?"</span> <span class="o">+</span> <span class="nx">qs</span><span class="p">(</span><span class="nx">googOptions</span><span class="p">),</span>
+					<span class="na">method</span><span class="p">:</span> <span class="s2">"GET"</span>
+				<span class="p">};</span>
+
+				<span class="kd">var</span> <span class="nx">request</span> <span class="o">=</span> <span class="nx">https</span><span class="p">.</span><span class="nx">request</span><span class="p">(</span><span class="nx">httpsOptions</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">response</span><span class="p">)</span> <span class="p">{</span>
+
+					<span class="kd">var</span> <span class="nx">string</span> <span class="o">=</span> <span class="s2">""</span><span class="p">;</span>
+
+					<span class="nx">response</span><span class="p">.</span><span class="nx">setEncoding</span><span class="p">(</span><span class="s2">"utf-8"</span><span class="p">);</span>
+
+					<span class="nx">response</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s2">"data"</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">chunk</span><span class="p">)</span> <span class="p">{</span>
+						<span class="nx">string</span> <span class="o">+=</span> <span class="nx">chunk</span><span class="p">;</span>
+					<span class="p">});</span>
+
+					<span class="nx">response</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s2">"end"</span><span class="p">,</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+
+						<span class="k">try</span> <span class="p">{</span>
+							<span class="nx">geoCoordinates</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">JSON</span><span class="p">.</span><span class="nx">parse</span><span class="p">(</span><span class="nx">string</span><span class="p">).</span><span class="nx">results</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nx">geometry</span><span class="p">.</span><span class="nx">location</span><span class="p">);</span>
+
+							<span class="k">if</span> <span class="p">(</span><span class="o">++</span><span class="nx">completedRequests</span> <span class="o">===</span> <span class="nx">addresses</span><span class="p">.</span><span class="nx">length</span><span class="p">)</span> <span class="p">{</span>
+								<span class="nx">resolve</span><span class="p">(</span><span class="nx">geoCoordinates</span><span class="p">);</span>
+							<span class="p">}</span>
+						<span class="p">}</span> <span class="k">catch</span> <span class="p">(</span><span class="nx">error</span><span class="p">)</span> <span class="p">{</span>
+							<span class="nx">reject</span><span class="p">(</span><span class="nx">error</span><span class="p">);</span>
+						<span class="p">}</span>
+					<span class="p">});</span>
+				<span class="p">});</span>
+				<span class="nx">request</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s2">"error"</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">error</span><span class="p">)</span> <span class="p">{</span>
+					<span class="nx">reject</span><span class="p">(</span><span class="nx">error</span><span class="p">)</span>
+				<span class="p">});</span>
+				<span class="nx">request</span><span class="p">.</span><span class="nx">end</span><span class="p">();</span>
+			<span class="p">}</span>
+
+		<span class="p">});</span>
+		<span class="k">return</span> <span class="nx">promise</span><span class="p">;</span>
+	<span class="p">},</span>
+	<span class="na">setRoute</span><span class="p">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">addressString</span><span class="p">)</span> <span class="p">{</span>
+
+		<span class="nx">addresses</span> <span class="o">=</span> <span class="p">[];</span>
+
+		<span class="kd">var</span> <span class="nx">regex</span> <span class="o">=</span> <span class="k">new</span> <span class="nb">RegExp</span><span class="p">(</span><span class="sr">/</span><span class="se">\[(</span><span class="sr">.*</span><span class="se">?)\]</span><span class="sr">/g</span><span class="p">);</span>
+		<span class="kd">var</span> <span class="nx">match</span> <span class="o">=</span> <span class="nx">regex</span><span class="p">.</span><span class="nx">exec</span><span class="p">(</span><span class="nx">addressString</span><span class="p">);</span>
+
+		<span class="k">while</span> <span class="p">(</span><span class="nx">match</span> <span class="o">!==</span> <span class="kc">null</span><span class="p">)</span> <span class="p">{</span>
+			<span class="nx">addresses</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">match</span><span class="p">[</span><span class="mi">1</span><span class="p">]);</span>
+			<span class="nx">match</span> <span class="o">=</span> <span class="nx">regex</span><span class="p">.</span><span class="nx">exec</span><span class="p">(</span><span class="nx">addressString</span><span class="p">);</span>
+		<span class="p">}</span>
+	<span class="p">}</span>
+<span class="p">}</span></code></pre></figure>
+
+<p>Now we repeat the process and add a conditional to our websocket connection to initiate an API call and response.</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="k">if</span> <span class="p">(</span><span class="nx">messageText</span><span class="p">.</span><span class="nx">includes</span><span class="p">(</span><span class="s2">"setaddress"</span><span class="p">))</span> <span class="p">{</span>
+
+	<span class="nx">locations</span><span class="p">.</span><span class="nx">setAddress</span><span class="p">(</span><span class="nx">messageText</span><span class="p">);</span>
+
+	<span class="nx">ws</span><span class="p">.</span><span class="nx">send</span><span class="p">(</span><span class="nx">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">({</span>
+			<span class="s2">"id"</span><span class="p">:</span> <span class="nx">id</span><span class="p">,</span>
+			<span class="s2">"type"</span><span class="p">:</span> <span class="s2">"message"</span><span class="p">,</span>
+			<span class="s2">"channel"</span><span class="p">:</span> <span class="nx">messageJSON</span><span class="p">.</span><span class="nx">channel</span><span class="p">,</span>
+			<span class="s2">"text"</span><span class="p">:</span> <span class="s2">"Thanks! I've set your start and end address."</span>
+	<span class="p">}));</span>
+	<span class="nx">id</span> <span class="o">+=</span> <span class="mi">1</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="k">if</span> <span class="p">(</span><span class="nx">messageText</span> <span class="o">===</span> <span class="s2">"getroute"</span><span class="p">)</span> <span class="p">{</span>
+
+	<span class="nx">locations</span><span class="p">.</span><span class="nx">getRoute</span><span class="p">().</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">data</span><span class="p">)</span> <span class="p">{</span>
+
+		<span class="kd">var</span> <span class="nx">text</span> <span class="o">=</span> <span class="s2">"Your destination is *"</span> <span class="o">+</span> <span class="nx">data</span><span class="p">.</span><span class="nx">rows</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nx">elements</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nx">distance</span><span class="p">.</span><span class="nx">text</span> <span class="o">+</span> <span class="s2">"* away.\n"</span><span class="p">;</span>
+		<span class="nx">text</span> <span class="o">+=</span> <span class="s2">"Estimated travel time is *"</span> <span class="o">+</span> <span class="nx">data</span><span class="p">.</span><span class="nx">rows</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nx">elements</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nx">duration</span><span class="p">.</span><span class="nx">text</span> <span class="o">+</span> <span class="s2">"*."</span><span class="p">;</span>
+
+		<span class="nx">ws</span><span class="p">.</span><span class="nx">send</span><span class="p">(</span><span class="nx">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">({</span>
+				<span class="s2">"id"</span><span class="p">:</span> <span class="nx">id</span><span class="p">,</span>
+				<span class="s2">"type"</span><span class="p">:</span> <span class="s2">"message"</span><span class="p">,</span>
+				<span class="s2">"channel"</span><span class="p">:</span> <span class="nx">messageJSON</span><span class="p">.</span><span class="nx">channel</span><span class="p">,</span>
+				<span class="s2">"mrkdwn"</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+				<span class="s2">"text"</span><span class="p">:</span> <span class="nx">text</span>
+		<span class="p">}));</span>
+		<span class="nx">id</span> <span class="o">+=</span> <span class="mi">1</span><span class="p">;</span>
+
+	<span class="p">},</span> <span class="kd">function</span><span class="p">(</span><span class="nx">error</span><span class="p">)</span> <span class="p">{</span>
+		<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">error</span><span class="p">);</span>
+	<span class="p">});</span>
+<span class="p">}</span></code></pre></figure>
+
+<p>We’re nearly done! We just need to incorporate the Uber API to get real-time info on Uber drivers near our location. Uber authenticates HTTPs calls for it’s time and price APIs in the request header. However to request a ride, we’ll need to authenticate with OAuth 2.0. We can start by registering our app on Uber’s site <a href="https://developer.uber.com/docs/rides/getting-started">here</a>.</p>
+
+<p>We build our module in a similar pattern as before with separate API methods to get the time and price for Uber rides.</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="s2">"use strict"</span><span class="p">;</span>
+
+<span class="kd">var</span> <span class="nx">https</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s2">"https"</span><span class="p">);</span>
+<span class="kd">var</span> <span class="nx">qs</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s2">"../querystring"</span><span class="p">);</span>
+
+<span class="nx">module</span><span class="p">.</span><span class="nx">exports</span> <span class="o">=</span> <span class="p">{</span>
+
+	<span class="na">getPrice</span><span class="p">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">geoData</span><span class="p">)</span> <span class="p">{</span>
+
+		<span class="kd">var</span> <span class="nx">uberOptions</span> <span class="o">=</span> <span class="p">{</span>
+			<span class="na">start_latitude</span><span class="p">:</span> <span class="o">+</span><span class="nx">geoData</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nx">lat</span><span class="p">,</span>
+			<span class="na">start_longitude</span><span class="p">:</span> <span class="o">+</span><span class="nx">geoData</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nx">lng</span><span class="p">,</span>
+			<span class="na">end_latitude</span><span class="p">:</span> <span class="o">+</span><span class="nx">geoData</span><span class="p">[</span><span class="mi">1</span><span class="p">].</span><span class="nx">lat</span><span class="p">,</span>
+			<span class="na">end_longitude</span><span class="p">:</span> <span class="o">+</span><span class="nx">geoData</span><span class="p">[</span><span class="mi">1</span><span class="p">].</span><span class="nx">lng</span>
+		<span class="p">}</span>
+
+		<span class="kd">var</span> <span class="nx">promise</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Promise</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">resolve</span><span class="p">,</span> <span class="nx">reject</span><span class="p">)</span> <span class="p">{</span>
+
+			<span class="kd">var</span> <span class="nx">httpsOptions</span> <span class="o">=</span> <span class="p">{</span>
+				<span class="na">hostname</span><span class="p">:</span> <span class="s2">"api.uber.com"</span><span class="p">,</span>
+				<span class="na">port</span><span class="p">:</span> <span class="mi">443</span><span class="p">,</span>
+				<span class="na">path</span><span class="p">:</span> <span class="s2">"/v1/estimates/price?"</span> <span class="o">+</span> <span class="nx">qs</span><span class="p">(</span><span class="nx">uberOptions</span><span class="p">),</span>
+				<span class="na">headers</span><span class="p">:</span> <span class="p">{</span>
+					<span class="s2">"Authorization"</span><span class="p">:</span> <span class="s2">"Token "</span> <span class="o">+</span> <span class="nx">process</span><span class="p">.</span><span class="nx">env</span><span class="p">.</span><span class="nx">UBER_TOKEN</span>
+				<span class="p">},</span>
+				<span class="na">method</span><span class="p">:</span> <span class="s2">"GET"</span>
+			<span class="p">};</span>
+
+			<span class="kd">var</span> <span class="nx">request</span> <span class="o">=</span> <span class="nx">https</span><span class="p">.</span><span class="nx">request</span><span class="p">(</span><span class="nx">httpsOptions</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">response</span><span class="p">)</span> <span class="p">{</span>
+
+				<span class="kd">var</span> <span class="nx">string</span> <span class="o">=</span> <span class="s2">""</span><span class="p">;</span>
+
+				<span class="nx">response</span><span class="p">.</span><span class="nx">setEncoding</span><span class="p">(</span><span class="s2">"utf-8"</span><span class="p">);</span>
+
+				<span class="nx">response</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s2">"data"</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">chunk</span><span class="p">)</span> <span class="p">{</span>
+					<span class="nx">string</span> <span class="o">+=</span> <span class="nx">chunk</span><span class="p">;</span>
+				<span class="p">});</span>
+
+				<span class="nx">response</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s2">"end"</span><span class="p">,</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+
+					<span class="k">try</span> <span class="p">{</span>
+						<span class="nx">resolve</span><span class="p">(</span><span class="nx">JSON</span><span class="p">.</span><span class="nx">parse</span><span class="p">(</span><span class="nx">string</span><span class="p">));</span>
+					<span class="p">}</span> <span class="k">catch</span> <span class="p">(</span><span class="nx">error</span><span class="p">)</span> <span class="p">{</span>
+						<span class="nx">reject</span><span class="p">(</span><span class="nx">error</span><span class="p">);</span>
+					<span class="p">}</span>
+				<span class="p">});</span>
+			<span class="p">});</span>
+			<span class="nx">request</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s2">"error"</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">error</span><span class="p">)</span> <span class="p">{</span>
+				<span class="nx">reject</span><span class="p">(</span><span class="nx">error</span><span class="p">);</span>
+			<span class="p">});</span>
+			<span class="nx">request</span><span class="p">.</span><span class="nx">end</span><span class="p">();</span>
+		<span class="p">});</span>
+		<span class="k">return</span> <span class="nx">promise</span><span class="p">;</span>
+	<span class="p">},</span>
+	<span class="na">getTimes</span><span class="p">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">geoData</span><span class="p">)</span> <span class="p">{</span>
+
+		<span class="kd">var</span> <span class="nx">uberOptions</span> <span class="o">=</span> <span class="p">{</span>
+			<span class="na">start_latitude</span><span class="p">:</span> <span class="o">+</span><span class="nx">geoData</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nx">lat</span><span class="p">,</span>
+			<span class="na">start_longitude</span><span class="p">:</span> <span class="o">+</span><span class="nx">geoData</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nx">lng</span>
+		<span class="p">}</span>
+
+		<span class="kd">var</span> <span class="nx">promise</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Promise</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">resolve</span><span class="p">,</span> <span class="nx">reject</span><span class="p">)</span> <span class="p">{</span>
+
+			<span class="kd">var</span> <span class="nx">httpsOptions</span> <span class="o">=</span> <span class="p">{</span>
+				<span class="na">hostname</span><span class="p">:</span> <span class="s2">"api.uber.com"</span><span class="p">,</span>
+				<span class="na">port</span><span class="p">:</span> <span class="mi">443</span><span class="p">,</span>
+				<span class="na">path</span><span class="p">:</span> <span class="s2">"/v1/estimates/time?"</span> <span class="o">+</span> <span class="nx">qs</span><span class="p">(</span><span class="nx">uberOptions</span><span class="p">),</span>
+				<span class="na">headers</span><span class="p">:</span> <span class="p">{</span>
+					<span class="s2">"Authorization"</span><span class="p">:</span> <span class="s2">"Token "</span> <span class="o">+</span> <span class="nx">process</span><span class="p">.</span><span class="nx">env</span><span class="p">.</span><span class="nx">UBER_TOKEN</span>
+				<span class="p">},</span>
+				<span class="na">method</span><span class="p">:</span> <span class="s2">"GET"</span>
+			<span class="p">};</span>
+
+			<span class="kd">var</span> <span class="nx">request</span> <span class="o">=</span> <span class="nx">https</span><span class="p">.</span><span class="nx">request</span><span class="p">(</span><span class="nx">httpsOptions</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">response</span><span class="p">)</span> <span class="p">{</span>
+
+				<span class="kd">var</span> <span class="nx">string</span> <span class="o">=</span> <span class="s2">""</span><span class="p">;</span>
+
+				<span class="nx">response</span><span class="p">.</span><span class="nx">setEncoding</span><span class="p">(</span><span class="s2">"utf-8"</span><span class="p">);</span>
+
+				<span class="nx">response</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s2">"data"</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">chunk</span><span class="p">)</span> <span class="p">{</span>
+					<span class="nx">string</span> <span class="o">+=</span> <span class="nx">chunk</span><span class="p">;</span>
+				<span class="p">});</span>
+
+				<span class="nx">response</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s2">"end"</span><span class="p">,</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+
+					<span class="k">try</span> <span class="p">{</span>
+						<span class="nx">resolve</span><span class="p">(</span><span class="nx">JSON</span><span class="p">.</span><span class="nx">parse</span><span class="p">(</span><span class="nx">string</span><span class="p">));</span>
+					<span class="p">}</span> <span class="k">catch</span> <span class="p">(</span><span class="nx">error</span><span class="p">)</span> <span class="p">{</span>
+						<span class="nx">reject</span><span class="p">(</span><span class="nx">error</span><span class="p">);</span>
+					<span class="p">}</span>
+				<span class="p">});</span>
+			<span class="p">});</span>
+			<span class="nx">request</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s2">"error"</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">error</span><span class="p">)</span> <span class="p">{</span>
+				<span class="nx">reject</span><span class="p">(</span><span class="nx">error</span><span class="p">);</span>
+			<span class="p">});</span>
+			<span class="nx">request</span><span class="p">.</span><span class="nx">end</span><span class="p">();</span>
+		<span class="p">});</span>
+		<span class="k">return</span> <span class="nx">promise</span><span class="p">;</span>
+	<span class="p">}</span>
+<span class="p">}</span></code></pre></figure>
+
+<p>The data we get back from Uber contains times and prices for all available Uber ride types. We’ll select the first 2 for uberPool and uberX and write out the following conditional that will return how long it will take to request an Uber and the estimated cost to get to our destination we set with <mark>setaddress</mark>.</p>
+
+<p>In the demo code below, we’re nesting 3 API calls to build our response string. An alternative might be to calculate and store the geolocation data beforehand or separate out time and price API calls so they aren’t dependent on one another.</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="k">if</span> <span class="p">(</span><span class="nx">messageText</span> <span class="o">===</span> <span class="s2">"getride"</span><span class="p">)</span> <span class="p">{</span>
+
+	<span class="kd">var</span> <span class="nx">text1</span> <span class="o">=</span> <span class="s2">""</span><span class="p">;</span>
+	<span class="kd">var</span> <span class="nx">text2</span> <span class="o">=</span> <span class="s2">""</span><span class="p">;</span>
+
+	<span class="nx">locations</span><span class="p">.</span><span class="nx">getGeo</span><span class="p">().</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">geoData</span><span class="p">)</span> <span class="p">{</span>
+
+		<span class="nx">rides</span><span class="p">.</span><span class="nx">getTimes</span><span class="p">(</span><span class="nx">geoData</span><span class="p">).</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">timeData</span><span class="p">){</span>
+
+			<span class="nx">text1</span> <span class="o">+=</span> <span class="s2">"An uberPool is *"</span> <span class="o">+</span> <span class="nx">timeData</span><span class="p">.</span><span class="nx">times</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nx">estimate</span> <span class="o">/</span> <span class="mi">60</span> <span class="o">+</span> <span class="s2">"m* away "</span><span class="p">;</span>
+			<span class="nx">text2</span> <span class="o">+=</span> <span class="s2">"An uberX is *"</span><span class="o">+</span> <span class="nx">timeData</span><span class="p">.</span><span class="nx">times</span><span class="p">[</span><span class="mi">1</span><span class="p">].</span><span class="nx">estimate</span> <span class="o">/</span> <span class="mi">60</span> <span class="o">+</span> <span class="s2">"m* away "</span><span class="p">;</span>
+
+			<span class="nx">rides</span><span class="p">.</span><span class="nx">getPrice</span><span class="p">(</span><span class="nx">geoData</span><span class="p">).</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">priceData</span><span class="p">){</span>
+
+				<span class="nx">text1</span> <span class="o">+=</span> <span class="s2">"and would cost *"</span> <span class="o">+</span> <span class="nx">priceData</span><span class="p">.</span><span class="nx">prices</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nx">estimate</span> <span class="o">+</span> <span class="s2">"*\n"</span><span class="p">;</span>
+				<span class="nx">text2</span> <span class="o">+=</span> <span class="s2">"and would cost *"</span> <span class="o">+</span> <span class="nx">priceData</span><span class="p">.</span><span class="nx">prices</span><span class="p">[</span><span class="mi">1</span><span class="p">].</span><span class="nx">estimate</span> <span class="o">+</span> <span class="s2">"*"</span><span class="p">;</span>
+
+				<span class="nx">ws</span><span class="p">.</span><span class="nx">send</span><span class="p">(</span><span class="nx">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">({</span>
+						<span class="s2">"id"</span><span class="p">:</span> <span class="nx">id</span><span class="p">,</span>
+						<span class="s2">"type"</span><span class="p">:</span> <span class="s2">"message"</span><span class="p">,</span>
+						<span class="s2">"channel"</span><span class="p">:</span> <span class="nx">messageJSON</span><span class="p">.</span><span class="nx">channel</span><span class="p">,</span>
+						<span class="s2">"mrkdwn"</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+						<span class="s2">"text"</span><span class="p">:</span> <span class="nx">text1</span> <span class="o">+</span> <span class="nx">text2</span>
+				<span class="p">}));</span>
+				<span class="nx">id</span> <span class="o">+=</span> <span class="mi">1</span><span class="p">;</span>
+			<span class="p">},</span> <span class="kd">function</span><span class="p">(</span><span class="nx">error</span><span class="p">){</span>
+				<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">error</span><span class="p">)</span>
+			<span class="p">});</span>
+		<span class="p">},</span> <span class="kd">function</span><span class="p">(</span><span class="nx">error</span><span class="p">)</span> <span class="p">{</span>
+			<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">error</span><span class="p">)</span>
+		<span class="p">});</span>
+	<span class="p">},</span> <span class="kd">function</span><span class="p">(</span><span class="nx">error</span><span class="p">)</span> <span class="p">{</span>
+		<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">error</span><span class="p">);</span>
+	<span class="p">});</span>
+<span class="p">}</span>
+<span class="p">});</span></code></pre></figure>
+
+<p>And we’re done! Now we can get stocks, news, travel times, and Uber info in seconds. That’s a lot of useful stuff rolled into one simple bot.</p>
+
+<p><img src="../imgs/travel-uber.png" alt="Slack bot showing travel times and uber prices" /></p>
+
+<p>As a follow up project, we could have our bot send us a text if it’s going to rain tomorrow or a chat reminder with our grocery list. We could also deploy our code to Google’s Cloud Platform or Heroku so our bot never sleeps! I hope this was a fun and helpful guide. Please let me know if there are any questions or any code edits.</p>
+
+  </div>
+  <p class="article-date">
+    <time datetime="2016-09-05T00:00:00-07:00" itemprop="datePublished">Sep 5, 2016</time>
+
+  </p>
+</article>
+
+      </div>
+    </main>
+    <footer class="footer">
+  <ul>
+    <li>Created by Joe McIlhargey - 2016.</li>
+    <li>Some projects inspired by Freecodecamp, Udacity, and Codecademy</li>
+  </ul>
+</footer>
+  </body>
+</html>
