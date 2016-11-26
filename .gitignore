@@ -3,6 +3,7 @@ src/seed.js
 npm-debug.log
 .DS_Store
 /*.env
+/env.js
 minify.js
 /src/ssl
 config.json
