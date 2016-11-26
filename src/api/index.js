@@ -1,9 +1,11 @@
 "use strict";
 
 var express = require("express");
-var Projects = require("../models/projects")
+var Projects = require("../models/projects");
 
-var client = require("redis").createClient("redis://h:p17l05l4aopqf2d9f6mgajr1r6@ec2-54-197-224-139.compute-1.amazonaws.com:22099");
+require("../../env");
+
+var client = require("redis").createClient(process.env.REDIS_URI);
 
 client.on("error", function(err) {
 	console.log("Error: " + err);
