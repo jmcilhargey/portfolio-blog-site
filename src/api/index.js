@@ -3,8 +3,6 @@
 var express = require("express");
 var Projects = require("../models/projects");
 
-require("../../env");
-
 var client = require("redis").createClient(process.env.REDIS_URI);
 
 client.on("error", function(err) {
